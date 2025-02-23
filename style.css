@@ -3,7 +3,7 @@
   height: 50px;
   border-radius: 50%;
   border: 5px solid transparent;
-  border-top: 5px solid #3498db; /* Color del degradado */
+  border-top: 5px solid #ff0000; /* Color del degradado */
   animation: spin 2s linear infinite;
   position: relative;
 }
@@ -17,7 +17,7 @@
   bottom: -5px;
   border-radius: 50%;
   border: 5px solid transparent;
-  border-top: 5px solid #e74c3c; /* Color del degradado */
+  border-top: 5px solid #ff00ff; /* Color del degradado */
   animation: spin 3s linear infinite;
 }
 
