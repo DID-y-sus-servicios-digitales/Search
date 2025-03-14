@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DID IA</title>
+</head>
+<body>
+    <div id="chat-log"></div>
+    <input type="text" id="user-input">
+    <button onclick="enviarMensaje()">Enviar</button>
+
+    <script>
+        let respuestas = {
+            "hola": "¡Hola! ¿Cómo estás?",
+            "cómo te llamas": "Soy una IA simple."
+        };
+
+        function obtenerRespuesta(pregunta) {
+            if (respuestas[pregunta]) {
+                return respuestas[pregunta];
+            } else {
+                return "Lo siento, no sé la respuesta. ¿Me la puedes enseñar?";
+            }
+        }
+
+        function aprenderRespuesta(pregunta, respuesta) {
+            respuestas[pregunta] = respuesta;
+        }
+
+        function enviarMensaje() {
+            const userInput = document.getElementById("user-input");
+            const chatLog = document.getElementById("chat-log");
+            const pregunta = userInput.value;
+
+            chatLog.innerHTML += `<p><strong>Tú:</strong> ${pregunta}</p>`;
+            const respuesta = obtenerRespuesta(pregunta);
+            chatLog.innerHTML += `<p><strong>IA:</strong> ${respuesta}</p>`;
+
+            if (respuesta.includes("¿Me la puedes enseñar?")) {
+                const respuestaUsuario = prompt("¿Cuál es la respuesta?");
+                if (respuestaUsuario) {
+                    aprenderRespuesta(pregunta, respuestaUsuario);
+                    chatLog.innerHTML += `<p><strong>IA:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
+                }
+            }
+
+            userInput.value = "";
+        }
+    </script>
+</body>
+</html>
