@@ -1,4 +1,4 @@
-        const respuestas = {};
+const respuestas = {};
 
         // Cargar respuestas desde Firebase
         const database = firebase.database();
@@ -13,7 +13,7 @@
             if (respuestas[pregunta]) {
                 return respuestas[pregunta];
             } else {
-                return "Lo siento, no sé la respuesta. ¿Me la puedes enseñar?";
+                return "¿Cuál es la respuesta?";
             }
         }
 
@@ -32,7 +32,7 @@
             const respuesta = obtenerRespuesta(pregunta);
             chatLog.innerHTML += `<p><strong>IA:</strong> ${respuesta}</p>`;
 
-            if (respuesta.includes("¿Me la puedes enseñar?")) {
+            if (respuesta === "¿Cuál es la respuesta?") {
                 const respuestaUsuario = prompt("¿Cuál es la respuesta?");
                 if (respuestaUsuario) {
                     aprenderRespuesta(pregunta, respuestaUsuario);
@@ -52,10 +52,10 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
             authDomain: "didia5.firebaseapp.com",
-            databaseURL: "didia5.firebaseapp.com",
+            databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "didia5",
             storageBucket: "didia5.firebasestorage.app",
             messagingSenderId: "652405109295",
             appId: "1:652405109295:web:714467f3edb571c6a28cda"
         };
-        firebase.in
+        firebase.initializeApp(firebaseConfig);
