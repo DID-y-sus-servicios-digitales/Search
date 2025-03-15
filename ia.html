@@ -52,7 +52,7 @@
             const respuesta = obtenerRespuesta(pregunta);
             chatLog.innerHTML += `<p><strong>IA:</strong> ${respuesta}</p>`;
 
-            if (respuesta === "¿Cuál es la respuesta?") {
+            if (respuesta == "¿Cuál es la respuesta?") {
                 const respuestaUsuario = prompt("¿Cuál es la respuesta?");
                 if (respuestaUsuario) {
                     aprenderRespuesta(pregunta, respuestaUsuario);
