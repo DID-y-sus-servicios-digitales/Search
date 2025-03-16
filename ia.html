@@ -4,13 +4,13 @@
     <link rel="icon" type="image/png" sizes="16x16"  href="favicon-16x16.png">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="theme-color" content="#ffb8f2">
-    <title>Asistente DID</title>
+    <title>DID IA</title>
 </head>
 <body>
     <a href="index.html"><img src="Volver a DID search.png" width="19%" higth="19%"></a>
     <center>
-    <h1>Asistente DID</h1>
-    <h3>Este asistente, como está en desarrollo: cuando le escribas algo te pedirá la respuesta para guardar en nuestra base de datos</h3>
+    <h1>DID IA</h1>
+    <h3>Esta inteligencia artificial, es deepseek por lo que pueden salir las respuestas en inglés o chino</h3>
     <hr>
     <img src="Holaia.png" width="25%" higth="25%">
        <div id="chat-log"></div>
@@ -18,33 +18,7 @@
     <button onclick="enviarMensaje()">Cuentamelo</button>
     </center>
         <script>
-        import firebase from 'firebase/app';
-import 'firebase/database';
-
-let respuestas = {}; // Inicializar respuestas como objeto vacío
-
-// Sincronizar respuestas desde Firebase
-function sincronizarRespuestas(database) {
-  database.ref('respuestas').on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      Object.assign(respuestas, data); // Combinar con Firebase
-    }
-  });
-}
-
-function obtenerRespuesta(pregunta) {
-  if (respuestas[pregunta]) {
-    return respuestas[pregunta];
-  } else {
-    return "¿Cuál es la respuesta?";
-  }
-}
-
-function aprenderRespuesta(pregunta, respuesta) {
-  respuestas[pregunta] = respuesta;
-  database.ref('respuestas').update({ [pregunta]: respuesta });
-}
+        const deepseekApiKey = "sk-a81bf26f40cd436daf83ea6d84fb7240"; // Reemplaza con tu clave API de DeepSeek
 
 function enviarMensaje() {
   const userInput = document.getElementById("user-input");
@@ -52,44 +26,31 @@ function enviarMensaje() {
   const pregunta = userInput.value;
 
   chatLog.innerHTML += `<p><strong>Tú:</strong> ${pregunta}</p>`;
-  const respuesta = obtenerRespuesta(pregunta);
-  chatLog.innerHTML += `<p><strong>Asistente:</strong> ${respuesta}</p>`;
 
-  if (respuesta === "¿Cuál es la respuesta?") {
-    const respuestaUsuario = prompt("¿Cuál es la respuesta?");
-    if (respuestaUsuario) {
-      aprenderRespuesta(pregunta, respuestaUsuario);
-      chatLog.innerHTML += `<p><strong>Asistente:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
-    }
-  }
+  // Llamar a la API de DeepSeek para obtener la respuesta
+  fetch("https://api.deepseek.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${deepseekApiKey}`,
+    },
+    body: JSON.stringify({
+      model: "deepseek-chat", // O el modelo que estés utilizando
+      messages: [{ role: "user", content: pregunta }],
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const respuesta = data.choices[0].message.content;
+      chatLog.innerHTML += `<p><strong>IA:</strong> ${respuesta}</p>`;
+    })
+    .catch((error) => {
+      console.error("Error al obtener la respuesta de DeepSeek:", error);
+      chatLog.innerHTML += `<p><strong>IA:</strong> Lo siento, no puedo responder en este momento.</p>`;
+    });
 
   userInput.value = "";
 }
-
-// Inicializar Firebase al final
-const firebaseConfig = {
-  apiKey: "AIzaSyAQnT9mTMvdFj-VY_fp5T7BdxQP6x6FpQ4",
-  authDomain: "did-ia.firebaseapp.com",
-  databaseURL: "https://did-ia-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "did-ia",
-  storageBucket: "did-ia.firebasestorage.app",
-  messagingSenderId: "980363277500",
-  appId: "1:980363277500:web:c97380845d78257ae24cb9"
-};
-
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-sincronizarRespuestas(database); // Llamar a la función de sincronización
-
-// Cargar respuestas.json al final
-fetch('respuestas.json')
-  .then(response => response.json())
-  .then(data => {
-    Object.assign(respuestas, data); // Combinar con respuestas.json
-  })
-  .catch(error => {
-    console.error('Error al cargar el archivo JSON:', error);
-  });
 
     </script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
