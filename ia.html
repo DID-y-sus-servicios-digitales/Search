@@ -50,24 +50,18 @@
 
             chatLog.innerHTML += `<p><strong>Tú:</strong> ${pregunta}</p>`;
             const respuesta = obtenerRespuesta(pregunta);
-            chatLog.innerHTML += `<p><strong>IA:</strong> ${respuesta}</p>`;
+            chatLog.innerHTML += `<p><strong>Asistente:</strong> ${respuesta}</p>`;
 
             if (respuesta == "¿Cuál es la respuesta?") {
                 const respuestaUsuario = prompt("¿Cuál es la respuesta?");
                 if (respuestaUsuario) {
                     aprenderRespuesta(pregunta, respuestaUsuario);
-                    chatLog.innerHTML += `<p><strong>IA:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
+                    chatLog.innerHTML += `<p><strong>Asistente:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
                 }
             }
 
             userInput.value = "";
         }
-    </script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-    <script>
         // Inicializar Firebase
         const firebaseConfig = {
            apiKey: "AIzaSyAQnT9mTMvdFj-VY_fp5T7BdxQP6x6FpQ4",
@@ -79,6 +73,8 @@
   appId: "1:980363277500:web:c97380845d78257ae24cb9"
         };
         firebase.initializeApp(firebaseConfig);
+            import firebase from 'firebase/app';
+    import 'firebase/database';
     </script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
