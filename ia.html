@@ -21,6 +21,52 @@
         import firebase from 'firebase/app';
 import 'firebase/database';
 
+let respuestas = {}; // Inicializar respuestas como objeto vacío
+
+// Sincronizar respuestas desde Firebase
+function sincronizarRespuestas(database) {
+  database.ref('respuestas').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      Object.assign(respuestas, data); // Combinar con Firebase
+    }
+  });
+}
+
+function obtenerRespuesta(pregunta) {
+  if (respuestas[pregunta]) {
+    return respuestas[pregunta];
+  } else {
+    return "¿Cuál es la respuesta?";
+  }
+}
+
+function aprenderRespuesta(pregunta, respuesta) {
+  respuestas[pregunta] = respuesta;
+  database.ref('respuestas').update({ [pregunta]: respuesta });
+}
+
+function enviarMensaje() {
+  const userInput = document.getElementById("user-input");
+  const chatLog = document.getElementById("chat-log");
+  const pregunta = userInput.value;
+
+  chatLog.innerHTML += `<p><strong>Tú:</strong> ${pregunta}</p>`;
+  const respuesta = obtenerRespuesta(pregunta);
+  chatLog.innerHTML += `<p><strong>Asistente:</strong> ${respuesta}</p>`;
+
+  if (respuesta === "¿Cuál es la respuesta?") {
+    const respuestaUsuario = prompt("¿Cuál es la respuesta?");
+    if (respuestaUsuario) {
+      aprenderRespuesta(pregunta, respuestaUsuario);
+      chatLog.innerHTML += `<p><strong>Asistente:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
+    }
+  }
+
+  userInput.value = "";
+}
+
+// Inicializar Firebase al final
 const firebaseConfig = {
   apiKey: "AIzaSyAQnT9mTMvdFj-VY_fp5T7BdxQP6x6FpQ4",
   authDomain: "did-ia.firebaseapp.com",
@@ -33,53 +79,13 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+sincronizarRespuestas(database); // Llamar a la función de sincronización
 
+// Cargar respuestas.json al final
 fetch('respuestas.json')
   .then(response => response.json())
   .then(data => {
-    const respuestas = data;
-
-    function obtenerRespuesta(pregunta) {
-      if (respuestas[pregunta]) {
-        return respuestas[pregunta];
-      } else {
-        return "¿Cuál es la respuesta?";
-      }
-    }
-
-    function aprenderRespuesta(pregunta, respuesta) {
-      respuestas[pregunta] = respuesta;
-      database.ref('respuestas').update({ [pregunta]: respuesta });
-    }
-
-    function enviarMensaje() {
-      const userInput = document.getElementById("user-input");
-      const chatLog = document.getElementById("chat-log");
-      const pregunta = userInput.value;
-
-      chatLog.innerHTML += `<p><strong>Tú:</strong> ${pregunta}</p>`;
-      const respuesta = obtenerRespuesta(pregunta);
-      chatLog.innerHTML += `<p><strong>Asistente:</strong> ${respuesta}</p>`;
-
-      if (respuesta == "¿Cuál es la respuesta?") {
-        const respuestaUsuario = prompt("¿Cuál es la respuesta?");
-        if (respuestaUsuario) {
-          aprenderRespuesta(pregunta, respuestaUsuario);
-          chatLog.innerHTML += `<p><strong>Asistente:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
-        }
-      }
-
-      userInput.value = "";
-    }
-
-    // Sincronizar respuestas desde Firebase
-    database.ref('respuestas').on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        Object.assign(respuestas, data); // Combinar respuestas de Firebase
-      }
-    });
-
+    Object.assign(respuestas, data); // Combinar con respuestas.json
   })
   .catch(error => {
     console.error('Error al cargar el archivo JSON:', error);
