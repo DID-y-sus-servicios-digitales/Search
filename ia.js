@@ -59,3 +59,5 @@ const respuestas = {};
             appId: "1:652405109295:web:714467f3edb571c6a28cda"
         };
         firebase.initializeApp(firebaseConfig);
+    import firebase from 'firebase/app';
+    import 'firebase/database';
