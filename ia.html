@@ -27,7 +27,7 @@ fetch('respuestas.json')
     const respuestas = data;
 
     const firebaseConfig = {
-     apiKey: "AIzaSyAQnT9mTMvdFj-VY_fp5T7BdxQP6x6FpQ4",
+      apiKey: "AIzaSyAQnT9mTMvdFj-VY_fp5T7BdxQP6x6FpQ4",
   authDomain: "did-ia.firebaseapp.com",
   databaseURL: "https://did-ia-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "did-ia",
@@ -59,13 +59,13 @@ fetch('respuestas.json')
 
       chatLog.innerHTML += `<p><strong>Tú:</strong> ${pregunta}</p>`;
       const respuesta = obtenerRespuesta(pregunta);
-      chatLog.innerHTML += `<p><strong>Asistente:</strong> ${respuesta}</p>`;
+      chatLog.innerHTML += `<p><strong>IA:</strong> ${respuesta}</p>`;
 
-      if (respuesta == "¿Cuál es la respuesta?") {
+      if (respuesta === "¿Cuál es la respuesta?") {
         const respuestaUsuario = prompt("¿Cuál es la respuesta?");
         if (respuestaUsuario) {
           aprenderRespuesta(pregunta, respuestaUsuario);
-          chatLog.innerHTML += `<p><strong>Asistente:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
+          chatLog.innerHTML += `<p><strong>IA:</strong> ¡Gracias! He aprendido la respuesta.</p>`;
         }
       }
 
