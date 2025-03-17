@@ -5,11 +5,8 @@
 </head>
 <body>
     <button id="boton-grabar">Grabar</button>
-    <p id="respuesta"></p>
-
     <script>
         const botonGrabar = document.getElementById('boton-grabar');
-        const respuesta = document.getElementById('respuesta');
         const sintetizador = window.speechSynthesis;
         let grabadora;
 
@@ -50,7 +47,7 @@
 
                         reconocimiento.onresult = evento => {
                             transcripcion = evento.results[0][0].transcript.toLowerCase();
-                            mostrarRespuesta(transcripcion);
+                            reproducirRespuesta(transcripcion);
                         };
 
                         reconocimiento.start();
@@ -74,22 +71,16 @@
             alert('La grabación de voz no es compatible con este navegador.');
         }
 
-        function mostrarRespuesta(transcripcion) {
+        function reproducirRespuesta(transcripcion) {
             let respuestaTexto = preguntasRespuestas[transcripcion];
 
             if (respuestaTexto) {
-                respuesta.textContent = respuestaTexto;
-                reproducirRespuesta(respuestaTexto);
+                const mensaje = new SpeechSynthesisUtterance(respuestaTexto);
+                sintetizador.speak(mensaje);
             } else {
-                respuestaTexto = 'No entendí lo que dijiste.';
-                respuesta.textContent = respuestaTexto;
-                reproducirRespuesta(respuestaTexto);
+                const mensaje = new SpeechSynthesisUtterance('No entendí lo que dijiste.');
+                sintetizador.speak(mensaje);
             }
-        }
-
-        function reproducirRespuesta(texto) {
-            const mensaje = new SpeechSynthesisUtterance(texto);
-            sintetizador.speak(mensaje);
         }
     </script>
 </body>
