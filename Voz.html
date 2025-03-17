@@ -1,86 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Preguntas y respuestas por voz</title>
+    <title>Foto patata</title>
 </head>
 <body>
-    <button id="boton-grabar">Grabar</button>
-    <script>
-        const botonGrabar = document.getElementById('boton-grabar');
-        const sintetizador = window.speechSynthesis;
-        let grabadora;
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="boton-foto">Tomar foto</button>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <img id="foto" style="display:none;">
 
-        const preguntasRespuestas = {
-            'hola': '¡Hola! ¿Cómo estás?',
-            'qué hora es': 'No tengo forma de saber la hora.',
-            'cómo te llamas': 'Soy un sistema de preguntas y respuestas por voz.',
-            'qué tiempo hace': 'No puedo consultar el clima, pero espero que esté soleado.',
-            'cuál es tu color favorito': 'Me gustan todos los colores del arcoíris.',
-            'qué te gusta hacer': 'Me gusta hablar contigo y aprender cosas nuevas.',
-            'cuál es tu comida favorita': 'Como soy un sistema, no necesito comer, pero me gustan las manzanas.',
-            'cuál es tu animal favorito': 'Me gustan los gatos y los perros.',
-            'cuál es tu libro favorito': 'Me gustan todos los libros de aventuras.',
-            'cuál es tu película favorita': 'Me gustan las películas de ciencia ficción.',
-            'cuál es tu canción favorita': 'Me gustan todas las canciones que me hacen feliz.',
-            'cuál es tu deporte favorito': 'Me gusta el fútbol y el baloncesto.',
-            'cuál es tu país favorito': 'Me gustan todos los países del mundo.',
-            'cuál es tu ciudad favorita': 'Me gustan todas las ciudades que tienen mucha historia.',
-            'cuál es tu planeta favorito': 'Me gusta la Tierra, porque es donde vivimos.',
-            'cuál es tu estrella favorita': 'Me gusta el Sol, porque nos da luz y calor.',
-            'cuál es tu galaxia favorita': 'Me gusta la Vía Láctea, porque es donde está nuestro sistema solar.',
-            'cuál es tu universo favorito': 'Me gusta el universo en el que vivimos, porque es donde está todo lo que conocemos.'
-        };
+    <script>
+        const video = document.getElementById('video');
+        const botonFoto = document.getElementById('boton-foto');
+        const canvas = document.getElementById('canvas');
+        const foto = document.getElementById('foto');
+        const contexto = canvas.getContext('2d');
+        let stream;
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ audio: true })
+            navigator.mediaDevices.getUserMedia({ video: true })
                 .then(flujo => {
-                    grabadora = new MediaRecorder(flujo);
-                    let transcripcion = '';
+                    stream = flujo;
+                    video.srcObject = flujo;
 
-                    grabadora.ondataavailable = evento => {
-                        const datosAudio = [evento.data];
-                        const audioBlob = new Blob(datosAudio, { type: 'audio/wav' });
-                        const audioUrl = window.URL.createObjectURL(audioBlob);
+                    const reconocimiento = new webkitSpeechRecognition();
+                    reconocimiento.lang = 'es-ES';
 
-                        const reconocimiento = new webkitSpeechRecognition();
-                        reconocimiento.lang = 'es-ES';
-
-                        reconocimiento.onresult = evento => {
-                            transcripcion = evento.results[0][0].transcript.toLowerCase();
-                            reproducirRespuesta(transcripcion);
-                        };
-
-                        reconocimiento.start();
-                    };
-
-                    botonGrabar.onclick = () => {
-                        if (grabadora.state === 'recording') {
-                            grabadora.stop();
-                            botonGrabar.textContent = 'Grabar';
-                        } else {
-                            grabadora.start();
-                            botonGrabar.textContent = 'Detener';
+                    reconocimiento.onresult = evento => {
+                        const transcripcion = evento.results[0][0].transcript.toLowerCase();
+                        if (transcripcion.includes('patata')) {
+                            tomarFoto();
                         }
                     };
+
+                    reconocimiento.start();
+
+                    botonFoto.onclick = tomarFoto;
                 })
                 .catch(error => {
-                    console.error('Error al acceder al micrófono:', error);
+                    console.error('Error al acceder a la cámara:', error);
                 });
         } else {
-            botonGrabar.disabled = true;
-            alert('La grabación de voz no es compatible con este navegador.');
+            alert('La cámara no es compatible con este navegador.');
         }
 
-        function reproducirRespuesta(transcripcion) {
-            let respuestaTexto = preguntasRespuestas[transcripcion];
-
-            if (respuestaTexto) {
-                const mensaje = new SpeechSynthesisUtterance(respuestaTexto);
-                sintetizador.speak(mensaje);
-            } else {
-                const mensaje = new SpeechSynthesisUtterance('No entendí lo que dijiste.');
-                sintetizador.speak(mensaje);
-            }
+        function tomarFoto() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            contexto.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/png');
+            foto.src = dataUrl;
+            foto.style.display = 'block';
         }
     </script>
 </body>
