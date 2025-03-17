@@ -2,12 +2,28 @@
 <html>
 <head>
     <title>Foto patata</title>
+    <style>
+        #texto-reconocido {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px;
+        }
+        #descargar-foto {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
     <video id="video" width="640" height="480" autoplay></video>
     <button id="boton-foto">Tomar foto</button>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
     <img id="foto" style="display:none;">
+    <button id="descargar-foto" style="display: none;">Descargar foto</button>
+    <div id="texto-reconocido"></div>
 
     <script>
         const video = document.getElementById('video');
@@ -15,43 +31,56 @@
         const canvas = document.getElementById('canvas');
         const foto = document.getElementById('foto');
         const contexto = canvas.getContext('2d');
+        const textoReconocido = document.getElementById('texto-reconocido');
+        const descargarFoto = document.getElementById('descargar-foto');
         let stream;
+        let camaraTrasera = false;
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
+            iniciarCamara();
+
+            const reconocimiento = new webkitSpeechRecognition();
+            reconocimiento.lang = 'es-ES';
+
+            reconocimiento.onresult = evento => {
+                const transcripcion = evento.results[0][0].transcript.toLowerCase();
+                textoReconocido.textContent = transcripcion;
+                if (transcripcion.includes('patata')) {
+                    tomarFoto();
+                } else if (transcripcion.includes('voltear')) {
+                    camaraTrasera = !camaraTrasera;
+                    iniciarCamara();
+                }
+            };
+
+            reconocimiento.start();
+
+            botonFoto.onclick = tomarFoto;
+            descargarFoto.onclick = descargarImagen;
+        } else {
+            alert('La cámara no es compatible con este navegador.');
+        }
+
+        function iniciarCamara() {
+            const constraints = {
+                video: { facingMode: camaraTrasera ? 'environment' : 'user' }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
                 .then(flujo => {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
                     stream = flujo;
                     video.srcObject = flujo;
-
-                    const reconocimiento = new webkitSpeechRecognition();
-                    reconocimiento.lang = 'es-ES';
-
-                    reconocimiento.onresult = evento => {
-                        const transcripcion = evento.results[0][0].transcript.toLowerCase();
-                        if (transcripcion.includes('patata')) {
-                            tomarFoto();
-                        }
-                    };
-
-                    reconocimiento.start();
-
-                    botonFoto.onclick = tomarFoto;
                 })
                 .catch(error => {
                     console.error('Error al acceder a la cámara:', error);
                 });
-        } else {
-            alert('La cámara no es compatible con este navegador.');
         }
 
         function tomarFoto() {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             contexto.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/png');
-            foto.src = dataUrl;
-            foto.style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+            const dataUrl = canvas
