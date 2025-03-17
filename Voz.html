@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preguntas y respuestas por voz</title>
+</head>
+<body>
+    <button id="boton-grabar">Grabar</button>
+    <p id="respuesta"></p>
+
+    <script>
+        const botonGrabar = document.getElementById('boton-grabar');
+        const respuesta = document.getElementById('respuesta');
+        const sintetizador = window.speechSynthesis;
+        let grabadora;
+
+        const preguntasRespuestas = {
+            'hola': '¡Hola! ¿Cómo estás?',
+            'qué hora es': 'No tengo forma de saber la hora.',
+            'cómo te llamas': 'Soy un sistema de preguntas y respuestas por voz.',
+            'qué tiempo hace': 'No puedo consultar el clima, pero espero que esté soleado.',
+            'cuál es tu color favorito': 'Me gustan todos los colores del arcoíris.',
+            'qué te gusta hacer': 'Me gusta hablar contigo y aprender cosas nuevas.',
+            'cuál es tu comida favorita': 'Como soy un sistema, no necesito comer, pero me gustan las manzanas.',
+            'cuál es tu animal favorito': 'Me gustan los gatos y los perros.',
+            'cuál es tu libro favorito': 'Me gustan todos los libros de aventuras.',
+            'cuál es tu película favorita': 'Me gustan las películas de ciencia ficción.',
+            'cuál es tu canción favorita': 'Me gustan todas las canciones que me hacen feliz.',
+            'cuál es tu deporte favorito': 'Me gusta el fútbol y el baloncesto.',
+            'cuál es tu país favorito': 'Me gustan todos los países del mundo.',
+            'cuál es tu ciudad favorita': 'Me gustan todas las ciudades que tienen mucha historia.',
+            'cuál es tu planeta favorito': 'Me gusta la Tierra, porque es donde vivimos.',
+            'cuál es tu estrella favorita': 'Me gusta el Sol, porque nos da luz y calor.',
+            'cuál es tu galaxia favorita': 'Me gusta la Vía Láctea, porque es donde está nuestro sistema solar.',
+            'cuál es tu universo favorito': 'Me gusta el universo en el que vivimos, porque es donde está todo lo que conocemos.'
+        };
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(flujo => {
+                    grabadora = new MediaRecorder(flujo);
+                    let transcripcion = '';
+
+                    grabadora.ondataavailable = evento => {
+                        const datosAudio = [evento.data];
+                        const audioBlob = new Blob(datosAudio, { type: 'audio/wav' });
+                        const audioUrl = window.URL.createObjectURL(audioBlob);
+
+                        const reconocimiento = new webkitSpeechRecognition();
+                        reconocimiento.lang = 'es-ES';
+
+                        reconocimiento.onresult = evento => {
+                            transcripcion = evento.results[0][0].transcript.toLowerCase();
+                            mostrarRespuesta(transcripcion);
+                        };
+
+                        reconocimiento.start();
+                    };
+
+                    botonGrabar.onclick = () => {
+                        if (grabadora.state === 'recording') {
+                            grabadora.stop();
+                            botonGrabar.textContent = 'Grabar';
+                        } else {
+                            grabadora.start();
+                            botonGrabar.textContent = 'Detener';
+                        }
+                    };
+                })
+                .catch(error => {
+                    console.error('Error al acceder al micrófono:', error);
+                });
+        } else {
+            botonGrabar.disabled = true;
+            alert('La grabación de voz no es compatible con este navegador.');
+        }
+
+        function mostrarRespuesta(transcripcion) {
+            let respuestaTexto = preguntasRespuestas[transcripcion];
+
+            if (respuestaTexto) {
+                respuesta.textContent = respuestaTexto;
+                reproducirRespuesta(respuestaTexto);
+            } else {
+                respuestaTexto = 'No entendí lo que dijiste.';
+                respuesta.textContent = respuestaTexto;
+                reproducirRespuesta(respuestaTexto);
+            }
+        }
+
+        function reproducirRespuesta(texto) {
+            const mensaje = new SpeechSynthesisUtterance(texto);
+            sintetizador.speak(mensaje);
+        }
+    </script>
+</body>
+</html>
