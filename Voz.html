@@ -1,8 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Foto patata</title>
+    <title>Fotofrafo inteligente</title>
     <style>
+        #video-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px; /* Tamaño del cuadrado */
+            height: 300px;
+            overflow: hidden;
+            border: 2px solid black;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         #texto-reconocido {
             position: absolute;
             top: 10px;
@@ -10,6 +27,7 @@
             background-color: rgba(255, 255, 255, 0.7);
             padding: 5px;
         }
+
         #descargar-foto {
             position: absolute;
             bottom: 10px;
@@ -18,9 +36,11 @@
     </style>
 </head>
 <body>
-    <video id="video" width="640" height="480" autoplay></video>
+    <div id="video-container">
+        <video id="video" autoplay></video>
+    </div>
     <button id="boton-foto">Tomar foto</button>
-    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <canvas id="canvas" style="display:none;"></canvas>
     <img id="foto" style="display:none;">
     <button id="descargar-foto" style="display: none;">Descargar foto</button>
     <div id="texto-reconocido"></div>
@@ -83,4 +103,18 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             contexto.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas
+            const dataUrl = canvas.toDataURL('image/png');
+            foto.src = dataUrl;
+            foto.style.display = 'block';
+            descargarFoto.style.display = 'block';
+        }
+
+        function descargarImagen() {
+            const enlaceDescarga = document.createElement('a');
+            enlaceDescarga.href = foto.src;
+            enlaceDescarga.download = 'foto.png';
+            enlaceDescarga.click();
+        }
+    </script>
+</body>
+</html>
