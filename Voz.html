@@ -1,120 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fotofrafo inteligente</title>
+    <title>Captura de fotos</title>
     <style>
-        #video-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px; /* Tamaño del cuadrado */
-            height: 300px;
-            overflow: hidden;
-            border: 2px solid black;
+        #camara {
+            width: 640px;
+            height: 480px;
+            border: 1px solid black;
         }
-
-        #video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        #fotos {
+            display: flex;
+            flex-wrap: wrap;
         }
-
-        #texto-reconocido {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 5px;
-        }
-
-        #descargar-foto {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
+        .foto-pequena {
+            width: 100px;
+            height: 100px;
+            margin: 5px;
+            border: 1px solid gray;
         }
     </style>
 </head>
 <body>
-    <div id="video-container">
-        <video id="video" autoplay></video>
-    </div>
-    <button id="boton-foto">Tomar foto</button>
-    <canvas id="canvas" style="display:none;"></canvas>
-    <img id="foto" style="display:none;">
-    <button id="descargar-foto" style="display: none;">Descargar foto</button>
-    <div id="texto-reconocido"></div>
+    <video id="camara" autoplay></video>
+    <p id="texto-reconocido"></p>
+    <button id="boton-foto">Haz la foto</button>
+    <div id="fotos"></div>
 
     <script>
-        const video = document.getElementById('video');
-        const botonFoto = document.getElementById('boton-foto');
-        const canvas = document.getElementById('canvas');
-        const foto = document.getElementById('foto');
-        const contexto = canvas.getContext('2d');
+        const camara = document.getElementById('camara');
         const textoReconocido = document.getElementById('texto-reconocido');
-        const descargarFoto = document.getElementById('descargar-foto');
-        let stream;
-        let camaraTrasera = false;
+        const botonFoto = document.getElementById('boton-foto');
+        const fotos = document.getElementById('fotos');
+        let recognition;
 
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            iniciarCamara();
+        // Acceder a la cámara
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                camara.srcObject = stream;
+            })
+            .catch(error => {
+                console.error('Error al acceder a la cámara:', error);
+            });
 
-            const reconocimiento = new webkitSpeechRecognition();
-            reconocimiento.lang = 'es-ES';
+        // Reconocimiento de voz
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.lang = 'es-ES';
 
-            reconocimiento.onresult = evento => {
-                const transcripcion = evento.results[0][0].transcript.toLowerCase();
-                textoReconocido.textContent = transcripcion;
-                if (transcripcion.includes('patata')) {
+            recognition.onresult = event => {
+                const resultado = event.results[event.results.length - 1][0].transcript;
+                textoReconocido.textContent = resultado;
+
+                if (resultado.toLowerCase().includes('haz la foto') || resultado.toLowerCase().includes('patata')) {
                     tomarFoto();
-                } else if (transcripcion.includes('voltear')) {
-                    camaraTrasera = !camaraTrasera;
-                    iniciarCamara();
                 }
             };
 
-            reconocimiento.start();
-
-            botonFoto.onclick = tomarFoto;
-            descargarFoto.onclick = descargarImagen;
+            recognition.start();
         } else {
-            alert('La cámara no es compatible con este navegador.');
+            textoReconocido.textContent = 'El reconocimiento de voz no está disponible en este navegador.';
         }
 
-        function iniciarCamara() {
-            const constraints = {
-                video: { facingMode: camaraTrasera ? 'environment' : 'user' }
-            };
-
-            navigator.mediaDevices.getUserMedia(constraints)
-                .then(flujo => {
-                    if (stream) {
-                        stream.getTracks().forEach(track => track.stop());
-                    }
-                    stream = flujo;
-                    video.srcObject = flujo;
-                })
-                .catch(error => {
-                    console.error('Error al acceder a la cámara:', error);
-                });
-        }
-
+        // Tomar foto
         function tomarFoto() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            contexto.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/png');
-            foto.src = dataUrl;
-            foto.style.display = 'block';
-            descargarFoto.style.display = 'block';
+            const canvas = document.createElement('canvas');
+            canvas.width = camara.videoWidth;
+            canvas.height = camara.videoHeight;
+            const contexto = canvas.getContext('2d');
+            contexto.drawImage(camara, 0, 0, canvas.width, canvas.height);
+
+            const fotoURL = canvas.toDataURL('image/png');
+            mostrarFoto(fotoURL);
         }
 
-        function descargarImagen() {
+        // Mostrar foto en miniatura
+        function mostrarFoto(fotoURL) {
+            const fotoPequena = document.createElement('img');
+            fotoPequena.src = fotoURL;
+            fotoPequena.classList.add('foto-pequena');
+
+            fotoPequena.addEventListener('click', () => {
+                descargarFoto(fotoURL);
+            });
+
+            fotos.appendChild(fotoPequena);
+        }
+
+        // Descargar foto
+        function descargarFoto(fotoURL) {
             const enlaceDescarga = document.createElement('a');
-            enlaceDescarga.href = foto.src;
+            enlaceDescarga.href = fotoURL;
             enlaceDescarga.download = 'foto.png';
             enlaceDescarga.click();
         }
+
+        // Tomar foto con el botón
+        botonFoto.addEventListener('click', tomarFoto);
     </script>
 </body>
 </html>
