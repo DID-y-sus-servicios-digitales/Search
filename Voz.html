@@ -1,103 +1,91 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Detección de caras</title>
-    <style>
-        #camara1, #camara2 {
-            width: 320px;
-            height: 240px;
-            border: 1px solid black;
-        }
-        #fotos {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .foto-pequena {
-            width: 100px;
-            height: 100px;
-            margin: 5px;
-            border: 1px solid gray;
-        }
-    </style>
+    <title>Asistente de voz</title>
 </head>
 <body>
-    <video id="camara1" autoplay></video>
-    <video id="camara2" autoplay></video>
-    <div id="fotos"></div>
+    <p id="texto-reconocido"></p>
 
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
     <script>
-        const camara1 = document.getElementById('camara1');
-        const camara2 = document.getElementById('camara2');
-        const fotos = document.getElementById('fotos');
+        const textoReconocido = document.getElementById('texto-reconocido');
+        let recognition;
+        const synth = window.speechSynthesis;
 
-        Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri('/models')
-        ]).then(iniciarCamaras);
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'es-ES';
 
-        async function iniciarCamaras() {
-            const dispositivos = await navigator.mediaDevices.enumerateDevices();
-            const camaras = dispositivos.filter(dispositivo => dispositivo.kind === 'videoinput');
+            recognition.onresult = event => {
+                const resultado = event.results[0][0].transcript.toLowerCase();
+                textoReconocido.textContent = resultado;
 
-            if (camaras.length >= 2) {
-                const stream1 = await navigator.mediaDevices.getUserMedia({ video: { deviceId: camaras[0].deviceId } });
-                const stream2 = await navigator.mediaDevices.getUserMedia({ video: { deviceId: camaras[1].deviceId } });
-                camara1.srcObject = stream1;
-                camara2.srcObject = stream2;
+                setTimeout(() => {
+                    textoReconocido.textContent = '';
+                }, 3000);
 
-                detectarCaras(camara1);
-                detectarCaras(camara2);
+                responder(resultado);
+            };
+
+            recognition.start();
+        } else {
+            textoReconocido.textContent = 'El reconocimiento de voz no está disponible en este navegador.';
+        }
+
+        function responder(texto) {
+            let respuesta = '';
+
+            if (texto.includes('hola')) {
+                respuesta = '¡Hola! ¿En qué puedo ayudarte?';
+            } else if (texto.includes('qué hora es')) {
+                const ahora = new Date();
+                respuesta = `Son las ${ahora.getHours()} horas y ${ahora.getMinutes()} minutos.`;
+            } else if (texto.includes('qué tiempo hace')) {
+                obtenerTiempo()
+                    .then(tiempo => {
+                        const utterance = new SpeechSynthesisUtterance(tiempo);
+                        utterance.lang = 'es-ES';
+                        synth.speak(utterance);
+                    })
+                    .catch(error => {
+                        const utterance = new SpeechSynthesisUtterance('Lo siento, no pude obtener la información del tiempo.');
+                        utterance.lang = 'es-ES';
+                        synth.speak(utterance);
+                    });
+                return; // Importante para evitar que se ejecute el resto del código
+            } else if (texto.includes('cuéntame un chiste')) {
+                respuesta = '¿Qué le dice un pez a otro? Nada.';
+            } else if (texto.includes('cómo estás')) {
+                respuesta = 'Como asistente virtual, no tengo sentimientos, pero estoy aquí para ayudarte.';
+            } else if (texto.includes('qué día es hoy')) {
+                const ahora = new Date();
+                const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+                respuesta = `Hoy es ${dias[ahora.getDay()]}.`;
+            } else if (texto.includes('dime un número aleatorio')) {
+                respuesta = `Aquí tienes un número aleatorio: ${Math.floor(Math.random() * 100)}.`;
+            } else if (texto.includes('qué es javascript')) {
+                respuesta = 'JavaScript es un lenguaje de programación utilizado para crear páginas web interactivas.';
+            } else if (texto.includes('quién eres')) {
+                respuesta = 'Soy un asistente virtual creado para ayudarte con tus tareas.';
             } else {
-                alert('Se necesitan al menos dos cámaras.');
+                respuesta = 'No entendí lo que dijiste. ¿Puedes repetirlo?';
             }
+
+            const utterance = new SpeechSynthesisUtterance(respuesta);
+            utterance.lang = 'es-ES';
+            synth.speak(utterance);
         }
 
-        async function detectarCaras(camara) {
-            const canvas = faceapi.createCanvasFromMedia(camara);
-            document.body.append(canvas);
-            const displaySize = { width: camara.videoWidth, height: camara.videoHeight };
-            faceapi.matchDimensions(canvas, displaySize);
-
-            setInterval(async () => {
-                const detecciones = await faceapi.detectAllFaces(camara, new faceapi.TinyFaceDetectorOptions());
-                const deteccionesRedimensionadas = faceapi.resizeResults(detecciones, displaySize);
-                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-                faceapi.draw.drawDetections(canvas, deteccionesRedimensionadas);
-
-                if (deteccionesRedimensionadas.length > 0) {
-                    tomarFoto(camara);
-                }
-            }, 100);
-        }
-
-        function tomarFoto(camara) {
-            const canvas = document.createElement('canvas');
-            canvas.width = camara.videoWidth;
-            canvas.height = camara.videoHeight;
-            const contexto = canvas.getContext('2d');
-            contexto.drawImage(camara, 0, 0, canvas.width, canvas.height);
-
-            const fotoURL = canvas.toDataURL('image/png');
-            mostrarFoto(fotoURL);
-        }
-
-        function mostrarFoto(fotoURL) {
-            const fotoPequena = document.createElement('img');
-            fotoPequena.src = fotoURL;
-            fotoPequena.classList.add('foto-pequena');
-
-            fotoPequena.addEventListener('click', () => {
-                descargarFoto(fotoURL);
-            });
-
-            fotos.appendChild(fotoPequena);
-        }
-
-        function descargarFoto(fotoURL) {
-            const enlaceDescarga = document.createElement('a');
-            enlaceDescarga.href = fotoURL;
-            enlaceDescarga.download = 'cara.png';
-            enlaceDescarga.click();
+        async function obtenerTiempo() {
+            try {
+                const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.4167&longitude=-3.7033&current_weather=true');
+                const data = await response.json();
+                const temperatura = data.current_weather.temperature;
+                return `La temperatura actual es de ${temperatura} grados Celsius.`;
+            } catch (error) {
+                console.error('Error al obtener el tiempo:', error);
+                throw error;
+            }
         }
     </script>
 </body>
