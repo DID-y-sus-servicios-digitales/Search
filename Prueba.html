@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Esbozo a ilustración</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="archivo-esbozo" accept="image/*">
+    <canvas id="canvas-esbozo"></canvas>
+    <canvas id="canvas-ilustracion"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script>
+        const archivoEsbozo = document.getElementById('archivo-esbozo');
+        const canvasEsbozo = document.getElementById('canvas-esbozo');
+        const contextoEsbozo = canvasEsbozo.getContext('2d');
+        const canvasIlustracion = document.getElementById('canvas-ilustracion');
+        const contextoIlustracion = canvasIlustracion.getContext('2d');
+
+        Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('/models')
+        ]).then(iniciar);
+
+        async function iniciar() {
+            archivoEsbozo.addEventListener('change', async (event) => {
+                const archivo = event.target.files[0];
+                const imagen = await faceapi.bufferToImage(archivo);
+                canvasEsbozo.width = imagen.width;
+                canvasEsbozo.height = imagen.height;
+                contextoEsbozo.drawImage(imagen, 0, 0);
+
+                const detecciones = await faceapi.detectAllFaces(canvasEsbozo, new faceapi.TinyFaceDetectorOptions());
+                const deteccionesRedimensionadas = faceapi.resizeResults(detecciones, { width: canvasEsbozo.width, height: canvasEsbozo.height });
+
+                canvasIlustracion.width = canvasEsbozo.width;
+                canvasIlustracion.height = canvasEsbozo.height;
+                contextoIlustracion.drawImage(imagen, 0, 0);
+
+                deteccionesRedimensionadas.forEach(deteccion => {
+                    const { x, y, width, height } = deteccion.box;
+                    contextoIlustracion.strokeStyle = 'red';
+                    contextoIlustracion.lineWidth = 2;
+                    contextoIlustracion.strokeRect(x, y, width, height);
+
+                    // Aquí puedes añadir código para convertir la cara detectada en una ilustración
+                    // Por ejemplo, puedes usar filtros, dibujar contornos, añadir detalles, etc.
+                });
+            });
+        }
+    </script>
+</body>
+</html>
