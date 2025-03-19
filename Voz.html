@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Asistente de voz</title>
+    <title>Asistente de voz con DeepSeek</title>
 </head>
 <body>
     <p id="texto-reconocido"></p>
@@ -25,106 +25,54 @@ if ('webkitSpeechRecognition' in window) {
     recognition.onresult = event => {
         const resultado = event.results[0][0].transcript.toLowerCase();
         textoReconocido.textContent = resultado;
-        responder(resultado);
+        obtenerRespuestaDeepSeek(resultado);
     };
 } else {
     hablar.disabled = true;
     hablar.textContent = 'No compatible';
 }
 
-function responder(texto) {
-    let respuesta = '';
+async function obtenerRespuestaDeepSeek(texto) {
+    const apiKey = "sk-bdb4afe4215c43ee95e04f99d9f82a16"; // Reemplaza con tu API key de DeepSeek
+    const url = "https://api.deepseek.com/v1./completions"; // Reemplaza con la URL de la API de DeepSeek
 
-    if (texto.includes('hola')) {
-        respuesta = '¡Hola! ¿En qué puedo ayudarte?';
-    } else if (texto.includes('qué hora es')) {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                prompt: texto
+            })
+        });
+
+        const data = await response.json();
+        const respuesta = data.choices[0].text.trim(); // Ajusta según la estructura de la respuesta de DeepSeek
+
+        responder(respuesta);
+    } catch (error) {
+        console.error('Error al obtener respuesta de DeepSeek:', error);
+        responder('Lo siento, hubo un error al obtener la respuesta.');
+    }
+}
+
+function responder(respuesta) {
+    let horaTexto = '';
+    if (respuesta.toLowerCase().includes('hora')) {
         const ahora = new Date();
         const horas = ahora.getHours();
         const minutos = ahora.getMinutes();
-        const horaTexto = `Son las ${horas} horas y ${minutos} minutos.`;
-        respuesta = horaTexto;
+        horaTexto = `Son las ${horas} horas y ${minutos} minutos.`;
         hora.textContent = horaTexto;
-    } else if (texto.includes('qué tiempo hace')) {
-        obtenerTiempo()
-            .then(tiempo => {
-                respuesta = tiempo;
-            })
-            .catch(error => {
-                respuesta = 'Lo siento, no pude obtener la información del tiempo.';
-            });
-    } else if (texto.includes('cuéntame un chiste')) {
-        const chistes = [
-            '¿Qué le dice un pez a otro? Nada.',
-            '¿Qué le dice un techo a otro? Techo de menos.',
-            // ... (muchos más chistes)
-        ];
-        respuesta = chistes[Math.floor(Math.random() * chistes.length)];
-    } else if (texto.includes('cómo estás')) {
-        respuesta = 'Como asistente virtual, no tengo sentimientos, pero estoy aquí para ayudarte.';
-    } else if (texto.includes('qué día es hoy')) {
-        const ahora = new Date();
-        const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-        respuesta = `Hoy es ${dias[ahora.getDay()]}.`;
-    } else if (texto.includes('dime un número aleatorio')) {
-        respuesta = `Aquí tienes un número aleatorio: ${Math.floor(Math.random() * 100)}.`;
-    } else if (texto.includes('qué es javascript')) {
-        respuesta = 'JavaScript es un lenguaje de programación utilizado para crear páginas web interactivas.';
-    } else if (texto.includes('quién eres')) {
-        respuesta = 'Soy un asistente virtual creado para ayudarte con tus tareas.';
-    } else if (texto.includes('qué tiempo hay en')) {
-      obtenerTiempo(texto.split('en')[1])
-      .then(tiempo => {
-        respuesta = tiempo;
-      })
-      .catch(error => {
-          respuesta = 'Lo siento, no pude obtener la información del tiempo para esa ubicación.';
-      });
-    } else if (texto.includes('qué día de la semana es')) {
-        const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-        const fecha = new Date(texto.split('es')[1]);
-        if (isNaN(fecha)) {
-            respuesta = 'No entendí la fecha. Inténtalo de nuevo.';
-        } else {
-            respuesta = `Ese día fue ${diasSemana[fecha.getDay()]}.`;
-        }
-    } else if (texto.includes('calcula')) {
-        try {
-            respuesta = eval(texto.replace('calcula', ''));
-        } catch (e) {
-            respuesta = 'No pude realizar el cálculo.';
-        }
-    } else if (texto.includes('busca en wikipedia')) {
-        const termino = texto.replace('busca en wikipedia', '').trim();
-        respuesta = `Buscando ${termino} en Wikipedia...`;
-        window.open(`https://es.wikipedia.org/wiki/${termino}`, '_blank');
-    } else if (texto.includes('reproduce música')) {
-        respuesta = 'Lo siento, no puedo reproducir música directamente. Pero puedo abrir YouTube si quieres.';
-    } // ... (muchas más respuestas)
+    } else {
+        hora.textContent = '';
+    }
 
-    // 50 respuestas adicionales
-    else if (texto.includes('dime un dato curioso')) {
-        respuesta = '¿Sabías que la miel nunca se echa a perder?';
-    } else if (texto.includes('cuál es la capital de')) {
-        // ... (respuestas para capitales)
-    } else if (texto.includes('traduce')) {
-        // ... (respuestas para traducciones)
-    } else if (texto.includes('qué es')) {
-        // ... (respuestas para definiciones)
-    } // ... (muchas más respuestas)
-
-    const utterance = new SpeechSynthesisUtterance(respuesta);
+    const utterance = new SpeechSynthesisUtterance(respuesta + ' ' + horaTexto);
     utterance.lang = 'es-ES';
     synth.speak(utterance);
-}
-
-async function obtenerTiempo(ubicacion = 'Madrid') {
-    try {
-        // ... (código para obtener el tiempo usando una API)
-        return `La temperatura actual en ${ubicacion} es de ... grados Celsius.`;
-    } catch (error) {
-        console.error('Error al obtener el tiempo:', error);
-        throw error;
-    }
 }
 </script>
 </body>
