@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Captura de fotos</title>
+    <title>Detección de caras</title>
     <style>
-        #camara {
-            width: 640px;
-            height: 480px;
+        #camara1, #camara2 {
+            width: 320px;
+            height: 240px;
             border: 1px solid black;
         }
         #fotos {
@@ -21,49 +21,56 @@
     </style>
 </head>
 <body>
-    <video id="camara" autoplay></video>
-    <p id="texto-reconocido"></p>
-    <button id="boton-foto">Haz la foto</button>
+    <video id="camara1" autoplay></video>
+    <video id="camara2" autoplay></video>
     <div id="fotos"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
     <script>
-        const camara = document.getElementById('camara');
-        const textoReconocido = document.getElementById('texto-reconocido');
-        const botonFoto = document.getElementById('boton-foto');
+        const camara1 = document.getElementById('camara1');
+        const camara2 = document.getElementById('camara2');
         const fotos = document.getElementById('fotos');
-        let recognition;
 
-        // Acceder a la cámara
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                camara.srcObject = stream;
-            })
-            .catch(error => {
-                console.error('Error al acceder a la cámara:', error);
-            });
+        Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('/models')
+        ]).then(iniciarCamaras);
 
-        // Reconocimiento de voz
-        if ('webkitSpeechRecognition' in window) {
-            recognition = new webkitSpeechRecognition();
-            recognition.continuous = true;
-            recognition.lang = 'es-ES';
+        async function iniciarCamaras() {
+            const dispositivos = await navigator.mediaDevices.enumerateDevices();
+            const camaras = dispositivos.filter(dispositivo => dispositivo.kind === 'videoinput');
 
-            recognition.onresult = event => {
-                const resultado = event.results[event.results.length - 1][0].transcript;
-                textoReconocido.textContent = resultado;
+            if (camaras.length >= 2) {
+                const stream1 = await navigator.mediaDevices.getUserMedia({ video: { deviceId: camaras[0].deviceId } });
+                const stream2 = await navigator.mediaDevices.getUserMedia({ video: { deviceId: camaras[1].deviceId } });
+                camara1.srcObject = stream1;
+                camara2.srcObject = stream2;
 
-                if (resultado.toLowerCase().includes('haz la foto') || resultado.toLowerCase().includes('patata')) {
-                    tomarFoto();
-                }
-            };
-
-            recognition.start();
-        } else {
-            textoReconocido.textContent = 'El reconocimiento de voz no está disponible en este navegador.';
+                detectarCaras(camara1);
+                detectarCaras(camara2);
+            } else {
+                alert('Se necesitan al menos dos cámaras.');
+            }
         }
 
-        // Tomar foto
-        function tomarFoto() {
+        async function detectarCaras(camara) {
+            const canvas = faceapi.createCanvasFromMedia(camara);
+            document.body.append(canvas);
+            const displaySize = { width: camara.videoWidth, height: camara.videoHeight };
+            faceapi.matchDimensions(canvas, displaySize);
+
+            setInterval(async () => {
+                const detecciones = await faceapi.detectAllFaces(camara, new faceapi.TinyFaceDetectorOptions());
+                const deteccionesRedimensionadas = faceapi.resizeResults(detecciones, displaySize);
+                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                faceapi.draw.drawDetections(canvas, deteccionesRedimensionadas);
+
+                if (deteccionesRedimensionadas.length > 0) {
+                    tomarFoto(camara);
+                }
+            }, 100);
+        }
+
+        function tomarFoto(camara) {
             const canvas = document.createElement('canvas');
             canvas.width = camara.videoWidth;
             canvas.height = camara.videoHeight;
@@ -74,7 +81,6 @@
             mostrarFoto(fotoURL);
         }
 
-        // Mostrar foto en miniatura
         function mostrarFoto(fotoURL) {
             const fotoPequena = document.createElement('img');
             fotoPequena.src = fotoURL;
@@ -87,16 +93,12 @@
             fotos.appendChild(fotoPequena);
         }
 
-        // Descargar foto
         function descargarFoto(fotoURL) {
             const enlaceDescarga = document.createElement('a');
             enlaceDescarga.href = fotoURL;
-            enlaceDescarga.download = 'foto.png';
+            enlaceDescarga.download = 'cara.png';
             enlaceDescarga.click();
         }
-
-        // Tomar foto con el botón
-        botonFoto.addEventListener('click', tomarFoto);
     </script>
 </body>
 </html>
