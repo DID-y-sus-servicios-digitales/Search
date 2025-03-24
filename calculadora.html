@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora</title>
+    <style>
+        /* Estilos CSS para la calculadora */
+        .calculadora {
+            width: 300px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .pantalla {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 1.5em;
+            text-align: right;
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+
+        .botones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 1px solid #ccc;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .operador {
+            background-color: #f9a03f;
+            color: white;
+        }
+
+        .operador:hover {
+            background-color: #f78b1f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculadora">
+        <input type="text" class="pantalla" id="pantalla" value="0">
+        <div class="botones">
+            <button onclick="agregarNumero('7')">7</button>
+            <button onclick="agregarNumero('8')">8</button>
+            <button onclick="agregarNumero('9')">9</button>
+            <button onclick="agregarOperador('/')" class="operador">/</button>
+            <button onclick="agregarNumero('4')">4</button>
+            <button onclick="agregarNumero('5')">5</button>
+            <button onclick="agregarNumero('6')">6</button>
+            <button onclick="agregarOperador('*')" class="operador">*</button>
+            <button onclick="agregarNumero('1')">1</button>
+            <button onclick="agregarNumero('2')">2</button>
+            <button onclick="agregarNumero('3')">3</button>
+            <button onclick="agregarOperador('-')" class="operador">-</button>
+            <button onclick="agregarNumero('0')">0</button>
+            <button onclick="agregarNumero('.')">.</button>
+            <button onclick="calcular()" class="operador">=</button>
+            <button onclick="agregarOperador('+')" class="operador">+</button>
+            <button onclick="limpiarPantalla()">C</button>
+        </div>
+    </div>
+
+    <script>
+        // Funciones JavaScript para la lógica de la calculadora
+        let pantalla = document.getElementById('pantalla');
+        let operador = null;
+        let primerNumero = null;
+
+        function agregarNumero(numero) {
+            if (pantalla.value === '0') {
+                pantalla.value = numero;
+            } else {
+                pantalla.value += numero;
+            }
+        }
+
+        function agregarOperador(op) {
+            operador = op;
+            primerNumero = parseFloat(pantalla.value);
+            pantalla.value = '0';
+        }
+
+        function calcular() {
+            let segundoNumero = parseFloat(pantalla.value);
+            let resultado;
+
+            switch (operador) {
+                case '+':
+                    resultado = primerNumero + segundoNumero;
+                    break;
+                case '-':
+                    resultado = primerNumero - segundoNumero;
+                    break;
+                case '*':
+                    resultado = primerNumero * segundoNumero;
+                    break;
+                case '/':
+                    resultado = primerNumero / segundoNumero;
+                    break;
+            }
+
+            pantalla.value = resultado;
+            operador = null;
+            primerNumero = null;
+        }
+
+        function limpiarPantalla() {
+            pantalla.value = '0';
+            operador = null;
+            primerNumero = null;
+        }
+    </script>
+
+</body>
+</html>
