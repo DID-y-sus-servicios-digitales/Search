@@ -17,10 +17,37 @@
       <div id="ww_c5ca9a8341340" v='1.3' loc='auto' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl6516"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#0097A7","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3}'>Más previsiones: <a href="https://oneweather.org/es/seville/" id="ww_c5ca9a8341340_u" target="_blank">El tiempo Sevilla</a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_c5ca9a8341340"></script>
     </details>
     <details><summary>generador de códigos qr</summary>
-        <input type="text" id="textoInput" placeholder="Introduce el texto/URL">
+        <html>
+<head>
+    <title>Generador de Códigos QR</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+    <input type="text" id="textoInput" placeholder="Introduce el texto/URL">
     <button id="generarBtn">Generar QR</button>
     <div id="qrcode"></div>
-    <a id="descargaLink" style="display: none;">Descargar QR</a>
+    <a id="descargaLink" style="display: none;>Descargar QR</a>
+
+    <script>
+        const textoInput = document.getElementById('textoInput');
+        const generarBtn = document.getElementById('generarBtn');
+        const qrcodeDiv = document.getElementById('qrcode');
+        const descargaLink = document.getElementById('descargaLink');
+
+        generarBtn.addEventListener('click', () => {
+            const texto = textoInput.value;
+            if (texto) {
+                qrcodeDiv.innerHTML = ''; // Limpiar el QR anterior
+                new QRCode(qrcodeDiv, texto);
+                descargaLink.style.display = 'block'; // Mostrar el enlace de descarga
+                descargaLink.href = qrcodeDiv.querySelector('img').src; // Obtener la URL del QR
+                descargaLink.download = 'didsearch qrcode.png'; // Nombre del archivo de descarga
+            }
+        });
+    </script>
+</body>
+</html>
+
     </details>
       <p><a href="ia.html">DID IA</a></p>
     <p></p>
@@ -52,20 +79,5 @@ time_is_widget.init({Madrid_z718:{template:"TIME<br>DATE", time_format:"hours:mi
 <p><font face="Alata">Creado por Daniel Tejedor</font></p>
 </center>
 <script src="refrán.js"></script>
-<script>const textoInput = document.getElementById('textoInput');
-        const generarBtn = document.getElementById('generarBtn');
-        const qrcodeDiv = document.getElementById('qrcode');
-        const descargaLink = document.getElementById('descargaLink');
-
-        generarBtn.addEventListener('click', () => {
-            const texto = textoInput.value;
-            if (texto) {
-                qrcodeDiv.innerHTML = ''; // Limpiar el QR anterior
-                new QRCode(qrcodeDiv, texto);
-                descargaLink.style.display = 'block'; // Mostrar el enlace de descarga
-                descargaLink.href = qrcodeDiv.querySelector('img').src; // Obtener la URL del QR
-                descargaLink.download = 'didsearch qrcode.png'; // Nombre del archivo de descarga
-            }
-        });</script>
 </body>
 </html>
