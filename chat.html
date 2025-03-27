@@ -56,28 +56,48 @@
             cursor: pointer;
             font-size: 16px;
         }
-        button:disabled {
-             background-color: #808080; /* Gris */
-             cursor: not-allowed;
-        }
 
         button:hover {
             background-color: #0056b3;
         }
-         .form-container {
-            display: flex;
+
+        #call-status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .form-container {
+            display: none;  /* Inicialmente oculto */
             flex-direction: column;
             align-items: center;
             margin-top: 20px;
+            position: fixed; /* Añadido para el modal */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+            z-index: 10; /* Asegurar que esté por encima de otros elementos */
+            width: 90%;  /* Hacerlo más ancho en pantallas pequeñas */
+            max-width: 400px; /* Ancho máximo */
+            text-align: center;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #333;
         }
 
         .form-container input {
             padding: 10px;
             margin: 5px;
-            width: 80%;
-            max-width: 300px;
+            width: 100%;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-sizing: border-box; /* Importante para el ancho del 100% */
         }
 
         .form-container button {
@@ -89,14 +109,41 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            width: 100%; /* Ancho completo dentro del contenedor */
         }
 
         .form-container button:hover {
             background-color: #218838;
         }
 
-        #login-section {
+        #login-button {
+            margin-top: 15px;
+        }
+
+        #show-login-register {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #show-login-register:hover {
+            background-color: #0056b3;
+        }
+
+        .overlay { /* Añadido para oscurecer el fondo */
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9;
         }
         #my-id{
             margin-top: 20px;
@@ -110,8 +157,7 @@
 <body>
     <div class="container">
         <h1>Videollamada</h1>
-
-        <div id="login-section" class="form-container">
+        <button id="show-login-register">Login / Register</button>  <div id="login-section" class="form-container">
             <h2>Login</h2>
             <input type="text" id="login-username" placeholder="Username">
             <input type="password" id="login-password" placeholder="Password">
@@ -124,7 +170,7 @@
             <input type="text" id="register-username" placeholder="Username">
             <input type="password" id="register-password" placeholder="Password">
             <button id="register-button">Register</button>
-             <button id="show-login">Login</button>
+            <button id="show-login">Login</button>
         </div>
 
         <div id="video-container">
@@ -135,8 +181,7 @@
         <p id="call-status">Esperando para Iniciar</p>
         <p id="my-id"></p>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peer.min.js"></script>
+    <div class="overlay"></div>  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peer.min.js"></script>
     <script>
        const localVideo = document.getElementById('local-video');
         const remoteVideo = document.getElementById('remote-video');
@@ -146,12 +191,14 @@
         const registerSection = document.getElementById('register-section');
         const loginButton = document.getElementById('login-button');
         const registerButton = document.getElementById('register-button');
+        const showLoginRegisterButton = document.getElementById('show-login-register'); // Nuevo botón
         const showRegisterButton = document.getElementById('show-register');
         const showLoginButton = document.getElementById('show-login');
         const loginUsernameInput = document.getElementById('login-username');
         const loginPasswordInput = document.getElementById('login-password');
         const registerUsernameInput = document.getElementById('register-username');
         const registerPasswordInput = document.getElementById('register-password');
+        const overlay = document.querySelector('.overlay'); // Obtener la capa oscura
         const myIdDisplay = document.getElementById('my-id');
 
 
@@ -272,7 +319,6 @@
                 alert('Debes introducir un ID de usuario para llamar.');
                 return;
             }
-
              if (peerIdToCall === myPeerId) {
                 alert('No puedes llamarte a ti mismo.');
                 return;
@@ -301,19 +347,26 @@
         function showLoginSection() {
             loginSection.style.display = 'flex';
             registerSection.style.display = 'none';
+            overlay.style.display = 'block'; // Mostrar la capa oscura
         }
 
         function showRegisterSection() {
             loginSection.style.display = 'none';
             registerSection.style.display = 'flex';
+            overlay.style.display = 'block';
+        }
+
+        function hideLoginRegisterSections() {
+            loginSection.style.display = 'none';
+            registerSection.style.display = 'none';
+            overlay.style.display = 'none'; // Ocultar la capa oscura
         }
 
 
-
         // Event listeners para los botones de mostrar login/register
+        showLoginRegisterButton.addEventListener('click', showLoginSection); // Mostrar al hacer clic en el botón principal
         showRegisterButton.addEventListener('click', showRegisterSection);
         showLoginButton.addEventListener('click', showLoginSection);
-
 
 
         // Event listeners para los botones de login y registro
@@ -345,7 +398,8 @@
                 const data = await response.json();
                 if (response.ok) {
                     alert(data.message);
-                    showLoginSection(); // Cambiar a la sección de inicio de sesión después del registro exitoso
+                    hideLoginRegisterSections(); // Cerrar el formulario
+                    showLoginSection();
                 } else {
                     alert(data.message);
                 }
@@ -372,10 +426,7 @@
                 if (response.ok) {
                     alert(data.message);
                     loggedIn = true;
-                    // Ocultar las secciones de login y registro
-                    loginSection.style.display = 'none';
-                    registerSection.style.display = 'none';
-                    // Iniciar la aplicación de videollamada
+                    hideLoginRegisterSections(); // Cerrar el formulario
                     await getMediaStream();
                     startPeer(data.userId); // Pasar el ID del usuario desde la respuesta
                     startCallButton.addEventListener('click', startCall);
@@ -390,8 +441,8 @@
         }
 
 
-        // Inicializar la aplicación mostrando la sección de login
-        showLoginSection();
+        // Inicializar la aplicación mostrando el botón de Login/Register
+        showLoginRegisterButton.addEventListener('click', showLoginSection);
     </script>
 </body>
 </html>
