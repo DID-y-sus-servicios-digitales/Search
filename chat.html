@@ -3,90 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Sencillo</title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Videollamada Sencilla</title>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        video {
+            width: 100%;
+            max-width: 400px;
+            margin: 10px;
+            border: 2px solid #666;
+            border-radius: 5px;
+            background-color: #000;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #call-status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-center h-screen">
-    <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-2xl">
-        <h1 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Chat Sencillo</h1>
-        <div id="chat-messages" class="overflow-y-auto h-64 border border-gray-200 rounded-md p-4 mb-4">
-            </div>
-        <div class="flex space-x-2">
-            <input
-                type="text"
-                id="message-input"
-                placeholder="Escribe tu mensaje..."
-                class="flex-1 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-            <button id="send-button" class="bg-blue-500 hover:bg-blue-600 text-white rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300">
-                Enviar
-            </button>
+<body>
+    <div class="container">
+        <h1>Videollamada Sencilla</h1>
+        <div id="video-container">
+            <video id="local-video" autoplay muted playsinline></video>
+            <video id="remote-video" autoplay playsinline></video>
         </div>
+        <button id="start-call">Iniciar Videollamada</button>
+        <p id="call-status">Esperando para Iniciar</p>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peer.min.js"></script>
     <script>
-        const chatMessages = document.getElementById('chat-messages');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
+        const localVideo = document.getElementById('local-video');
+        const remoteVideo = document.getElementById('remote-video');
+        const startCallButton = document.getElementById('start-call');
+        const callStatus = document.getElementById('call-status');
 
-        const ws = new WebSocket('ws://localhost:3000');
+        let peer;
+        let localStream;
+        let remoteStream;
+        let isCalling = false;
 
-        ws.addEventListener('open', () => {
-            console.log('Conexión establecida con el servidor WebSocket');
-            chatMessages.innerHTML += `<div class="text-gray-500 italic mb-2 text-center">Conectado al chat</div>`;
-        });
-
-        ws.addEventListener('message', (event) => {
-            const message = JSON.parse(event.data);
-            let messageHTML = '';
-            if (message.type === 'text') {
-                messageHTML = `<div class="${message.sender === 'Tú' ? 'text-right' : 'text-left'} mb-2">
-                                   <span class="font-semibold ${message.sender === 'Tú' ? 'text-blue-600' : 'text-green-600'}">${message.sender}: </span>
-                                   <span class="inline-block bg-gray-200 rounded-md p-2 max-w-[70%] ${message.sender === 'Tú' ? 'bg-blue-100 text-blue-800 ml-auto' : 'bg-green-100 text-green-800'}">${message.text}</span>
-                               </div>`;
-            } else if (message.type === 'user-join') {
-                messageHTML = `<div class="text-center text-gray-500 italic mb-2">${message.text}</div>`;
-            } else if (message.type === 'user-leave') {
-                messageHTML = `<div class="text-center text-gray-500 italic mb-2">${message.text}</div>`;
+        // Configuración de STUN para la conexión Peer-to-Peer
+        const peerConfig = {
+            host: 'peerjs.herokuapp.com',  // Servidor PeerJS
+            port: 443,
+            secure: true,
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' }
+                ]
             }
-            chatMessages.innerHTML += messageHTML;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
+        };
 
-        ws.addEventListener('close', () => {
-            console.log('Conexión cerrada con el servidor WebSocket');
-            chatMessages.innerHTML += `<div class="text-gray-500 italic mb-2 text-center">Desconectado del chat</div>`;
-        });
-
-        ws.addEventListener('error', (error) => {
-            console.error('Error en la conexión WebSocket:', error);
-            chatMessages.innerHTML += `<div class="text-red-500 italic mb-2 text-center">Error en la conexión: ${error.message}</div>`;
-        });
-
-        sendButton.addEventListener('click', () => {
-            const messageText = messageInput.value.trim();
-            if (messageText !== '') {
-                const message = {
-                    type: 'text',
-                    sender: 'Tú',
-                    text: messageText,
-                };
-                ws.send(JSON.stringify(message));
-                messageInput.value = '';
+        // 1. Obtener acceso a la cámara y micrófono del usuario
+        async function getMediaStream() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                localStream = stream;
+                localVideo.srcObject = stream;
+            } catch (error) {
+                console.error('Error al obtener la transmisión de medios:', error);
+                callStatus.textContent = 'No se pudo acceder a la cámara y al micrófono. Asegúrate de que están permitidos.';
             }
-        });
+        }
 
-        messageInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                sendButton.click();
+        // 2. Inicializar la conexión Peer-to-Peer
+        function startPeer() {
+            try {
+                peer = new Peer(null, peerConfig); // No se proporciona ID, se asignará uno.
+                peer.on('open', (id) => {
+                    console.log('ID de Peer:', id);
+                    callStatus.textContent = `Listo para llamar o recibir llamada. Tu ID es: ${id}`;
+                    startCallButton.textContent = 'Llamar a Otro Usuario'; // Cambiar texto del botón
+                    startCallButton.disabled = false;
+                });
+
+                peer.on('call', (call) => {
+                    // 4. Responder a una llamada entrante
+                    call.answer(localStream);
+                    setupCall(call);
+                });
+
+                peer.on('error', (err) => {
+                    console.error('Error de Peer:', err);
+                    callStatus.textContent = 'Error de conexión Peer: ' + err.message;
+                });
+
+            } catch (error) {
+                console.error('Error al inicializar Peer:', error);
+                callStatus.textContent = 'Error al iniciar la conexión Peer: ' + error.message;
             }
+        }
+
+        // 5. Configurar la llamada (para enviar o recibir)
+        function setupCall(call) {
+            call.on('stream', (stream) => {
+                remoteStream = stream;
+                remoteVideo.srcObject = stream;
+            });
+
+            call.on('close', () => {
+                console.log('Conexión cerrada');
+                callStatus.textContent = 'Llamada finalizada.';
+                remoteVideo.srcObject = null;
+                isCalling = false;
+                startCallButton.textContent = 'Iniciar Videollamada';
+                startCallButton.disabled = false;
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                }
+            });
+
+            call.on('error', (err) => {
+                console.error('Error en la llamada:', err);
+                callStatus.textContent = 'Error en la llamada: ' + err.message;
+                remoteVideo.srcObject = null;
+                isCalling = false;
+                startCallButton.textContent = 'Iniciar Videollamada';
+                startCallButton.disabled = false;
+                 if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                }
+            });
+        }
+
+        // 3. Iniciar una llamada a otro usuario
+        async function startCall() {
+            if (!peer) {
+                alert('Por favor, espera a que se inicialice la conexión Peer.');
+                return;
+            }
+
+            const peerIdToCall = prompt('Introduce el ID del usuario al que quieres llamar:');
+            if (!peerIdToCall) {
+                alert('Debes introducir un ID de usuario para llamar.');
+                return;
+            }
+
+            try {
+                const call = peer.call(peerIdToCall, localStream);
+                if (!call) {
+                    alert('No se pudo establecer la llamada.  Asegúrate de que el ID es correcto y el otro usuario está en línea.');
+                    return;
+                }
+                setupCall(call);
+                callStatus.textContent = `Llamando a ${peerIdToCall}...`;
+                startCallButton.disabled = true;
+                isCalling = true;
+
+            } catch (error) {
+                console.error('Error al iniciar la llamada:', error);
+                callStatus.textContent = 'Error al iniciar la llamada: ' + error.message;
+            }
+        }
+
+        // Inicializar la aplicación
+        getMediaStream().then(() => {
+            startPeer();
+            startCallButton.addEventListener('click', startCall);
         });
     </script>
 </body>
 </html>
+
