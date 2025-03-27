@@ -6,7 +6,7 @@
     <title>Videollamada con Usuarios</title>
     <style>
         body {
-            font-family: open-sans;
+            font-family: sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -362,8 +362,8 @@
 
         <div id="register-section" class="form-container">
             <h2>Register</h2>
-            <input type="text" id="register-username" placeholder="ID">
-            <input type="password" id="register-password" placeholder="Contaseña">
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="password" id="register-password" placeholder="Password">
             <button id="register-button">Crear cuenta</button>
             <button id="show-login">Iniciar sesión</button>
             <p id="register-message" class="message"></p>
@@ -477,7 +477,7 @@
                 localVideo.srcObject = stream;
             } catch (error) {
                 console.error('Error al obtener la transmisión de medios:', error);
-                setCallStatus('No se pudo acceder a la cámara y al micrófono, ¡permitemelo! no tengas miedo');
+                setCallStatus('No se pudo acceder a la cámara y al micrófono. Asegúrate de que están permitidos.');
             }
         }
 
@@ -489,7 +489,7 @@
                     console.log('ID de Peer:', id);
                     myPeerId = id;
                     myIdDisplay.textContent = `Tu ID es: ${id}`;
-                    setCallStatus(`Listo para  o recibir llamada. Tu ID es: ${id}`);
+                    setCallStatus(`Listo para llamar o recibir llamada. Tu ID es: ${id}`);
                     startCallButton.textContent = 'Llamar';
                     startCallButton.disabled = !waitingForCall;
                     loadContacts();
@@ -503,7 +503,7 @@
 
                     socket.on('incoming-call', (callerId) => {
                         console.log('Llamada entrante de:', callerId);
-                        incomingCallerNameDisplay.textContent = `${callerId} te está llamando`;
+                        incomingCallerNameDisplay.textContent = `Llamada entrante de: ${callerId}`;
                         incomingCallModal.style.display = 'block';
                         incomingCall = callerId;
                         if (waitingForCall) {
@@ -515,7 +515,7 @@
                 });
 
                 peer.on('call', (call) => {
-                    console.log("ACEPTANDO LLAMADA ENTRANTE DEL PIMPOLLO: ", call.peer);
+                    console.log("ACEPTANDO LLAMADA ENTRANTE DE ", call.peer);
                     incomingCall = call;
                     setupCall(call); // Llamar a setupCall al aceptar la llamada
                 });
@@ -540,7 +540,7 @@
 
             call.on('close', () => {
                 console.log('Conexión cerrada');
-                setCallStatus('estarás agusto, yo me merezco unas vacaciones');
+                setCallStatus('Llamada finalizada.');
                 remoteVideo.srcObject = null;
                 isCalling = false;
                 startCallButton.textContent = 'Llamar';
@@ -570,29 +570,29 @@
         // 3. Iniciar una llamada a otro usuario
         async function startCall() {
             if (!peer) {
-                alert('Pero... esto ya es lo ultimo, ¡inicia sesión!;
+                alert('Por favor, inicia sesión para iniciar una llamada.');
                 return;
             }
 
             const peerIdToCall = callUserInput.value;
             if (!peerIdToCall) {
-                alert('Debes introducir un ID, solo hace falta un poco de lógica cerebral.');
+                alert('Debes introducir un ID de usuario para llamar.');
                 return;
             }
 
             if (peerIdToCall === myPeerId) {
-                alert('No puedes llamarte a ti mismo ¡TONTO!');
+                alert('No puedes llamarte a ti mismo.');
                 return;
             }
             console.log("LLAMANDO A: ", peerIdToCall)
             try {
                 const call = peer.call(peerIdToCall, localStream);
                 if (!call) {
-                    alert('No se pudo establecer la llamada.  Asegúrate de que el ID del pimpollo sea correcto y el pamfleto está en línea.');
+                    alert('No se pudo establecer la llamada.  Asegúrate de que el ID es correcto y el otro usuario está en línea.');
                     return;
                 }
                 setupCall(call);
-                setCallStatus(`Esperando a que el pimpollo: ${peerIdToCall} responda`);
+                setCallStatus(`Llamando a ${peerIdToCall}...`);
                 startCallButton.disabled = true;
                 isCalling = true;
                 socket.emit('start-call', { to: peerIdToCall, from: myPeerId });
@@ -700,5 +700,6 @@
                     registerMessageDisplay.textContent = data.message;
                 }
             } catch (error) {
-                console.error('Error al registrar usuario')
+                console.error('Error al registrar usuario:', error);
+                setCallStatus('
 
