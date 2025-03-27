@@ -150,23 +150,24 @@
             display: flex;
             align-items: center;
             margin-bottom: 15px;
-            justify-content: center; /* Centrar la casilla y la etiqueta */
+            justify-content: center;
         }
 
         #remember-me-checkbox {
             margin-right: 5px;
         }
-        #my-id{
+
+        #my-id {
             margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
             color: #155799;
         }
-        /* Estilos para el menú desplegable de contactos */
+
         .dropdown {
             position: relative;
             display: inline-block;
-            margin-left: 10px; /* Espacio entre el botón y el dropdown */
+            margin-left: 10px;
         }
 
         .dropdown-btn {
@@ -187,7 +188,7 @@
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
             border-radius: 5px;
-            top: 100%; /* Mostrar debajo del botón */
+            top: 100%;
             left: 0;
             margin-top: 5px;
         }
@@ -197,11 +198,12 @@
             padding: 10px 16px;
             text-decoration: none;
             display: block;
-            border-bottom: 1px solid #ddd; /* Separador entre contactos */
+            border-bottom: 1px solid #ddd;
         }
-         .dropdown-content a:last-child{
-             border-bottom: none;
-         }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
 
         .dropdown-content a:hover {
             background-color: #ddd;
@@ -210,7 +212,8 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        #call-user-input{
+
+        #call-user-input {
             margin-top: 10px;
             padding: 10px;
             border: 1px solid #ccc;
@@ -219,10 +222,71 @@
             max-width: 300px;
             box-sizing: border-box;
         }
-        .error-message{
+
+        .error-message {
             color: red;
             font-size: 14px;
             margin-top: 5px;
+        }
+
+        #incoming-call-modal { /* Nueva ventana emergente para llamadas entrantes */
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 11;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        #incoming-call-modal h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #incoming-call-modal p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        #incoming-call-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #incoming-call-modal-buttons button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+        }
+
+        #accept-call {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        #accept-call:hover {
+            background-color: #218838;
+        }
+
+        #reject-call {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        #reject-call:hover {
+            background-color: #c82333;
         }
 
     </style>
@@ -230,7 +294,8 @@
 <body>
     <div class="container">
         <h1>Videollamada</h1>
-        <button id="show-login-register">Login / Register</button>  <div id="login-section" class="form-container">
+        <button id="show-login-register">Login / Register</button>
+        <div id="login-section" class="form-container">
             <h2>Login</h2>
             <input type="text" id="login-username" placeholder="Username">
             <input type="password" id="login-password" placeholder="Password">
@@ -240,6 +305,7 @@
             </div>
             <button id="login-button">Login</button>
             <button id="show-register">Register</button>
+            <p id="login-message" class="message"></p>
         </div>
 
         <div id="register-section" class="form-container">
@@ -248,6 +314,7 @@
             <input type="password" id="register-password" placeholder="Password">
             <button id="register-button">Register</button>
             <button id="show-login">Login</button>
+            <p id="register-message" class="message"></p>
         </div>
 
         <div id="video-container">
@@ -258,23 +325,34 @@
         <div class="dropdown">
             <button class="dropdown-btn">Contactos</button>
             <div class="dropdown-content" id="contacts-dropdown">
-                </div>
+            </div>
         </div>
-        <button id="start-call" disabled>Iniciar Videollamada</button>
+        <button id="start-call" disabled>Llamar</button>
         <p id="call-status">Esperando para Iniciar</p>
         <p id="my-id"></p>
         <p id="error-message" class="error-message"></p>
     </div>
-    <div class="overlay"></div>  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peer.min.js"></script>
+    <div class="overlay"></div>
+
+    <div id="incoming-call-modal">
+        <h2>Llamada Entrante</h2>
+        <p id="incoming-caller-name">Alguien te está llamando...</p>
+        <div id="incoming-call-modal-buttons">
+            <button id="accept-call">Aceptar</button>
+            <button id="reject-call">Rechazar</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peer.min.js"></script>
     <script>
-       const localVideo = document.getElementById('local-video');
+        const localVideo = document.getElementById('local-video');
         const remoteVideo = document.getElementById('remote-video');
         const startCallButton = document.getElementById('start-call');
         const callStatus = document.getElementById('call-status');
         const loginSection = document.getElementById('login-section');
         const registerSection = document.getElementById('register-section');
-        const loginButton = document.getElementById('login-button');
-        const registerButton = document.getElementById('register-button');
+        const loginButtonElement = document.getElementById('login-button');
+        const registerButtonElement = document.getElementById('register-button');
         const showLoginRegisterButton = document.getElementById('show-login-register');
         const showRegisterButtonElement = document.getElementById('show-register');
         const showLoginButtonElement = document.getElementById('show-login');
@@ -288,6 +366,12 @@
         const contactsDropdown = document.getElementById('contacts-dropdown');
         const callUserInput = document.getElementById('call-user-input');
         const errorMessageDisplay = document.getElementById('error-message');
+        const loginMessageDisplay = document.getElementById('login-message');
+        const registerMessageDisplay = document.getElementById('register-message');
+        const incomingCallModal = document.getElementById('incoming-call-modal');
+        const acceptCallButton = document.getElementById('accept-call');
+        const rejectCallButton = document.getElementById('reject-call');
+        const incomingCallerNameDisplay = document.getElementById('incoming-caller-name');
 
 
         let peer;
@@ -296,8 +380,9 @@
         let isCalling = false;
         let myPeerId;
         let loggedIn = false;
-        let contacts = []; // Array para almacenar contactos {id, nombre}
+        let contacts = [];
         let rememberedUser = localStorage.getItem('rememberedUser');
+        let incomingCall;
 
 
         // Configuración de STUN para la conexión Peer-to-Peer
@@ -342,12 +427,14 @@
                     setCallStatus(`Listo para llamar o recibir llamada. Tu ID es: ${id}`);
                     startCallButton.textContent = 'Llamar';
                     startCallButton.disabled = false;
-                    loadContacts(); // Cargar contactos al iniciar Peer
+                    loadContacts();
                 });
 
                 peer.on('call', (call) => {
-                    call.answer(localStream);
-                    setupCall(call);
+                    console.log('Recibiendo llamada de:', call.peer);
+                    incomingCall = call;
+                    incomingCallerNameDisplay.textContent = `Llamada entrante de: ${call.peer}`;
+                    incomingCallModal.style.display = 'block';
                 });
 
                 peer.on('error', (err) => {
@@ -393,7 +480,7 @@
             });
         }
 
-       // 3. Iniciar una llamada a otro usuario
+        // 3. Iniciar una llamada a otro usuario
         async function startCall() {
             if (!peer) {
                 alert('Por favor, inicia sesión para iniciar una llamada.');
@@ -428,8 +515,6 @@
             }
         }
 
-
-
         // Funciones para mostrar/ocultar secciones
         function showLoginSection() {
             loginSection.style.display = 'flex';
@@ -452,12 +537,13 @@
         // Función para manejar el registro de usuario
         async function register(username, password) {
             errorMessageDisplay.textContent = '';
+            registerMessageDisplay.textContent = '';
             if (!username) {
-                errorMessageDisplay.textContent = "Por favor, introduce un nombre de usuario";
+                registerMessageDisplay.textContent = "Por favor, introduce un nombre de usuario";
                 return;
             }
-             if (!password) {
-                errorMessageDisplay.textContent = "Por favor, introduce una contraseña";
+            if (!password) {
+                registerMessageDisplay.textContent = "Por favor, introduce una contraseña";
                 return;
             }
             try {
@@ -471,11 +557,13 @@
 
                 const data = await response.json();
                 if (response.ok) {
-                    alert(data.message);
-                    hideLoginRegisterSections();
-                    showLoginSection();
+                    registerMessageDisplay.textContent = data.message + ". Redirigiendo al inicio de sesión...";
+                    setTimeout(() => {
+                        hideLoginRegisterSections();
+                        showLoginSection();
+                    }, 2000);
                 } else {
-                    alert(data.message);
+                    registerMessageDisplay.textContent = data.message;
                 }
             } catch (error) {
                 console.error('Error al registrar usuario:', error);
@@ -486,12 +574,13 @@
         // Función para manejar el inicio de sesión de usuario
         async function login(username, password) {
             errorMessageDisplay.textContent = '';
-             if (!username) {
-                errorMessageDisplay.textContent = "Por favor, introduce un nombre de usuario";
+            loginMessageDisplay.textContent = '';
+            if (!username) {
+                loginMessageDisplay.textContent = "Por favor, introduce un nombre de usuario";
                 return;
             }
-             if (!password) {
-                errorMessageDisplay.textContent = "Por favor, introduce una contraseña";
+            if (!password) {
+                loginMessageDisplay.textContent = "Por favor, introduce una contraseña";
                 return;
             }
             try {
@@ -505,7 +594,7 @@
 
                 const data = await response.json();
                 if (response.ok) {
-                    alert(data.message);
+                    loginMessageDisplay.textContent = data.message + ". Iniciando sesión...";
                     loggedIn = true;
                     hideLoginRegisterSections();
                     if (rememberMeCheckbox.checked) {
@@ -519,7 +608,7 @@
                     loadContacts();
 
                 } else {
-                    alert(data.message);
+                    loginMessageDisplay.textContent = data.message;
                 }
             } catch (error) {
                 console.error('Error al iniciar sesión:', error);
@@ -535,7 +624,7 @@
             }
         }
 
-       function saveContacts() {
+        function saveContacts() {
             localStorage.setItem('contacts', JSON.stringify(contacts));
         }
 
@@ -547,7 +636,7 @@
             }
         }
 
-       function populateContactsDropdown() {
+        function populateContactsDropdown() {
             contactsDropdown.innerHTML = '';
             contacts.forEach(contact => {
                 const contactLink = document.createElement('a');
@@ -561,26 +650,41 @@
         }
 
 
-
         // Event listeners para los botones de mostrar login/register
         showLoginRegisterButton.addEventListener('click', showLoginSection);
         showRegisterButtonElement.addEventListener('click', showRegisterSection);
         showLoginButtonElement.addEventListener('click', showLoginSection);
 
-
         // Event listeners para los botones de login y registro
-        loginButton.addEventListener('click', () => {
+        loginButtonElement.addEventListener('click', () => {
             const username = loginUsernameInput.value;
             const password = loginPasswordInput.value;
             login(username, password);
         });
 
-        registerButton.addEventListener('click', () => {
+        registerButtonElement.addEventListener('click', () => {
             const username = registerUsernameInput.value;
             const password = registerPasswordInput.value;
             register(username, password);
         });
 
+        // Event listeners para la ventana emergente de llamada
+        acceptCallButton.addEventListener('click', () => {
+            if (incomingCall) {
+                setupCall(incomingCall);
+                incomingCall.answer(localStream);
+                incomingCallModal.style.display = 'none';
+                startCallButton.disabled = false;
+                isCalling = true;
+            }
+        });
+
+        rejectCallButton.addEventListener('click', () => {
+            if (incomingCall) {
+                incomingCall.close();
+                incomingCallModal.style.display = 'none';
+            }
+        });
 
 
         // Al cargar la página, mostrar el formulario de inicio de sesión/registro si no hay usuario recordado
