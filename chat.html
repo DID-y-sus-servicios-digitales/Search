@@ -6,7 +6,7 @@
     <title>Videollamada con Usuarios</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: open-sans;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -302,12 +302,51 @@
             color: red;
         }
 
+        #waiting-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 12;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #waiting-screen.show {
+            display: flex;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3; /* Gris claro */
+            border-top: 16px solid #ff006e; /* Rosa */
+            border-bottom: 16px solid #e50000; /* Rojo */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #waiting-message {
+            font-size: 24px;
+            color: #333;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Videollamada</h1>
-        <button id="show-login-register">Login / Register</button>
+        <button id="show-login-register">Cuenta</button>
         <div id="login-section" class="form-container">
             <h2>Login</h2>
             <input type="text" id="login-username" placeholder="Username">
@@ -316,17 +355,17 @@
                 <input type="checkbox" id="remember-me-checkbox">
                 <label for="remember-me-checkbox">Recordar Usuario</label>
             </div>
-            <button id="login-button">Login</button>
-            <button id="show-register">Register</button>
+            <button id="login-button">Iniciar sesión</button>
+            <button id="show-register">Crear cuenta</button>
             <p id="login-message" class="message"></p>
         </div>
 
         <div id="register-section" class="form-container">
             <h2>Register</h2>
-            <input type="text" id="register-username" placeholder="Username">
-            <input type="password" id="register-password" placeholder="Password">
-            <button id="register-button">Register</button>
-            <button id="show-login">Login</button>
+            <input type="text" id="register-username" placeholder="ID">
+            <input type="password" id="register-password" placeholder="Contaseña">
+            <button id="register-button">Crear cuenta</button>
+            <button id="show-login">Iniciar sesión</button>
             <p id="register-message" class="message"></p>
         </div>
 
@@ -342,6 +381,7 @@
         </div>
         <button id="start-call" disabled>Llamar</button>
         <button id="share-screen">Compartir Pantalla</button>
+        <button id="wait-call">Esperar una llamada</button>
         <p id="call-status">Esperando para Iniciar</p>
         <p id="my-id"></p>
         <p id="error-message" class="error-message"></p>
@@ -355,6 +395,11 @@
             <button id="accept-call">Aceptar</button>
             <button id="reject-call">Rechazar</button>
         </div>
+    </div>
+
+    <div id="waiting-screen" class="waiting-screen">
+        <div class="loader"></div>
+        <p id="waiting-message">Esperando llamadas entrantes...</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peer.min.js"></script>
@@ -387,6 +432,8 @@
         const acceptCallButtonElement = document.getElementById('accept-call');
         const rejectCallButtonElement = document.getElementById('reject-call');
         const incomingCallerNameDisplay = document.getElementById('incoming-caller-name');
+        const waitingScreen = document.getElementById('waiting-screen');
+        const waitCallButton = document.getElementById('wait-call');
 
 
         let peer;
@@ -400,6 +447,7 @@
         let incomingCall;
         let socket;
         let screenSharing = false;
+        let waitingForCall = false;
 
 
         // Configuración de STUN para la conexión Peer-to-Peer
@@ -429,7 +477,7 @@
                 localVideo.srcObject = stream;
             } catch (error) {
                 console.error('Error al obtener la transmisión de medios:', error);
-                setCallStatus('No se pudo acceder a la cámara y al micrófono. Asegúrate de que están permitidos.');
+                setCallStatus('No se pudo acceder a la cámara y al micrófono, ¡permitemelo! no tengas miedo');
             }
         }
 
@@ -441,9 +489,9 @@
                     console.log('ID de Peer:', id);
                     myPeerId = id;
                     myIdDisplay.textContent = `Tu ID es: ${id}`;
-                    setCallStatus(`Listo para llamar o recibir llamada. Tu ID es: ${id}`);
+                    setCallStatus(`Listo para  o recibir llamada. Tu ID es: ${id}`);
                     startCallButton.textContent = 'Llamar';
-                    startCallButton.disabled = false;
+                    startCallButton.disabled = !waitingForCall;
                     loadContacts();
                     // Establecer conexión de Socket.IO aquí
                     socket = io();
@@ -455,14 +503,19 @@
 
                     socket.on('incoming-call', (callerId) => {
                         console.log('Llamada entrante de:', callerId);
-                        incomingCallerNameDisplay.textContent = `Llamada entrante de: ${callerId}`;
+                        incomingCallerNameDisplay.textContent = `${callerId} te está llamando`;
                         incomingCallModal.style.display = 'block';
                         incomingCall = callerId;
+                        if (waitingForCall) {
+                            waitingScreen.classList.remove('show');
+                            waitingForCall = false;
+                            startCallButton.disabled = false;
+                        }
                     });
                 });
 
                 peer.on('call', (call) => {
-                    console.log("ACEPTANDO LLAMADA ENTRANTE DE ", call.peer);
+                    console.log("ACEPTANDO LLAMADA ENTRANTE DEL PIMPOLLO: ", call.peer);
                     incomingCall = call;
                     setupCall(call); // Llamar a setupCall al aceptar la llamada
                 });
@@ -487,11 +540,11 @@
 
             call.on('close', () => {
                 console.log('Conexión cerrada');
-                setCallStatus('Llamada finalizada.');
+                setCallStatus('estarás agusto, yo me merezco unas vacaciones');
                 remoteVideo.srcObject = null;
                 isCalling = false;
                 startCallButton.textContent = 'Llamar';
-                startCallButton.disabled = false;
+                startCallButton.disabled = waitingForCall;
                 if (localStream) {
                     localStream.getTracks().forEach(track => track.stop());
                 }
@@ -505,7 +558,7 @@
                 remoteVideo.srcObject = null;
                 isCalling = false;
                 startCallButton.textContent = 'Llamar';
-                startCallButton.disabled = false;
+                startCallButton.disabled = waitingForCall;
                 if (localStream) {
                     localStream.getTracks().forEach(track => track.stop());
                 }
@@ -517,29 +570,29 @@
         // 3. Iniciar una llamada a otro usuario
         async function startCall() {
             if (!peer) {
-                alert('Por favor, inicia sesión para iniciar una llamada.');
+                alert('Pero... esto ya es lo ultimo, ¡inicia sesión!;
                 return;
             }
 
             const peerIdToCall = callUserInput.value;
             if (!peerIdToCall) {
-                alert('Debes introducir un ID de usuario para llamar.');
+                alert('Debes introducir un ID, solo hace falta un poco de lógica cerebral.');
                 return;
             }
 
             if (peerIdToCall === myPeerId) {
-                alert('No puedes llamarte a ti mismo.');
+                alert('No puedes llamarte a ti mismo ¡TONTO!');
                 return;
             }
             console.log("LLAMANDO A: ", peerIdToCall)
             try {
                 const call = peer.call(peerIdToCall, localStream);
                 if (!call) {
-                    alert('No se pudo establecer la llamada.  Asegúrate de que el ID es correcto y el otro usuario está en línea.');
+                    alert('No se pudo establecer la llamada.  Asegúrate de que el ID del pimpollo sea correcto y el pamfleto está en línea.');
                     return;
                 }
                 setupCall(call);
-                setCallStatus(`Llamando a ${peerIdToCall}...`);
+                setCallStatus(`Esperando a que el pimpollo: ${peerIdToCall} responda`);
                 startCallButton.disabled = true;
                 isCalling = true;
                 socket.emit('start-call', { to: peerIdToCall, from: myPeerId });
@@ -647,68 +700,5 @@
                     registerMessageDisplay.textContent = data.message;
                 }
             } catch (error) {
-                console.error('Error al registrar usuario:', error);
-                setCallStatus('Error al registrar usuario: ' + error.message);
-            }
-        }
-
-        // Función para manejar el inicio de sesión de usuario
-        async function login(username, password) {
-            errorMessageDisplay.textContent = '';
-            loginMessageDisplay.textContent = '';
-            if (!username) {
-                loginMessageDisplay.textContent = "Por favor, introduce un nombre de usuario";
-                return;
-            }
-            if (!password) {
-                loginMessageDisplay.textContent = "Por favor, introduce una contraseña";
-                return;
-            }
-            try {
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password, rememberMe: rememberMeCheckbox.checked })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    loginMessageDisplay.textContent = data.message + ". Iniciando sesión...";
-                    loggedIn = true;
-                    hideLoginRegisterSections();
-                    if (rememberMeCheckbox.checked) {
-                        localStorage.setItem('rememberedUser', username);
-                    } else {
-                        localStorage.removeItem('rememberedUser');
-                    }
-                    await getMediaStream();
-                    startPeer(data.userId);
-                    startCallButton.addEventListener('click', startCall);
-                    shareScreenButton.addEventListener('click', shareScreen);
-                    loadContacts();
-
-                } else {
-                    loginMessageDisplay.textContent = data.message;
-                }
-            } catch (error) {
-                console.error('Error al iniciar sesión:', error);
-                setCallStatus('Error al iniciar sesión: ' + error.message);
-            }
-        }
-
-        function loadContacts() {
-            const storedContacts = localStorage.getItem('contacts');
-            if (storedContacts) {
-                contacts = JSON.parse(storedContacts);
-                populateContactsDropdown();
-            }
-        }
-
-        function saveContacts() {
-            localStorage.setItem('contacts', JSON.stringify(contacts));
-        }
-
-        function add
+                console.error('Error al registrar usuario')
 
