@@ -341,6 +341,7 @@
             </div>
         </div>
         <button id="start-call" disabled>Llamar</button>
+        <button id="share-screen">Compartir Pantalla</button>
         <p id="call-status">Esperando para Iniciar</p>
         <p id="my-id"></p>
         <p id="error-message" class="error-message"></p>
@@ -361,6 +362,7 @@
         const localVideo = document.getElementById('local-video');
         const remoteVideo = document.getElementById('remote-video');
         const startCallButton = document.getElementById('start-call');
+        const shareScreenButton = document.getElementById('share-screen');
         const callStatus = document.getElementById('call-status');
         const loginSection = document.getElementById('login-section');
         const registerSection = document.getElementById('register-section');
@@ -382,8 +384,8 @@
         const loginMessageDisplay = document.getElementById('login-message');
         const registerMessageDisplay = document.getElementById('register-message');
         const incomingCallModal = document.getElementById('incoming-call-modal');
-        const acceptCallButton = document.getElementById('accept-call');
-        const rejectCallButton = document.getElementById('reject-call');
+        const acceptCallButtonElement = document.getElementById('accept-call');
+        const rejectCallButtonElement = document.getElementById('reject-call');
         const incomingCallerNameDisplay = document.getElementById('incoming-caller-name');
 
 
@@ -397,6 +399,7 @@
         let rememberedUser = localStorage.getItem('rememberedUser');
         let incomingCall;
         let socket;
+        let screenSharing = false;
 
 
         // Configuración de STUN para la conexión Peer-to-Peer
@@ -461,7 +464,7 @@
                 peer.on('call', (call) => {
                     console.log("ACEPTANDO LLAMADA ENTRANTE DE ", call.peer);
                     incomingCall = call;
-                    //setupCall(call); // Llamar a setupCall al aceptar la llamada
+                    setupCall(call); // Llamar a setupCall al aceptar la llamada
                 });
 
                 peer.on('error', (err) => {
@@ -492,6 +495,8 @@
                 if (localStream) {
                     localStream.getTracks().forEach(track => track.stop());
                 }
+                screenSharing = false;
+                shareScreenButton.textContent = 'Compartir Pantalla';
             });
 
             call.on('error', (err) => {
@@ -504,6 +509,8 @@
                 if (localStream) {
                     localStream.getTracks().forEach(track => track.stop());
                 }
+                screenSharing = false;
+                shareScreenButton.textContent = 'Compartir Pantalla';
             });
         }
 
@@ -542,6 +549,52 @@
                 setCallStatus('Error al iniciar la llamada: ' + error.message);
             }
         }
+
+        async function shareScreen() {
+            try {
+                if (screenSharing) {
+                    // Detener el screen sharing y volver a la cámara
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    localStream.getTracks().forEach(track => track.stop());
+                    localStream = stream;
+                    localVideo.srcObject = stream;
+                    screenSharing = false;
+                    shareScreenButton.textContent = 'Compartir Pantalla';
+                    // Si hay una llamada activa, reemplazar el stream
+                    if (isCalling && peer) {
+                        const call = peer.connections[Object.keys(peer.connections)[0]][0];
+                        call.peerConnection.getSenders().forEach(sender => {
+                            if (sender.track.kind === 'video') {
+                                sender.replaceTrack(stream.getVideoTracks()[0]);
+                            }
+                        });
+                    }
+
+                } else {
+                    // Iniciar el screen sharing
+                    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                    localStream.getTracks().forEach(track => track.stop());
+                    localStream = stream;
+                    localVideo.srcObject = stream;
+                    screenSharing = true;
+                    shareScreenButton.textContent = 'Detener Pantalla';
+
+                    // Si hay una llamada activa, reemplazar el stream
+                    if (isCalling && peer) {
+                         const call = peer.connections[Object.keys(peer.connections)[0]][0];
+                        call.peerConnection.getSenders().forEach(sender => {
+                            if (sender.track.kind === 'video') {
+                                sender.replaceTrack(stream.getVideoTracks()[0]);
+                            }
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Error al compartir la pantalla:', err);
+                setCallStatus('Error al compartir la pantalla: ' + err.message);
+            }
+        }
+
 
         // Funciones para mostrar/ocultar secciones
         function showLoginSection() {
@@ -633,6 +686,7 @@
                     await getMediaStream();
                     startPeer(data.userId);
                     startCallButton.addEventListener('click', startCall);
+                    shareScreenButton.addEventListener('click', shareScreen);
                     loadContacts();
 
                 } else {
@@ -655,67 +709,4 @@
         function saveContacts() {
             localStorage.setItem('contacts', JSON.stringify(contacts));
         }
-
-        function addContact(id, name) {
-            if (!contacts.find(c => c.id === id)) {
-                contacts.push({ id, name });
-                saveContacts();
-                populateContactsDropdown();
-            }
-        }
-
-        function populateContactsDropdown() {
-            contactsDropdown.innerHTML = '';
-            contacts.forEach(contact => {
-                const contactLink = document.createElement('a');
-                contactLink.textContent = contact.name + " (" + contact.id + ")";
-                contactLink.href = '#';
-                contactLink.addEventListener('click', () => {
-                    callUserInput.value = contact.id;
-                });
-                contactsDropdown.appendChild(contactLink);
-            });
-        }
-
-        // Event listeners para los botones de mostrar login/register
-        showLoginRegisterButton.addEventListener('click', showLoginSection);
-        showRegisterButtonElement.addEventListener('click', showRegisterSection);
-        showLoginButtonElement.addEventListener('click', showLoginSection);
-
-        // Event listeners para los botones de login y registro
-        loginButtonElement.addEventListener('click', () => {
-            const username = loginUsernameInput.value;
-            const password = loginPasswordInput.value;
-            login(username, password);
-        });
-
-        registerButtonElement.addEventListener('click', () => {
-            const username = registerUsernameInput.value;
-            const password = registerPasswordInput.value;
-            register(username, password);
-        });
-
-        // Event listeners para la ventana emergente de llamada
-        acceptCallButton.addEventListener('click', () => {
-            if (incomingCall) {
-                console.log("ACEPTANDO LLAMADA DE ", incomingCall);
-                const call = peer.call(incomingCall, localStream);
-                setupCall(call);
-                incomingCallModal.style.display = 'none';
-                startCallButton.disabled = false;
-                isCalling = true;
-            }
-        });
-
-        rejectCallButton.addEventListener('click', () => {
-            if (incomingCall) {
-                incomingCallModal.style.display = 'none';
-            }
-        });
-
-        // Al cargar la página, mostrar el formulario de inicio de sesión/registro si no hay usuario recordado
-        if (rememberedUser) {
-            showLoginSection();
-            loginUsernameInput.value = rememberedUser;
-            rememberMeCheckbox.checked
 
