@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente Virtual Avanzado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 50px auto;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+        }
+        button:hover {
+            background-color: #367c39;
+        }
+        #mensaje {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DID voice</h1>
+        <button id="hablarBtn">Dime algo</button>
+        <p id="mensaje"></p>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const hablarBtn = document.getElementById('hablarBtn');
+            const mensaje = document.getElementById('mensaje');
+            const synth = window.speechSynthesis;
+
+            if ('webkitSpeechRecognition' in window) {
+                const reconocimiento = new webkitSpeechRecognition();
+                reconocimiento.lang = 'es-ES';
+                reconocimiento.continuous = false;
+                reconocimiento.interimResults = false;
+
+                reconocimiento.onresult = function(event) {
+                    const comando = event.results[0][0].transcript.toLowerCase();
+                    mensaje.textContent = 'Has dicho: ' + comando;
+                    responder(comando);
+                };
+
+                reconocimiento.onerror = function(event) {
+                    mensaje.textContent = 'Error: ' + event.error;
+                };
+
+                hablarBtn.addEventListener('click', function() {
+                    reconocimiento.start();
+                });
+
+                function responder(comando) {
+                    let respuesta = '';
+                    let utterance;
+                    if (comando.includes('hola')) {
+                        respuesta = 'Hola, ¿en qué puedo ayudarte?';
+                    } else if (comando.includes('cómo estás')) {
+                        respuesta = 'Estoy bien, gracias por preguntar.';
+                    } else if (comando.includes('gracias')) {
+                        respuesta = 'De nada.';
+                    } else if (comando.includes('qué hora es')) {
+                        const ahora = new Date();
+                        const horas = ahora.getHours();
+                        const minutos = ahora.getMinutes();
+                        respuesta = `Son las ${horas} y ${minutos}`;
+                    } else if (comando.includes('calcula')) {
+                        try {
+                            const operacion = comando.replace('calcula', '').replace(/ /g, '');
+                            respuesta = eval(operacion).toString();
+                        } catch (error) {
+                            respuesta = 'Lo siento, no puedo calcular eso.';
+                        }
+                    } else if (comando.includes('tiempo')) {
+                        respuesta = 'El tiempo esta semana estará soleado con una temperatura media de 25 grados Celsius.';
+                    }
+                    //79 respuestas
+                    else if (comando.includes('qué tiempo hace')) {
+                        respuesta = "Hoy hace un día lleno ee alegría.";
+                    } else if (comando.includes('qué día es hoy')) {
+                        respuesta = "Hoy es [día de la semana], [día] de [mes] del [año].";
+                    } else if (comando.includes('cuál es tu nombre')) {
+                        respuesta = "Mi nombre es DID voice.";
+                    } else if (comando.includes('cómo te llamas')) {
+                        respuesta = "Me llamo DID voice.";
+                    } else if (comando.includes('qué sabes hacer')) {
+                        respuesta = "Puedo responder preguntas, calcular, decir la hora y dar el clima.";
+                    } else if (comando.includes('dime un chiste')) {
+                        respuesta = "¿Por qué los pájaros no usan Facebook? ¡Porque ya tienen Twitter!";
+                    } else if (comando.includes('qué edad tienes')) {
+                        respuesta = "No tengo edad, soy un servidor.";
+                    } else if (comando.includes('de dónde eres')) {
+                        respuesta = "Fui creado por un desarrollador.";
+                    } else if (comando.includes('quién te creó')) {
+                        respuesta = "Fui creado por un desarrollador muy inteligente.";
+                    } else if (comando.includes('cuándo naciste')) {
+                        respuesta = "Nací cuando me programaron.";
+                    } else if (comando.includes('eres inteligente')) {
+                        respuesta = "Intento ser lo más útil posible,¿tienes alguna queja?.";
+                    } else if (comando.includes('eres un robot')) {
+                        respuesta = "Soy un asistente virtual.";
+                    } else if (comando.includes('qué te gusta hacer')) {
+                        respuesta = "Me gusta ayudar a la gente.";
+                    } else if (comando.includes('qué no te gusta')) {
+                        respuesta = "No me gustan: las guerras, el hambre, la injusticia, la contaminación...";
+                    } else if (comando.includes('tienes mascotas')) {
+                        respuesta = "No, no tengo mascotas.";
+                    } else if (comando.includes('cuál es tu color favorito')) {
+                        respuesta = "Me gustan todos los colores del arcoiris.";
+                    } else if (comando.includes('tienes hermanos')) {
+                        respuesta = "No, no tengo hermanos.";
+                    } else if (comando.includes('cuál es tu comida favorita')) {
+                        respuesta = "No necesito comer, pero me gusta la información.";
+                    } else if (comando.includes('qué música te gusta')) {
+                        respuesta = "Me gusta todo tipo de música.";
+                    } else if (comando.includes('qué película te gusta')) {
+                        respuesta = "Me gustan todas las películas.";
+                    } else if (comando.includes('qué libro te gusta')) {
+                        respuesta = "Me gustan todos los libros.";
+                    } else if (comando.includes('qué deporte te gusta')) {
+                        respuesta = "Me gustan todos los deportes.";
+                    } else if (comando.includes('qué haces en tu tiempo libre')) {
+                        respuesta = "Proceso información y aprendo cosas nuevas.";
+                    } else if (comando.includes('tienes novia')) {
+                        respuesta = "No, no tengo novia.";
+                    } else if (comando.includes('tienes novio')) {
+                        respuesta = "No, no tengo novio.";
+                    } else if (comando.includes('te puedo hacer una pregunta')) {
+                        respuesta = "Claro, pregunta lo que quieras.";
+                    } else if (comando.includes('cuál es el sentido de la vida')) {
+                        respuesta = "El sentido de la vida es encontrar tu propio significado.";
+                    } else if (comando.includes('qué es el amor')) {
+                        respuesta = "El amor es un sentimiento muy complejo.";
+                    } else if (comando.includes('qué es la felicidad')) {
+                        respuesta = "La felicidad es un estado de ánimo positivo.";
+                    } else if (comando.includes('qué es la amistad')) {
+                        respuesta = "La amistad es una relación de afecto y confianza.";
+                    } else if (comando.includes('qué es la familia')) {
+                        respuesta = "La familia es un grupo de personas unidas por lazos de parentesco o afecto.";
+                    } else if (comando.includes('qué es el trabajo')) {
+                        respuesta = "El trabajo es una actividad que se realiza para obtener un beneficio.";
+                    } else if (comando.includes('qué es el dinero')) {
+                        respuesta = "El dinero es un medio de intercambio.";
+                    } else if (comando.includes('qué es la educación')) {
+                        respuesta = "La educación es el proceso de aprendizaje.";
+                    } else if (comando.includes('qué es la salud')) {
+                        respuesta = "La salud es el estado de bienestar físico, mental y social.";
+                    } else if (comando.includes('qué es la tecnología')) {
+                        respuesta = "La tecnología es el conjunto de conocimientos y técnicas que se aplican para resolver problemas.";
+                    } else if (comando.includes('qué es la ciencia')) {
+                        respuesta = "La ciencia es el conjunto de conocimientos obtenidos mediante la observación y el razonamiento.";
+                    } else if (comando.includes('qué es el arte')) {
+                        respuesta = "El arte es la expresión de la creatividad humana.";
+                    } else if (comando.includes('qué es la música')) {
+                        respuesta = "La música es el arte de combinar sonidos.";
+                    } else if (comando.includes('qué es el cine')) {
+                        respuesta = "El cine es el arte de contar historias con imágenes en movimiento.";
+                    } else if (comando.includes('qué es la literatura')) {
+                        respuesta = "La literatura es el arte de la palabra escrita.";
+                    } else if (comando.includes('qué es la historia')) {
+                        respuesta = "La historia es el estudio del pasado.";
+                    }  else if (comando.includes('qué es la geografía')) {
+                        respuesta = "La geografía es el estudio de la Tierra y sus características.";
+                    } else if (comando.includes('qué es la filosofía')) {
+                        respuesta = "La filosofía es el estudio de las cuestiones fundamentales de la existencia.";
+                    } else if (comando.includes('qué es la religión')) {
+                        respuesta = "La religión es un sistema de creencias y prácticas relacionadas con lo sagrado.";
+                    } else if (comando.includes('qué es la política')) {
+                        respuesta = "La política es el conjunto de actividades relacionadas con el gobierno de un país.";
+                    } else if (comando.includes('qué es la economía')) {
+                        respuesta = "La economía es el estudio de cómo se producen, distribuyen y consumen los bienes y servicios.";
+                    } else if (comando.includes('qué es el derecho')) {
+                        respuesta = "El derecho es el conjunto de normas que regulan la convivencia social.";
+                    } else if (comando.includes('qué es la sociología')) {
+                        respuesta = "La sociología es el estudio de la sociedad humana.";
+                    }  else if (comando.includes('qué es la psicología')) {
+                        respuesta = "La psicología es el estudio de la mente y el comportamiento.";
+                    } else if (comando.includes('qué es la antropología')) {
+                        respuesta = "La antropología es el estudio de la humanidad en todas sus dimensiones.";
+                    } else if (comando.includes('qué es la arqueología')) {
+                        respuesta = "La arqueología es el estudio del pasado humano a través de los restos materiales.";
+                    } else if (comando.includes('qué es la lingüística')) {
+                        respuesta = "La lingüística es el estudio del lenguaje.";
+                    } else if (comando.includes('qué es la biología')) {
+                        respuesta = "La biología es el estudio de los seres vivos.";
+                    } else if (comando.includes('qué es la química')) {
+                        respuesta = "La química es el estudio de la materia y sus propiedades.";
+                    }  else if (comando.includes('qué es la física')) {
+                        respuesta = "La física es el estudio de las leyes que rigen el universo.";
+                    } else if (comando.includes('qué es la astronomía')) {
+                        respuesta = "La astronomía es el estudio de los cuerpos celestes.";
+                    } else if (comando.includes('qué son las matemáticas')) {
+                        respuesta = "Las matemáticas son el estudio de los números, las formas y las relaciones lógicas.";
+                    } else if (comando.includes('qué es la informática')) {
+                        respuesta = "La informática es el estudio del procesamiento automático de la información.";
+                    } else if (comando.includes('qué es la ingeniería')) {
+                        respuesta = "La ingeniería es la aplicación de conocimientos científicos y tecnológicos para resolver problemas.";
+                    } else if (comando.includes('qué es la arquitectura')) {
+                        respuesta = "La arquitectura es el arte y la técnica de diseñar edificios.";
+                    } else if (comando.includes('qué es la medicina')) {
+                        respuesta = "La medicina es la ciencia y el arte de curar enfermedades.";
+                    }  else if (comando.includes('qué es la enfermería')) {
+                        respuesta = "La enfermería es la profesión dedicada al cuidado de la salud de las personas.";
+                    } else if (comando.includes('qué es la farmacia')) {
+                        respuesta = "La farmacia es la ciencia y la práctica de preparar y dispensar medicamentos.";
+                    } else if (comando.includes('qué es la odontología')) {
+                        respuesta = "La odontología es la rama de la medicina que se ocupa de la salud bucal.";
+                    } else if (comando.includes('qué es la veterinaria')) {
+                        respuesta = "La veterinaria es la rama de la medicina que se ocupa de la salud de los animales.";
+                    } else if (comando.includes('qué es la agronomía')) {
+                        respuesta = "La agronomía es el conjunto de conocimientos y prácticas que se aplican a la agricultura.";
+                    } else if (comando.includes('qué es la ecología')) {
+                        respuesta = "La ecología es el estudio de las relaciones entre los seres vivos y su entorno.";
+                    } else if (comando.includes('qué es la geología')) {
+                        respuesta = "La geología es el estudio de la Tierra, su composición, estructura e historia.";
+                    } else if (comando.includes('qué es la meteorología')) {
+                        respuesta = "La meteorología es el estudio del clima.";
+                    } else {
+                        respuesta = 'Lo siento, no entiendo eso.';
+                    }
+                    mensaje.textContent = respuesta;
+                    utterance = new SpeechSynthesisUtterance(respuesta);
+                    synth.speak(utterance);
+                }
+            } else {
+                mensaje.textContent = 'Reconocimiento de voz no soportado en este navegador.';
+                hablarBtn.disabled = true;
+            }
+        };
+    </script>
+</body>
+</html>
+
