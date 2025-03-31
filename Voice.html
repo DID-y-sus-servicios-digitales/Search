@@ -244,7 +244,15 @@
                         respuesta = "La geología es el estudio de la Tierra, su composición, estructura e historia.";
                     } else if (comando.includes('qué es la meteorología')) {
                         respuesta = "La meteorología es el estudio del clima.";
-                    } else {
+                        } else if (comando.includes('a que hora hay que levantarse')) {
+                        respuesta = "depende de para qué.";
+                        } else if (comando.includes('a que te refieres')) {
+                        respuesta = "hay que ver,¿te lo tengo que explicar otra vez?.";
+                        } else if (comando.includes('cuántas cosas sabes')) {
+                        respuesta = "pues... tú pregúntame algo, ya verás si lo sé o no.";
+                        } else if (comando.includes('con que te han programado')) {
+                        respuesta = "Creo que me han programado con html 5 y javascript.";
+                 else {
                         respuesta = 'Lo siento, no entiendo eso.';
                     }
                     mensaje.textContent = respuesta;
