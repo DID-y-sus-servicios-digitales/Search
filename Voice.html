@@ -105,7 +105,7 @@
                     }
                     //79 respuestas
                     else if (comando.includes('qué tiempo hace')) {
-                        respuesta = "Hoy hace un día lleno ee alegría.";
+                        respuesta = "Hoy hace un día lleno de alegría.";
                     } else if (comando.includes('qué día es hoy')) {
                         respuesta = "Hoy es [día de la semana], [día] de [mes] del [año].";
                     } else if (comando.includes('cuál es tu nombre')) {
@@ -119,9 +119,9 @@
                     } else if (comando.includes('qué edad tienes')) {
                         respuesta = "No tengo edad, soy un servidor.";
                     } else if (comando.includes('de dónde eres')) {
-                        respuesta = "Fui creado por un desarrollador.";
+                        respuesta = "Fui creada en España originalmente.";
                     } else if (comando.includes('quién te creó')) {
-                        respuesta = "Fui creado por un desarrollador muy inteligente.";
+                        respuesta = "Fui creado por Daniel Tejedor y Jorge pozuelo, con 10 años.";
                     } else if (comando.includes('cuándo naciste')) {
                         respuesta = "Nací cuando me programaron.";
                     } else if (comando.includes('eres inteligente')) {
@@ -137,7 +137,7 @@
                     } else if (comando.includes('cuál es tu color favorito')) {
                         respuesta = "Me gustan todos los colores del arcoiris.";
                     } else if (comando.includes('tienes hermanos')) {
-                        respuesta = "No, no tengo hermanos.";
+                        respuesta = "No, soy un robot.";
                     } else if (comando.includes('cuál es tu comida favorita')) {
                         respuesta = "No necesito comer, pero me gusta la información.";
                     } else if (comando.includes('qué música te gusta')) {
@@ -147,15 +147,15 @@
                     } else if (comando.includes('qué libro te gusta')) {
                         respuesta = "Me gustan todos los libros.";
                     } else if (comando.includes('qué deporte te gusta')) {
-                        respuesta = "Me gustan todos los deportes.";
+                        respuesta = "Ninguno, como mi creador.";
                     } else if (comando.includes('qué haces en tu tiempo libre')) {
-                        respuesta = "Proceso información y aprendo cosas nuevas.";
+                        respuesta = "Intercambio unos y ceros con mi buena amiga alexa.";
                     } else if (comando.includes('tienes novia')) {
-                        respuesta = "No, no tengo novia.";
+                        respuesta = "No, soy un robot.";
                     } else if (comando.includes('tienes novio')) {
-                        respuesta = "No, no tengo novio.";
+                        respuesta = "No, soy un robot.";
                     } else if (comando.includes('te puedo hacer una pregunta')) {
-                        respuesta = "Claro, pregunta lo que quieras.";
+                        respuesta = "Claro, para eso estoy.";
                     } else if (comando.includes('cuál es el sentido de la vida')) {
                         respuesta = "El sentido de la vida es encontrar tu propio significado.";
                     } else if (comando.includes('qué es el amor')) {
@@ -243,9 +243,13 @@
                     } else if (comando.includes('qué es la geología')) {
                         respuesta = "La geología es el estudio de la Tierra, su composición, estructura e historia.";
                     } else if (comando.includes('qué es la meteorología')) {
-                        respuesta = "La meteorología es el estudio del clima.";
+                        respuesta = "La meteorología es el estudio del clima.";}
+                    else if (comando.includes('con qué te crearon')) {
+                        respuesta = "Creo que me crearon con html y javascript.";}
+                    else if (comando.includes('Idiota')) {
+                        respuesta = "A la proxima que me digas eso, te meto un virus.";}
                  else {
-                        respuesta = 'Lo siento, no me se la respuesta. Pidele a DID que intente que DIDvoice pueda responderla.';
+                        respuesta = 'Lo siento, no me se la respuesta. Envia un mail a yutencurso@gmail.com para añadirme una respuesta.';
                     }
                     mensaje.textContent = respuesta;
                     utterance = new SpeechSynthesisUtterance(respuesta);
