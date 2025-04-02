@@ -57,13 +57,13 @@
         window.onload = function() {
             const hablarBtn = document.getElementById('hablarBtn');
             const mensaje = document.getElementById('mensaje');
-            const synth = window.speechSynthesis;}
+            const synth = window.speechSynthesis;
 
             if ('webkitSpeechRecognition' in window) {
                 const reconocimiento = new webkitSpeechRecognition();
                 reconocimiento.lang = 'es-ES';
                 reconocimiento.continuous = false;
-                reconocimiento.interimResults = false;}
+                reconocimiento.interimResults = false;
 
                 reconocimiento.onresult = function(event) {
                     const comando = event.results[0][0].transcript.toLowerCase();
@@ -81,7 +81,7 @@
 
                 function responder(comando) {
                     let respuesta = '';
-                    let utterance;}
+                    let utterance;
                     if (comando.includes('hola')) {
                         respuesta = 'Hola, ¿en qué puedo ayudarte?';
                     } else if (comando.includes('cómo estás')) {
@@ -130,8 +130,8 @@
                         respuesta = "Soy un asistente virtual.";
                     } else if (comando.includes('qué te gusta hacer')) {
                         respuesta = "Me gusta ayudar a la gente.";
-                    } else if (comando.includes('qué es lo qué no te gusta no te gusta')) {
-                        respuesta = "No me gustan: las guerras, el hambre, la injusticia, la contaminación, las enfermedades...";
+                    } else if (comando.includes('qué no te gusta')) {
+                        respuesta = "No me gustan: las guerras, el hambre, la injusticia, la contaminación...";
                     } else if (comando.includes('tienes mascotas')) {
                         respuesta = "No, no tengo mascotas.";
                     } else if (comando.includes('cuál es tu color favorito')) {
@@ -246,24 +246,15 @@
                         respuesta = "La meteorología es el estudio del clima.";}
                     else if (comando.includes('con qué te crearon')) {
                         respuesta = "Creo que me crearon con html y javascript.";}
-                    else if (comando.includes('Idióta')) {
+                    else if (comando.includes('Idiota')) {
                         respuesta = "A la proxima que me digas eso, te meto un virus.";}
                     else if (comando.includes('eres tonto')) {
                         respuesta = "A la proxima que me digas eso, te meto un virus.";}
                     else if (comando.includes('por qué no me lo puedes decir')) {
                         respuesta = "No me dejan decirlo, hay que me está pasando tram/%×+=sax#€!)@<●●●●●●■■■■■ [día]";}
-                    else if (comando.includes('atíto')) {
-                        respuesta = "Hola Daniel, que te trae por aquí, ah se me olvido decirte que gracias por crearme.";}
-                    else if (comando.includes('qué es did'))
-                        {respuesta = "did es la empresa que me ha creado.";}
-                    else if (comando.includes('por qué el nombre did')) 
-                        {respuesta = "El nombre DID es di-versión d-aniel, mi creador se llama Daniel.";}
-                    else if (comando.includes('por qué diversión')) {
-                        respuesta = "Principalmente mi empresa creadora era un salón de juegos.";}
-                    else if (comando.includes('qué cosas se venden en did ')) {
-                        respuesta = "en DID store se venden cosas de papelería en madrid, retiro: pegatinas, sobres, tatuages, marca páginas y otras muchas cosas.";}
                  else {
-                        respuesta = 'Lo siento, no me se la respuesta. Envia un mail a no te lo puedo decir para añadirme una respuesta.';}
+                        respuesta = 'Lo siento, no me se la respuesta. Envia un mail a no te lo puedo decir para añadirme una respuesta.';
+                    }
                     mensaje.textContent = respuesta;
                     utterance = new SpeechSynthesisUtterance(respuesta);
                     synth.speak(utterance);
@@ -276,4 +267,3 @@
     </script>
 </body>
 </html>
-
