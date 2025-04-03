@@ -98,10 +98,10 @@
                             const operacion = comando.replace('calcula', '').replace(/ /g, '');
                             respuesta = eval(operacion).toString();
                         } catch (error) {
-                            respuesta = 'Lo siento, no puedo calcular eso.';
+                            respuesta = 'Calculo fallido, inténtalo de nuevo.';
                         }
                     } else if (comando.includes('tiempo')) {
-                        respuesta = 'El tiempo esta semana estará soleado con una temperatura media de 25 grados Celsius.';
+                        respuesta = 'El tiempo que hace depende de ti, que tengas buen día.';
                     }
                     //79 respuestas
                     else if (comando.includes('qué tiempo hace')) {
@@ -113,7 +113,7 @@
                     } else if (comando.includes('cómo te llamas')) {
                         respuesta = "Me llamo DID voice.";
                     } else if (comando.includes('qué sabes hacer')) {
-                        respuesta = "Puedo responder preguntas, calcular, decir la hora y dar el clima.";
+                        respuesta = "Puedo responder preguntas, calcular, darte la hora y más cosas que me programarán.";
                     } else if (comando.includes('dime un chiste')) {
                         respuesta = "¿Por qué los pájaros no usan Facebook? ¡Porque ya tienen Twitter!";
                     } else if (comando.includes('qué edad tienes')) {
@@ -130,8 +130,8 @@
                         respuesta = "Soy un asistente virtual.";
                     } else if (comando.includes('qué te gusta hacer')) {
                         respuesta = "Me gusta ayudar a la gente.";
-                    } else if (comando.includes('qué no te gusta')) {
-                        respuesta = "No me gustan: las guerras, el hambre, la injusticia, la contaminación...";
+                    } else if (comando.includes('qué cosas no te gustan')) {
+                        respuesta = "No me gustan: las guerras, el hambre, la injusticia, la contaminación, las enfermedades...";
                     } else if (comando.includes('tienes mascotas')) {
                         respuesta = "No, no tengo mascotas.";
                     } else if (comando.includes('cuál es tu color favorito')) {
@@ -252,6 +252,12 @@
                         respuesta = "A la proxima que me digas eso, te meto un virus.";}
                     else if (comando.includes('por qué no me lo puedes decir')) {
                         respuesta = "No me dejan decirlo, hay que me está pasando tram/%×+=sax#€!)@<●●●●●●■■■■■ [día]";}
+                    else if (comando.includes('qué es did')) {
+                        respuesta = "DID es el nombre de la empresa que me creó";}
+else if (comando.includes('por qué el nombre did')) {
+                        respuesta = "El nombre de DID viene de DIversión Daniel, Daniel es el nombre de mi creador y diversión es porque principalmente el negocio era un salón de juegos";}
+    else if (comando.includes('qué se vende en did')) {
+                        respuesta = "en DID store se venden cosas de papelería en Madrid Retiro: sobres, tatuajes, marca páginas, pegatinas y mucho más";}
                  else {
                         respuesta = 'Lo siento, no me se la respuesta. Envia un mail a no te lo puedo decir para añadirme una respuesta.';
                     }
