@@ -32,8 +32,6 @@ const textoInput = document.getElementById('textoInput');
                 descargaLink.download = 'didsearch qrcode.png'; // Nombre del archivo de descarga
             }
         });
-
-        // Configura tu proyecto de Firebase (¡NO PONGAS TUS CLAVES API DIRECTAMENTE AQUÍ!)
         const firebaseConfig = {
             apiKey: "AIzaSyDixxzOsC6C6gx06xJ9tJF7_GmsVOxymVw",
   authDomain: "spydid5.firebaseapp.com",
