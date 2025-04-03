@@ -2,15 +2,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hazte una tarjeta did</title>
+    <title>Formulario con Ventana Emergente</title>
+    <style>
+        /* Estilos CSS para la ventana emergente */
+        #ventanaEmergente {
+            position: fixed; /* Posición fija en la ventana del navegador */
+            top: 50%;          /* Centrar verticalmente */
+            left: 50%;         /* Centrar horizontalmente */
+            transform: translate(-50%, -50%); /* Centrar el elemento */
+            background-color: white; /* Fondo blanco */
+            padding: 20px;         /* Espacio alrededor del contenido */
+            border: 1px solid black; /* Borde negro de 1px */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            z-index: 10;         /* Asegurar que esté por encima de otros elementos */
+        }
+
+        .oculto {
+            display: none; /* Ocultar la ventana emergente por defecto */
+        }
+
+        #fondoOscuro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+            z-index: 9;
+            display: none; /* Ocultar por defecto */
+        }
+
+    </style>
 </head>
 <body>
-  <a href="index.html"><img src="Volver a DID search.png" width="19%" higth="19%"></a>
+    <a href="index.html"><img src="Volver a DID search.png" width="19%" higth="19%"></a>
 <center>
 <p><h1>Cuenta DID</h1></p>
 <hr>
 <h4>rellena este formulario para crearte una targeta</h4>
-  <center>
+    <button id="abrirFormulario">Abrir Formulario</button>
+</center>
+    <div id="ventanaEmergente" class="oculto">
+        <div class="contenidoVentana">
+            <h2>Introduce tus datos</h2>
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre"><br><br>
             <label for="apellidos">Apellidos:</label>
@@ -18,9 +52,12 @@
             <label for="email">Correo Electrónico:</label>
             <input type="email" id="email"><br><br>
             <button id="enviarDatos">Aceptar</button>
-  </center>
-      <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+            <button id="cerrarFormulario">Cerrar</button>
+        </div>
+    </div>
+    <div id="fondoOscuro" class="oculto"></div>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
    <script>
         // Configura tu proyecto de Firebase (¡NO PONGAS TUS CLAVES API DIRECTAMENTE AQUÍ!)
         const firebaseConfig = {
