@@ -1,0 +1,23 @@
+<HTML>
+<SCRIPT LANGUAGE="JavaScript">
+alert("Te voy a hacer un quiz de cálculo mental de sumas")
+var x,y,z;
+var nota=0;
+for(i=1;i<=10;i++)
+ {
+ x=Math.round(19*Math.random()+1);
+ y=Math.round(19*Math.random()+1);
+ z=parseInt(prompt(x+" + "+y+" = ",""));
+ if(z==x+y)
+ {
+ alert("Muy bien");
+ nota=nota+1;
+ }
+ else
+ {
+ alert("Lo siento, pero "+x+" + "+y+" = "+(x+y));
+ }
+ }
+alert("Tu nota es un "+ (2*nota) +" sobre 10");
+</SCRIPT>
+</HTML> 
