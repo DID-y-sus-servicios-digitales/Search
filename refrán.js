@@ -4,7 +4,11 @@ const refranes = [
     "Camarón que se duerme, se lo lleva la corriente.",
     "El que mucho abarca, poco aprieta.",
     "Más vale tarde que nunca.",
-    "No hay mal que por bien no venga."
+    "No hay mal que por bien no venga.",
+    "Más vale pajaro en mano que ciento volando",
+    "Ave que vuela, a la cazuela.",
+    "El que a buen arbol se arrima, buena sombra le cobija.",
+    "No por mucho madrugar, amanece más temprano.",
 ];
 
 // Función para obtener el refrán de la semana
