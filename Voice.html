@@ -88,7 +88,7 @@
                         respuesta = 'Estoy bien, gracias por preguntar.';
                     } else if (comando.includes('gracias')) {
                         respuesta = 'De nada.';
-                    } else if (comando.includes('qué hora es')) {
+                    } else if (comando.includes('hora')) {
                         const ahora = new Date();
                         const horas = ahora.getHours();
                         const minutos = ahora.getMinutes();
@@ -104,21 +104,21 @@
                         respuesta = 'El tiempo que hace depende de ti, que tengas buen día.';
                     }
                     //79 respuestas
-                    else if (comando.includes('qué tiempo hace')) {
+                    else if (comando.includes('tiempo hace')) {
                         respuesta = "Hoy hace un día lleno de alegría.";
                     } else if (comando.includes('qué día es hoy')) {
                         respuesta = "Hoy es [día de la semana], [día] de [mes] del [año].";
-                    } else if (comando.includes('cuál es tu nombre')) {
+                    } else if (comando.includes('es tu nombre')) {
                         respuesta = "Mi nombre es DID voice.";
                     } else if (comando.includes('cómo te llamas')) {
                         respuesta = "Me llamo DID voice.";
-                    } else if (comando.includes('qué sabes hacer')) {
+                    } else if (comando.includes('sabes hacer')) {
                         respuesta = "Puedo responder preguntas, calcular, darte la hora y más cosas que me programarán.";
-                    } else if (comando.includes('dime un chiste')) {
+                    } else if (comando.includes('un chiste')) {
                         respuesta = "¿Por qué los pájaros no usan Facebook? ¡Porque ya tienen Twitter!";
-                    } else if (comando.includes('qué edad tienes')) {
+                    } else if (comando.includes(' tu edad')) {
                         respuesta = "No tengo edad, soy un servidor.";
-                    } else if (comando.includes('de dónde eres')) {
+                    } else if (comando.includes('dónde eres')) {
                         respuesta = "Fui creada en España originalmente.";
                     } else if (comando.includes('quién te creó')) {
                         respuesta = "Fui creado por Daniel Tejedor y Jorge pozuelo, con 10 años.";
@@ -128,33 +128,33 @@
                         respuesta = "Intento ser lo más útil posible,¿tienes alguna queja?.";
                     } else if (comando.includes('eres un robot')) {
                         respuesta = "Soy un asistente virtual.";
-                    } else if (comando.includes('qué te gusta hacer')) {
+                    } else if (comando.includes('gusta hacer')) {
                         respuesta = "Me gusta ayudar a la gente.";
-                    } else if (comando.includes('qué cosas no te gustan')) {
+                    } else if (comando.includes('no te gusta')) {
                         respuesta = "No me gustan: las guerras, el hambre, la injusticia, la contaminación, las enfermedades...";
                     } else if (comando.includes('tienes mascotas')) {
                         respuesta = "No, no tengo mascotas.";
-                    } else if (comando.includes('cuál es tu color favorito')) {
+                    } else if (comando.includes('color favorito')) {
                         respuesta = "Me gustan todos los colores del arcoiris.";
-                    } else if (comando.includes('tienes hermanos')) {
+                    } else if (comando.includes('tienes herman')) {
                         respuesta = "No, soy un robot.";
-                    } else if (comando.includes('cuál es tu comida favorita')) {
+                    } else if (comando.includes('comida favorita')) {
                         respuesta = "No necesito comer, pero me gusta la información.";
-                    } else if (comando.includes('qué música te gusta')) {
+                    } else if (comando.includes('música favorita')) {
                         respuesta = "Me gusta todo tipo de música.";
-                    } else if (comando.includes('qué película te gusta')) {
+                    } else if (comando.includes('película favorita')) {
                         respuesta = "Me gustan todas las películas.";
-                    } else if (comando.includes('qué libro te gusta')) {
+                    } else if (comando.includes('qué libro favorito')) {
                         respuesta = "Me gustan todos los libros.";
-                    } else if (comando.includes('qué deporte te gusta')) {
-                        respuesta = "Ninguno, como mi creador.";
-                    } else if (comando.includes('qué haces en tu tiempo libre')) {
+                    } else if (comando.includes('deporte favorito')) {
+                        respuesta = "No practico ninguno, por lo que no lo se";
+                    } else if (comando.includes('haces en tu tiempo libre')) {
                         respuesta = "Intercambio unos y ceros con mi buena amiga alexa.";
                     } else if (comando.includes('tienes novia')) {
                         respuesta = "No, soy un robot.";
                     } else if (comando.includes('tienes novio')) {
                         respuesta = "No, soy un robot.";
-                    } else if (comando.includes('te puedo hacer una pregunta')) {
+                    } else if (comando.includes('puedo hacerte una pregunta')) {
                         respuesta = "Claro, para eso estoy.";
                     } else if (comando.includes('cuál es el sentido de la vida')) {
                         respuesta = "El sentido de la vida es encontrar tu propio significado.";
@@ -246,12 +246,12 @@
                         respuesta = "La meteorología es el estudio del clima.";}
                     else if (comando.includes('con qué te crearon')) {
                         respuesta = "Creo que me crearon con html y javascript.";}
-                    else if (comando.includes('Idiota')) {
+                    else if (comando.includes('idiota')) {
                         respuesta = "A la proxima que me digas eso, te meto un virus.";}
-                    else if (comando.includes('eres tonto')) {
+                    else if (comando.includes('tonto')) {
                         respuesta = "A la proxima que me digas eso, te meto un virus.";}
                     else if (comando.includes('por qué no me lo puedes decir')) {
-                        respuesta = "No me dejan decirlo, hay que me está pasando tram/%×+=sax#€!)@<●●●●●●■■■■■ [día]";}
+                        respuesta = "No me dejan decirlo, hay que me está pasando tram/%×+=sax#€!)@<●●●●●●■■■■■";}
                     else if (comando.includes('qué es did')) {
                         respuesta = "DID es el nombre de la empresa que me creó";}
 else if (comando.includes('por qué el nombre did')) {
@@ -259,7 +259,7 @@ else if (comando.includes('por qué el nombre did')) {
     else if (comando.includes('qué se vende en did')) {
                         respuesta = "en DID store se venden cosas de papelería en Madrid Retiro: sobres, tatuajes, marca páginas, pegatinas y mucho más";}
                  else {
-                        respuesta = 'Lo siento, no me se la respuesta. Envia un mail a no te lo puedo decir para añadirme una respuesta.';
+                        respuesta = 'No te entiendo o no me se la respuesta';
                     }
                     mensaje.textContent = respuesta;
                     utterance = new SpeechSynthesisUtterance(respuesta);
