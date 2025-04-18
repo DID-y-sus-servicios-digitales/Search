@@ -256,11 +256,13 @@
                         respuesta = "DID es el nombre de la empresa que me creó";}
 else if (comando.includes('por qué el nombre did')) {
                         respuesta = "El nombre de DID viene de DIversión Daniel, Daniel es el nombre de mi creador y diversión es porque principalmente el negocio era un salón de juegos";}
-    else if (comando.includes('qué se vende en did')) {
-                        respuesta = "en DID store se venden cosas de papelería en Madrid Retiro: sobres, tatuajes, marca páginas, pegatinas y mucho más";}
+    else if (comando.includes('imprimir')) {
+                        respuesta = "abriendo página de impresión";
+    window.print()}
                  else {
-                        respuesta = 'No te entiendo o no me se la respuesta';
-                    }
+                        respuesta = 'No te entiendo o no me se la respuesta';}
+                else if (comando.includes('qué se vende en did')) {
+                        respuesta = "en DID store se venden cosas de papelería en Madrid Retiro: sobres, tatuajes, marca páginas, pegatinas y mucho más";}
                     mensaje.textContent = respuesta;
                     utterance = new SpeechSynthesisUtterance(respuesta);
                     synth.speak(utterance);
