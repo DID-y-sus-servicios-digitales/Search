@@ -9,6 +9,28 @@
 
   gtag('config', 'G-FX0LELX31C');
 </script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>      <!-- El SDK principal de Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics-compat.js"></script> <!-- El SDK de Analytics -->
+    <!-- Script para inicializar Firebase y Analytics - ¡Añade este! -->
+<script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
+    authDomain: "didia5.firebaseapp.com",
+    databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "didia5",
+    storageBucket: "didia5.firebasestorage.app",
+    messagingSenderId: "652405109295",
+    appId: "1:652405109295:web:714467f3edb571c6a28cda",
+    measurementId: "G-1SB0J1PPK9"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const analytics = firebase.Analytics(app);
+  // Si necesitas enviar eventos personalizados, puedes usar la variable 'analytics', por ejemplo:
+  // analytics.logEvent('user_login');
+   analytics.logEvent('user_name')
+</script>
     <link rel="icon" href="calculadora.png" type="image/png">
     <title>Calculadora</title>
 <meta name="theme-color" content="#ffb8f2">
