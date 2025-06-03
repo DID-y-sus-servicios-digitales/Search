@@ -93,15 +93,29 @@
     <hr>
 <p><font face="Alata">Creado por Daniel Tejedor</font></p>
 </center>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4DDLTBHSV6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<script src="https://www.gstatic.com/firebasejs/VERSION/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/VERSION/firebase-analytics-compat.js"></script>
+    <script>
+    // Tu configuración de Firebase (esto es lo específico de tu proyecto didia5)
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY", // Este será un valor real de tu proyecto
+      authDomain: "didia5.firebaseapp.com",
+      projectId: "didia5",
+      storageBucket: "didia5.appspot.com",
+      messagingSenderId: "TU_SENDER_ID", // Este será un valor real
+      appId: "1:652405109295:web:714467f3edb571c6a28cda",
+      measurementId: "TU_MEASUREMENT_ID" // Este será el ID de medición de Analytics
+    };
 
-  gtag('config', 'G-4DDLTBHSV6');
-</script>
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Obtiene la instancia de Analytics
+    const analytics = firebase.analytics();
+
+    // Ahora, con analytics inicializado, el SDK automáticamente empieza a rastrear vistas de página.
+
+    </script>
 <script src="refrán.js"></script>
 </body>
 </html>
