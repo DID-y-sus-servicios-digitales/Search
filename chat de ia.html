@@ -1,0 +1,126 @@
+<html>
+<head>
+    <style>
+        .mensaje-usuario{
+            color: #000;
+        }
+        .mensaje-modelo{
+            background-image: linear-gradient(#f00, #f0f);
+            color: #fff;
+            border-radius: 20px;
+        }
+        input{
+            border-radius: 20px;
+            font-size: 50px;
+            border: 4px solid #f0f;
+        }
+        button{
+            font-size: 50px;
+            background-color: #fff;
+            border: 4px solid #f00;
+            border-radius: 20px;
+        }
+    </style>
+<title>tu asesor personal</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<center>
+    <h1>Hola, soy Alexia, tu asesora personal sobre móviles</h1>
+    <h3>Creado por Daniel Tejedor, para todos los que se propongan hacer algo en su móvil. ❤️</h3>
+<input placeholder="Cuál es el problema?" id="input-usuario"></input><button id="boton-enviar">Preguntar</button>
+<h3 id="salida-chat"></h3>
+</center>
+<script type="module">
+    // Importa la clase GoogleGenerativeAI desde el módulo de Google
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+// -------------------------------------------------------------------
+//                  CONFIGURACIÓN INICIAL
+// -------------------------------------------------------------------
+
+// 1. REEMPLAZA "TU_API_KEY" con la clave que obtuviste de Google AI Studio.
+const API_KEY = "AIzaSyBMWF8rGF8azHBajqYkxLWOSGa3M3659ss";
+
+// 2. CONECTA TUS ELEMENTOS HTML AQUÍ
+// Asegúrate de que tu HTML tenga un <input id="input-usuario"> y un <div id="salida-chat">
+const userInput = document.getElementById('input-usuario');
+const chatOutput = document.getElementById('salida-chat');
+const sendButton = document.getElementById('boton-enviar'); // Asume que tienes un botón con este id
+
+// -------------------------------------------------------------------
+//                  LÓGICA DEL CHAT CON GEMINI
+// -------------------------------------------------------------------
+
+// Inicializa el modelo de Gemini
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+// Mantiene el historial para que el chat tenga contexto
+let conversationHistory = [];
+
+/**
+ * Función principal para enviar un mensaje a la API de Gemini.
+ */
+async function sendMessage() {
+  const message = userInput.value.trim();
+  if (!message) {
+    return; // No hace nada si el mensaje está vacío
+  }
+
+  // Muestra el mensaje del usuario en el output
+  // Puedes darle el estilo que quieras en tu CSS
+  chatOutput.innerHTML += `<div class="mensaje-usuario">${message}</div>`;
+
+  // Limpia el input y deshabilita el botón mientras espera la respuesta
+  userInput.value = '';
+  sendButton.disabled = true;
+
+  try {
+    // Inicia el chat con el historial previo
+    const chat = model.startChat({
+      history: conversationHistory,
+    });
+
+    // Envía el mensaje y espera la respuesta
+    const result = await chat.sendMessage(message);
+    const response = await result.response;
+    const modelMessage = response.text();
+
+    // Muestra la respuesta del modelo en el output
+    // Puedes darle el estilo que quieras en tu CSS
+    chatOutput.innerHTML += `<div class="mensaje-modelo">${modelMessage}</div>`;
+
+    // Actualiza el historial con el nuevo par de mensajes (usuario y modelo)
+    conversationHistory.push({ role: "user", parts: [{ text: message }] });
+    conversationHistory.push({ role: "model", parts: [{ text: modelMessage }] });
+
+  } catch (error) {
+    console.error("Error al enviar el mensaje:", error);
+    chatOutput.innerHTML += `<div class="mensaje-error"><strong>Error:</strong> No se pudo obtener una respuesta.</div>`;
+  } finally {
+    // Reactiva el botón y pone el foco en el input
+    sendButton.disabled = false;
+    userInput.focus();
+    // Hace scroll hacia el final del chat
+    chatOutput.scrollTop = chatOutput.scrollHeight;
+  }
+}
+
+// -------------------------------------------------------------------
+//                  EVENT LISTENERS
+// -------------------------------------------------------------------
+
+// Escucha el clic en el botón de enviar
+sendButton.addEventListener('click', sendMessage);
+
+// Escucha la tecla "Enter" en el campo de texto
+userInput.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    sendMessage();
+  }
+});
+
+</script>
+</body>
+</html>
