@@ -104,10 +104,10 @@ async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) {
     return; // No hace nada si el mensaje está vacío
-      analytics.logEvent("Mensaje enviado a Gemini")
   }
 
   // Muestra el mensaje del usuario en el output
+  analytics.logEvent("Mensaje enviado a Gemini");
   // Puedes darle el estilo que quieras en tu CSS
   chatOutput.innerHTML += `<div class="mensaje-usuario">${message}</div>`;
 
