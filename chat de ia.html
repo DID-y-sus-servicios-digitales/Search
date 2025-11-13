@@ -30,8 +30,16 @@
   // analytics.logEvent('user_login');
    analytics.logEvent('user_name')
 </script>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
+        body{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center
+          font-family: "Open Sans";
+        }
         .mensaje-usuario{
             color: #000;
         }
@@ -65,34 +73,31 @@
 </head>
 <body>
     <a href="index.html" class="boton-ia">DID search</a>
-<center>
 <input placeholder="Cuál es el problema?" id="input-usuario"></input><button id="boton-enviar">Preguntar</button>
 <h3 id="salida-chat"></h3>
-</center>
 <script type="module">
     // Importa la clase GoogleGenerativeAI desde el módulo de Google
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+// import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai"; // Ya no es necesario para OpenRouter
 
 // -------------------------------------------------------------------
 //                  CONFIGURACIÓN INICIAL
 // -------------------------------------------------------------------
 
-// 1. REEMPLAZA "TU_API_KEY" con la clave que obtuviste de Google AI Studio.
-const API_KEY = "AIzaSyC3yd3XV6LvlzJK4na6n8J3IRVj_SoWeJo";
+// 1. REEMPLAZA con tu clave de API de OpenRouter.
+const OPENROUTER_API_KEY = "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";
 
-// 2. CONECTA TUS ELEMENTOS HTML AQUÍ
+// 2. ESPECIFICA el modelo que quieres usar de OpenRouter.
+const MODEL_NAME = "openai/gpt-3.5-turbo"; // Ejemplo, puedes cambiarlo
+
+// 3. CONECTA TUS ELEMENTOS HTML AQUÍ
 // Asegúrate de que tu HTML tenga un <input id="input-usuario"> y un <div id="salida-chat">
 const userInput = document.getElementById('input-usuario');
 const chatOutput = document.getElementById('salida-chat');
 const sendButton = document.getElementById('boton-enviar'); // Asume que tienes un botón con este id
 
 // -------------------------------------------------------------------
-//                  LÓGICA DEL CHAT CON GEMINI
+//                  LÓGICA DEL CHAT CON OPENROUTER
 // -------------------------------------------------------------------
-
-// Inicializa el modelo de Gemini
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Mantiene el historial para que el chat tenga contexto
 let conversationHistory = [];
@@ -100,7 +105,7 @@ let conversationHistory = [];
 /**
  * Función principal para enviar un mensaje a la API de Gemini.
  */
-async function sendMessage() {
+async function sendMessage() { 
   const message = userInput.value.trim();
   if (!message) {
     return; // No hace nada si el mensaje está vacío
@@ -116,23 +121,36 @@ async function sendMessage() {
   sendButton.disabled = true;
 
   try {
-    // Inicia el chat con el historial previo
-    const chat = model.startChat({
-      history: conversationHistory,
+    // Actualiza el historial con el mensaje del usuario ANTES de enviarlo
+    conversationHistory.push({ role: "user", content: message });
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+        "HTTP-Referer": `${location.protocol}//${location.host}`, // Tu URL del sitio
+        "X-Title": "genDID AI", // El nombre de tu app
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "model": MODEL_NAME,
+        "messages": conversationHistory
+      })
     });
 
-    // Envía el mensaje y espera la respuesta
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const modelMessage = response.text();
+    if (!response.ok) {
+        throw new Error(`Error de red: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const modelMessage = data.choices[0].message.content;
 
     // Muestra la respuesta del modelo en el output
     // Puedes darle el estilo que quieras en tu CSS
     chatOutput.innerHTML += `<div class="mensaje-modelo">${modelMessage}</div>`;
 
-    // Actualiza el historial con el nuevo par de mensajes (usuario y modelo)
-    conversationHistory.push({ role: "user", parts: [{ text: message }] });
-    conversationHistory.push({ role: "model", parts: [{ text: modelMessage }] });
+    // Actualiza el historial con la respuesta del modelo
+    conversationHistory.push({ role: "assistant", content: modelMessage });
 
   } catch (error) {
     console.error("Error al enviar el mensaje:", error);
