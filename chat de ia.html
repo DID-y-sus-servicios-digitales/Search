@@ -1,36 +1,9 @@
 <html>
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FX0LELX31C"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FX0LELX31C');
-</script>
-    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>      <!-- El SDK principal de Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics-compat.js"></script> <!-- El SDK de Analytics -->
-    <!-- Script para inicializar Firebase y Analytics - ¡Añade este! -->
-<script>
-    const firebaseConfig = {
-    apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
-    authDomain: "didia5.firebaseapp.com",
-    databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "didia5",
-    storageBucket: "didia5.firebasestorage.app",
-    messagingSenderId: "652405109295",
-    appId: "1:652405109295:web:714467f3edb571c6a28cda",
-    measurementId: "G-1SB0J1PPK9"
-  };
-
-  // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const analytics = firebase.Analytics(app);
-  // Si necesitas enviar eventos personalizados, puedes usar la variable 'analytics', por ejemplo:
-  // analytics.logEvent('user_login');
-   analytics.logEvent('user_name')
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <title>genDID AI</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" href="favicon-16x16.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body{
@@ -67,111 +40,69 @@
         }
     </style>
     
-<title>genDID AI: gemini api</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="icon" href="favicon-16x16.png" type="image/png">
 </head>
 <body>
     <a href="index.html" class="boton-ia">DID search</a>
 <input placeholder="Cuál es el problema?" id="input-usuario"></input><button id="boton-enviar">Preguntar</button>
 <h3 id="salida-chat"></h3>
 <script type="module">
-    // Importa la clase GoogleGenerativeAI desde el módulo de Google
-// import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai"; // Ya no es necesario para OpenRouter
+const DEEPSEEK_API_KEY = "sk-1e46f16e65cf47189419cd9560d3b1a9";
+const MODEL_NAME = "deepseek-chat";
 
-// -------------------------------------------------------------------
-//                  CONFIGURACIÓN INICIAL
-// -------------------------------------------------------------------
-
-// 1. REEMPLAZA con tu clave de API de OpenRouter.
-const OPENROUTER_API_KEY = "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";
-
-// 2. ESPECIFICA el modelo que quieres usar de OpenRouter.
-const MODEL_NAME = "openai/gpt-3.5-turbo"; // Ejemplo, puedes cambiarlo
-
-// 3. CONECTA TUS ELEMENTOS HTML AQUÍ
-// Asegúrate de que tu HTML tenga un <input id="input-usuario"> y un <div id="salida-chat">
 const userInput = document.getElementById('input-usuario');
 const chatOutput = document.getElementById('salida-chat');
-const sendButton = document.getElementById('boton-enviar'); // Asume que tienes un botón con este id
+const sendButton = document.getElementById('boton-enviar');
 
-// -------------------------------------------------------------------
-//                  LÓGICA DEL CHAT CON OPENROUTER
-// -------------------------------------------------------------------
-
-// Mantiene el historial para que el chat tenga contexto
 let conversationHistory = [];
 
-/**
- * Función principal para enviar un mensaje a la API de Gemini.
- */
 async function sendMessage() { 
   const message = userInput.value.trim();
   if (!message) {
-    return; // No hace nada si el mensaje está vacío
+    return;
   }
 
-  // Muestra el mensaje del usuario en el output
-  analytics.logEvent("Mensaje enviado a Gemini");
-  // Puedes darle el estilo que quieras en tu CSS
   chatOutput.innerHTML += `<div class="mensaje-usuario">${message}</div>`;
 
-  // Limpia el input y deshabilita el botón mientras espera la respuesta
   userInput.value = '';
   sendButton.disabled = true;
 
   try {
-    // Actualiza el historial con el mensaje del usuario ANTES de enviarlo
     conversationHistory.push({ role: "user", content: message });
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://api.deepseek.com/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-        "HTTP-Referer": `${location.protocol}//${location.host}`, // Tu URL del sitio
-        "X-Title": "genDID AI", // El nombre de tu app
+        "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "model": MODEL_NAME,
-        "messages": conversationHistory
+        model: MODEL_NAME,
+        messages: conversationHistory
       })
     });
 
     if (!response.ok) {
-        throw new Error(`Error de red: ${response.status} ${response.statusText}`);
+      throw new Error(`Error de red: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
     const modelMessage = data.choices[0].message.content;
 
-    // Muestra la respuesta del modelo en el output
-    // Puedes darle el estilo que quieras en tu CSS
     chatOutput.innerHTML += `<div class="mensaje-modelo">${modelMessage}</div>`;
 
-    // Actualiza el historial con la respuesta del modelo
     conversationHistory.push({ role: "assistant", content: modelMessage });
 
   } catch (error) {
     console.error("Error al enviar el mensaje:", error);
     chatOutput.innerHTML += `<div class="mensaje-error"><strong>Error:</strong> No se pudo obtener una respuesta.</div>`;
   } finally {
-    // Reactiva el botón y pone el foco en el input
     sendButton.disabled = false;
     userInput.focus();
-    // Hace scroll hacia el final del chat
     chatOutput.scrollTop = chatOutput.scrollHeight;
   }
 }
-
-// -------------------------------------------------------------------
-//                  EVENT LISTENERS
-// -------------------------------------------------------------------
-
-// Escucha el clic en el botón de enviar
 sendButton.addEventListener('click', sendMessage);
 
-// Escucha la tecla "Enter" en el campo de texto
 userInput.addEventListener('keypress', (event) => {
   if (event.key === 'Enter') {
     sendMessage();
