@@ -1,98 +1,108 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>genDID AI</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="icon" href="favicon-16x16.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body{
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center
-          font-family: "Open Sans";
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: "Open Sans", sans-serif;
+            margin: 20px;
         }
-        .mensaje-usuario{
-            color: #000;
+        #salida-chat {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
         }
-        .mensaje-modelo{
-            background-image: linear-gradient(#f00, #f0f);
+        .mensaje-usuario {
+            color: #444;
+            margin: 10px 0;
+            text-align: right;
+            font-weight: bold;
+        }
+        .mensaje-modelo {
+            background-image: linear-gradient(to right, #f00, #f0f);
             color: #fff;
-            border-radius: 20px;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            line-height: 1.5;
         }
-        input{
+        input {
             border-radius: 20px;
-            font-size: 50px;
-            border: 4px solid #f0f;
+            font-size: 18px;
+            border: 3px solid #f0f;
+            padding: 10px 20px;
+            width: 80%;
+            max-width: 400px;
         }
-        button{
-            font-size: 50px;
+        button {
+            font-size: 18px;
             background-color: #fff;
-            border: 4px solid #f00;
+            border: 3px solid #f00;
             border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
         }
-        .boton-ia{
-             border-radius:20px ;
-             border:2px solid #ff00ff ;
-             background-color: white;
+        .boton-ia {
+            border-radius: 20px;
+            border: 2px solid #ff00ff;
+            background-color: white;
+            padding: 5px 15px;
             text-decoration: none;
+            color: #333;
+            margin-bottom: 20px;
         }
     </style>
-    
 </head>
 <body>
+
     <a href="index.html" class="boton-ia">DID search</a>
-<input placeholder="Cuál es el problema?" id="input-usuario"></input><button id="boton-enviar">Preguntar</button>
-<h3 id="salida-chat"></h3>
+    <input placeholder="Cuál es el problema?" id="input-usuario">
+    <button id="boton-enviar">Preguntar</button>
+    <div id="salida-chat"></div>
+
 <script>
 const userInput = document.getElementById('input-usuario');
-const chatOutput = document.getElementById('salida-chat'); // Asegúrate de usar este ID
+const chatOutput = document.getElementById('salida-chat');
 const sendButton = document.getElementById('boton-enviar');
 
 async function preguntarIA() {
-  // 1. CORRECCIÓN: Obtener el .value (lo que el usuario escribió)
-  const miPregunta = userInput.value;
+    const miPregunta = userInput.value.trim();
+    if (!miPregunta) return;
 
-  if (!miPregunta) return; // No enviar si está vacío
-
-  try {
-    // Limpiar el input mientras carga
+    chatOutput.innerHTML += `<div class="mensaje-usuario">Tú: ${miPregunta}</div>`;
     userInput.value = '';
 
-    const response = await fetch('https://did-ia.vercel.app/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: miPregunta })
-    });
+    try {
+        const response = await fetch('https://did-ia.vercel.app/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: miPregunta })
+        });
 
-    const data = await response.json();
-    
-    // 2. CORRECCIÓN: Usar "Backticks" ` para que ${} funcione
-    // Y usar la variable correcta (chatOutput en lugar de contenedor)
-    chatOutput.innerHTML += `<div class="mensaje-usuario">${miPregunta}</div>`;
-    
-    if (data.respuesta) {
-      chatOutput.innerHTML += `<div class="mensaje-modelo">${data.respuesta}</div>`;
-    } else {
-      chatOutput.innerHTML += `<div class="mensaje-error">Error: ${data.error}</div>`;
+        const data = await response.json();
+        
+        if (data.respuesta) {
+            chatOutput.innerHTML += `<div class="mensaje-modelo">${data.respuesta}</div>`;
+        } else {
+            chatOutput.innerHTML += `<div style="color:red">Error: ${data.error}</div>`;
+        }
+    } catch (error) {
+        chatOutput.innerHTML += `<div style="color:red">Error de conexión</div>`;
     }
-
-    // Auto-scroll hacia abajo para ver el mensaje nuevo
-    chatOutput.scrollTop = chatOutput.scrollHeight;
-
-  } catch (error) {
-    // 3. CORRECCIÓN: Mostrar el error real en consola
-    console.error("No se pudo conectar con el servidor:", error);
-  }
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 sendButton.addEventListener("click", preguntarIA);
-
-// OPCIONAL: Enviar también al pulsar la tecla "Enter"
-userInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") preguntarIA();
-});
+userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") preguntarIA(); });
 </script>
 </body>
 </html>
