@@ -47,12 +47,19 @@
 <h3 id="salida-chat"></h3>
 <script>
 const userInput = document.getElementById('input-usuario');
-const chatOutput = document.getElementById('salida-chat');
+const chatOutput = document.getElementById('salida-chat'); // Asegúrate de usar este ID
 const sendButton = document.getElementById('boton-enviar');
+
 async function preguntarIA() {
-  const miPregunta = userInput;
+  // 1. CORRECCIÓN: Obtener el .value (lo que el usuario escribió)
+  const miPregunta = userInput.value;
+
+  if (!miPregunta) return; // No enviar si está vacío
 
   try {
+    // Limpiar el input mientras carga
+    userInput.value = '';
+
     const response = await fetch('https://did-ia.vercel.app/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -61,15 +68,31 @@ async function preguntarIA() {
 
     const data = await response.json();
     
-    // Como simplificamos el servidor, aquí solo recibes .respuesta
-    contenedor.innerHTML += '<div class="mensaje-usuario">${miPregunta}</div>';
-    contenedor.innerHTML += '<div class="mensaje-modelo">${data.respuesta}</div>';
+    // 2. CORRECCIÓN: Usar "Backticks" ` para que ${} funcione
+    // Y usar la variable correcta (chatOutput en lugar de contenedor)
+    chatOutput.innerHTML += `<div class="mensaje-usuario">${miPregunta}</div>`;
+    
+    if (data.respuesta) {
+      chatOutput.innerHTML += `<div class="mensaje-modelo">${data.respuesta}</div>`;
+    } else {
+      chatOutput.innerHTML += `<div class="mensaje-error">Error: ${data.error}</div>`;
+    }
+
+    // Auto-scroll hacia abajo para ver el mensaje nuevo
+    chatOutput.scrollTop = chatOutput.scrollHeight;
 
   } catch (error) {
-    console.error("No se pudo conectar con el servidor:", preguntarIA);
+    // 3. CORRECCIÓN: Mostrar el error real en consola
+    console.error("No se pudo conectar con el servidor:", error);
   }
 }
+
 sendButton.addEventListener("click", preguntarIA);
+
+// OPCIONAL: Enviar también al pulsar la tecla "Enter"
+userInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") preguntarIA();
+});
 </script>
 </body>
 </html>
