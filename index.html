@@ -1,41 +1,41 @@
 <html>
 <head>
+    <title>DID search</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="description" content="DID search es una web para buscar que funciona con google. También tenemos servicios utiles y de código abierto como nuestro nuevo chat de ia built-in accessibility con Gemini. diseñado con ❤️ por Daniel Tejedor Muñiz">
+    <meta name="google-site-verification" content="3ShgbDeoQEG2geh6ZZNWJnssTXnLhAy5RxH3c4o6qs0" />
+
+    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="manifest" href="https://yutencurso.github.io/DIDapp/manifest.json">
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FX0LELX31C"></script>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
-  gtag('config', 'G-FX0LELX31C');
-</script>
-    <!-- Scripts del SDK de Firebase - ¡Añade estos! -->
-<!-- Asegúrate de usar la versión más reciente. Puedes verificar la última versión estable buscando "Firebase JS SDK release notes". -->
-<!-- Como ejemplo, usaremos la versión 10.11.0, pero verifica cuál es la última. -->
-<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>      <!-- El SDK principal de Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics-compat.js"></script> <!-- El SDK de Analytics -->
-    <!-- Script para inicializar Firebase y Analytics - ¡Añade este! -->
-<script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FX0LELX31C"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FX0LELX31C');
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics-compat.js"></script>
+    <script>
     const firebaseConfig = {
-    apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
-    authDomain: "didia5.firebaseapp.com",
-    databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "didia5",
-    storageBucket: "didia5.firebasestorage.app",
-    messagingSenderId: "652405109295",
-    appId: "1:652405109295:web:714467f3edb571c6a28cda",
-    measurementId: "G-1SB0J1PPK9"
-  };
-
-  // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const analytics = firebase.Analytics(app);
-  // Si necesitas enviar eventos personalizados, puedes usar la variable 'analytics', por ejemplo:
-  // analytics.logEvent('user_login');
-   analytics.logEvent('user_name')
-</script>
+        apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
+        authDomain: "didia5.firebaseapp.com",
+        databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "didia5",
+        storageBucket: "didia5.firebasestorage.app",
+        messagingSenderId: "652405109295",
+        appId: "1:652405109295:web:714467f3edb571c6a28cda",
+        measurementId: "G-1SB0J1PPK9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const analytics = firebase.analytics();
+    analytics.logEvent('user_name');
+    </script>
 <style>
     body{
         font-family: 'Open Sans';
@@ -94,17 +94,13 @@
     text-decoration: none;
     color: black;
 }
+.bookmark-link {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5;
+}
 </style>
-<meta name="google-site-verification" content="3ShgbDeoQEG2geh6ZZNWJnssTXnLhAy5RxH3c4o6qs0" />
-      <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-<meta name="description" content="DID search es una web para buscar que funciona con google. También tenemos servicios utiles y de código abierto como nuestro nuevo chat de ia built-in accessibility con Gemini. diseñado con ❤️ por Daniel Tejedor Muñiz">
-<link rel="icon" href="favicon.png" type="image/png">
-<title>DID search</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
-<body>
+<body style="text-align: center;">
 <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb">
 </script>
 <div class="ventanas animate__animated animate__zoomIn">
@@ -116,65 +112,45 @@
 <a href="calculadora.html" class="menu animate__animated animate__zoomIn" style="left: 200px;">  Calculadora</a>
 <a href="Quiz.html" class="menu animate__animated animate__zoomIn" style="left: 370px;">  Cálculo mental</a>
 <a href="Hacer socio.html" class="menu animate__animated animate__zoomIn" style="left: 540px;">  Create una cuenta</a></div>
-<center>
-    <section class="daba">
+<section class="daba">
     <svg width="100%" height="35%"></svg>
     <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" height="30%" width="30%">
 <details>
-<summary><h2><font face="open sans">Marcadores</font></h2></summary>
-<a href="https://sites.google.com/view/muniz-pelculas/inicio?authuser=0" target="_blank"><font face="open sans" size="5">Muniz peliculas</font></a>
-<p><a href="https://www.youtube.com/?gl=ES&hl=es&app=desktop" target="_blank"><font face="open sans" size="5">youtube</font></a></p>
-<p><a href="https://mail.google.com/mail/mu/mp/231/#tl/priority/%5Esmartlabel_personal" target="_blank"><font face="open sans" size="5">gmail</font></a></p>
-<p><a href="https://m365.cloud.microsoft/?auth=2" target="_blank"><font face="open sans" size="5">Copilot M365</font></a></p>
+<summary><h2>Marcadores</h2></summary>
+<a href="https://sites.google.com/view/muniz-pelculas/inicio?authuser=0" target="_blank" class="bookmark-link">Muniz peliculas</a>
+<p><a href="https://www.youtube.com/?gl=ES&hl=es&app=desktop" target="_blank" class="bookmark-link">youtube</a></p>
+<p><a href="https://mail.google.com/mail/mu/mp/231/#tl/priority/%5Esmartlabel_personal" target="_blank" class="bookmark-link">gmail</a></p>
+<p><a href="https://m365.cloud.microsoft/?auth=2" target="_blank" class="bookmark-link">Copilot M365</a></p>
 </details></section>
 <h1>Generador de qr</h1>
 <input type="text" id="textoInput" placeholder="Introduce el texto/URL">
-    <button id="generarBtn">Generar QR</button>
-    <div id="qrcode"></div>
-    <p>para descargar, haz una capura de pantalla y recortala al qr</p>
-    <hr>
-    <h1>El tiempo</h1>
-    <div id="ww_c5ca9a8341340" v='1.3' loc='auto' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl6516"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#0097A7","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3}'>Más previsiones: <a href="https://oneweather.org/es/seville/" id="ww_c5ca9a8341340_u" target="_blank">El tiempo Sevilla</a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_c5ca9a8341340"></script>
-    <hr>
-    <h1>Instala la app</h1><a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar</a><p>¡No ocupa almacenamiento!</p>
-    <hr>
-    <p>Creado por Daniel Tejedor</p>
-</center>
-<script src="https://www.gstatic.com/firebasejs/VERSION/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/VERSION/firebase-analytics-compat.js"></script>
-    <script>
-    // Tu configuración de Firebase (esto es lo específico de tu proyecto didia5)
-    const firebaseConfig = {
-      apiKey: "TU_API_KEY", // Este será un valor real de tu proyecto
-      authDomain: "didia5.firebaseapp.com",
-      projectId: "didia5",
-      storageBucket: "didia5.appspot.com",
-      messagingSenderId: "TU_SENDER_ID", // Este será un valor real
-      appId: "1:652405109295:web:714467f3edb571c6a28cda",
-      measurementId: "TU_MEASUREMENT_ID" // Este será el ID de medición de Analytics
-    };
+<button id="generarBtn">Generar QR</button>
+<div id="qrcode"></div>
+<p>para descargar, haz una capura de pantalla y recortala al qr</p>
+<hr>
+<h1>El tiempo</h1>
+<div id="ww_c5ca9a8341340" v='1.3' loc='auto' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl6516"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#0097A7","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3}'>Más previsiones: <a href="https://oneweather.org/es/seville/" id="ww_c5ca9a8341340_u" target="_blank">El tiempo Sevilla</a></div>
+<script async src="https://app3.weatherwidget.org/js/?id=ww_c5ca9a8341340"></script>
+<hr>
+<h1>Instala la app</h1><a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar</a><p>¡No ocupa almacenamiento!</p>
+<h1>Instala la app</h1><button class="boton-ia" onclick="descargarApk()">Descargar apk</button><p>¡Programada con flutter!</p>
+<hr>
+<p>Creado por Daniel Tejedor</p>
 
-    // Inicializa Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Obtiene la instancia de Analytics
-    const analytics = firebase.analytics();
-
-    // Ahora, con analytics inicializado, el SDK automáticamente empieza a rastrear vistas de página.
-
-    </script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script src="refrán.js"></script>
+<script>
+    const textoInput = document.getElementById('textoInput');
+    const generarBtn = document.getElementById('generarBtn');
+    const qrcodeDiv = document.getElementById('qrcode');
+
+    generarBtn.addEventListener('click', () => {
+        const texto = textoInput.value;
+        if (texto) {
+            qrcodeDiv.innerHTML = '';
+            new QRCode(qrcodeDiv, texto);
+        }
+    });
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
