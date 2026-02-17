@@ -64,7 +64,7 @@
             margin: 0 auto;
             padding: 10px 15px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.2); /* Base muy ligera */
+            background: rgba(255, 255, 255, 0.4); /* Base muy ligera */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -100,8 +100,8 @@
 
         /* --- MENÚ DE SERVICIOS TRANSLÚCIDO --- */
         .max {
-            position: sticky;
-            top: 62px; 
+            position: fixed;
+            top: 100px; 
             z-index: 3000;
             display: flex;
             justify-content: center;
@@ -110,10 +110,9 @@
             padding: 10px;
             margin: 0 auto;
             width: 100%;
-            background: rgba(255, 255, 255, 0.15);
+            background: transparent;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .menu {
@@ -152,7 +151,7 @@
 
 <body>
 
-<div class="ventanas animate__animated animate__fadeIn">
+<div class="ventanas animate__animated animate__ZoomIn">
     <a href="chat de ia.html" class="boton-ia-nav">✨ IA</a>
     <div class="search-wrapper">
         <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb"></script>
@@ -160,14 +159,14 @@
     </div>
 </div>
 
-<div class="max">
+<div class="max animate__animated animate__FadeInDown">
     <a href="Voice.html" class="menu">🎙️ Voice</a>
     <a href="calculadora.html" class="menu">➕ Calculadora</a>
     <a href="Quiz.html" class="menu">🧠 Cálculo mental</a>
     <a href="Hacer socio.html" class="menu">👤 Crear cuenta</a>
 </div>
 
-<div id="refran" style="font-style: italic; margin: 15px 0; font-size: 0.9rem;">Cargando refrán...</div>
+<div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
 
 <section class="daba">
     <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" alt="Logo DID" style="max-width: 250px; height: auto;">
