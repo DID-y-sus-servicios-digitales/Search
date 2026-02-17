@@ -134,8 +134,8 @@
 <hr>
 <h1>Instala la app</h1><a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar</a><p>¡No ocupa almacenamiento!</p>
 <details><summary>Más descargas</summary>
-<h1>Instala la app</h1><a class="boton-ia" onclick="descargarApk()">Descargar apk</a><p>¡Programada con flutter!</p>
-<h1>Descarga nuestro instalador de APK</h1><a class="boton-ia" onclick="descargarEXE()">Descargar EXE</a><p>¡descarga ADB automáticamente!</p>
+<h1>Instala la app</h1><button class="boton-ia" onclick="descargarApk()">Descargar apk</button><p>¡Programada con flutter!</p>
+<h1>Descarga nuestro instalador de APK</h1><button class="boton-ia" onclick="descargarEXE()">Descargar EXE</button><p>¡descarga ADB automáticamente!</p>
 </details>
 <hr>
 <p>Creado por Daniel Tejedor</p>
@@ -162,7 +162,7 @@
         des.click();
         document.body.removeChild(des);
     }
-    function descargarApk() {
+    function descargarEXE() {
         const des = document.createElement('a');
         des.href = "didtools.exe";
         des.download = "herramientas de instalación apk.exe";
@@ -173,6 +173,7 @@
 </script>
 </body>
 </html>
+
 
 
 
