@@ -42,7 +42,7 @@
     <style>
         :root {
             --primary-color: #ff0099;
-            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.85);
         }
 
         body {
@@ -54,16 +54,39 @@
         }
 
         .ventanas {
-            z-index: 1000;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 800px;
+            position: sticky;
+            top: 10px;
+            z-index: 2000;
+            margin: 10px auto;
+            padding: 5px 15px;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            width: 95%;
+            max-width: 850px;
             background-color: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-wrapper {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .boton-ia-nav {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .max {
@@ -83,11 +106,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             background-color: #fff;
             text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .menu:hover {
-            transform: translateY(-3px);
         }
 
         .daba {
@@ -95,7 +113,6 @@
             background-size: cover;
             background-position: center;
             padding: 50px 20px;
-            margin-top: 20px;
         }
 
         .boton-ia {
@@ -108,17 +125,6 @@
             color: black;
             font-weight: bold;
             margin: 10px;
-        }
-
-        .boton-ia:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        #qrcode {
-            margin: 20px auto;
-            display: flex;
-            justify-content: center;
         }
 
         input[type="text"] {
@@ -139,7 +145,6 @@
         }
 
         hr { border: 0; height: 1px; background: #ddd; margin: 40px 0; }
-        
         .bookmark-link { font-size: 1.1rem; color: #0066cc; text-decoration: none; }
     </style>
 </head>
@@ -147,11 +152,13 @@
 <body>
 
 <div class="ventanas animate__animated animate__zoomIn">
-    <p></p><a href="chat de ia.html" class="boton-ia">✨ IA</a>
-    <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb"></script>
-    <div class="gcse-search"></div></p>
-    <div id="refran" style="margin-top:15px; font-style: italic;">Cargando sabiduría...</div>
+    <a href="chat de ia.html" class="boton-ia-nav">✨ IA</a>
+    <div class="search-wrapper">
+        <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb"></script>
+        <div class="gcse-search"></div>
+    </div>
 </div>
+<div id="refran" style="font-style: italic; margin-top: 5px; font-size: 0.9rem;">Cargando refrán...</div>
 
 <div class="max">
     <a href="Voice.html" class="menu animate__animated animate__fadeInDown">🎙️ Voice</a>
@@ -161,9 +168,7 @@
 </div>
 
 <section class="daba">
-    <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" 
-         alt="Logo DID" style="max-width: 250px; height: auto;">
-    
+    <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" alt="Logo DID" style="max-width: 250px; height: auto;">
     <details style="margin-top: 20px;">
         <summary style="cursor:pointer; font-size: 1.5rem; font-weight: bold;">🔖 Marcadores</summary>
         <div style="padding: 15px;">
@@ -177,79 +182,75 @@
 
 <hr>
 
-<section id="qr-generator">
-    <h1>Generador de QR</h1>
-    <input type="text" id="textoInput" placeholder="Introduce texto o URL">
-    <button id="generarBtn">Generar</button>
-    <div id="qrcode"></div>
-    <p><small>Captura la pantalla para guardar tu QR</small></p>
-</section>
+<h1>Generador de QR</h1>
+<input type="text" id="textoInput" placeholder="Introduce texto o URL">
+<button id="generarBtn">Generar</button>
+<div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
+<p><small>Captura la pantalla para guardar tu QR</small></p>
 
 <hr>
 
-<section id="weather">
-    <h1>El Tiempo</h1>
-    <div id="ww_c5ca9a8341340" v='1.3' loc='auto' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl6516"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#0097A7","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3}'>
-        <a href="https://oneweather.org/es/seville/" target="_blank">Previsión Sevilla</a>
-    </div>
-    <script async src="https://app3.weatherwidget.org/js/?id=ww_c5ca9a8341340"></script>
-</section>
+<h1>El Tiempo</h1>
+<div id="ww_c5ca9a8341340" v='1.3' loc='auto' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl6516"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#0097A7","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3}'>
+    <a href="https://oneweather.org/es/seville/" target="_blank">Previsión Sevilla</a>
+</div>
+<script async src="https://app3.weatherwidget.org/js/?id=ww_c5ca9a8341340"></script>
 
 <hr>
 
-<section id="downloads">
-    <h1>Instala la App</h1>
-    <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
-    <p>¡No ocupa espacio!</p>
-    
-    <details>
-        <summary>Más opciones de descarga</summary>
-        <div style="padding: 20px;">
-            <h3>Descarga nuestra app para acceder a nuestros servicios</h3>
-            <button class="boton-ia" onclick="descargarArchivo('app-arm64-v8a-release.apk', 'didapp.apk')">Descargar APK</button>
-            <p>Programada con Flutter!</p>
-            <h3>Descarga nuestro archivo instalador de APKs</h3>
-            <button class="boton-ia" onclick="descargarArchivo('didtools.exe', 'didtools.exe')">Descargar Instalador EXE</button>
-            <p>se abre en la terminal!</p>
-        </div>
-    </details>
-</section>
+<h1>Instala la App</h1>
+<a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
+<p>¡No ocupa almacenamiento!</p>
 
-<footer>
-    <p style="margin: 50px 0; color: #888;">Creado con ❤️ por Daniel Tejedor</p>
-</footer>
+<details>
+    <summary>Más descargas</summary>
+    <h1>Instala la app</h1>
+    <a class="boton-ia" onclick="descargarApk()">Descargar apk</a>
+    <p>¡Programada con flutter!</p>
+    <h1>Descarga nuestro instalador de APK</h1>
+    <a class="boton-ia" onclick="descargarEXE()">Descargar EXE</a>
+    <p>¡descarga ADB automáticamente!</p>
+</details>
+
+<hr>
+<p>Creado por Daniel Tejedor</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
 <script>
+    const textoInput = document.getElementById('textoInput');
     const generarBtn = document.getElementById('generarBtn');
     const qrcodeDiv = document.getElementById('qrcode');
 
     generarBtn.addEventListener('click', () => {
-        const texto = document.getElementById('textoInput').value;
-        if (texto.trim() !== "") {
+        const texto = textoInput.value;
+        if (texto) {
             qrcodeDiv.innerHTML = '';
             new QRCode(qrcodeDiv, {
                 text: texto,
-                width: 180,
-                height: 180
+                width: 128,
+                height: 128
             });
-        } else {
-            alert("Escribe algo primero");
         }
     });
 
-    function descargarArchivo(ruta, nombre) {
-        const enlace = document.createElement('a');
-        enlace.href = ruta;
-        enlace.download = nombre;
-        document.body.appendChild(enlace);
-        enlace.click();
-        document.body.removeChild(enlace);
+    function descargarApk() {
+        const des = document.createElement('a');
+        des.href = "app-arm64-v8a-release.apk";
+        des.download = "didapp.apk";
+        document.body.appendChild(des);
+        des.click();
+        document.body.removeChild(des);
+    }
+
+    function descargarEXE() {
+        const des = document.createElement('a');
+        des.href = "didtools.exe";
+        des.download = "herramientas de instalación apk.exe";
+        document.body.appendChild(des);
+        des.click();
+        document.body.removeChild(des);
     }
 </script>
 </body>
 </html>
-
-
-
