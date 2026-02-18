@@ -63,7 +63,7 @@
             z-index: 4000;
             margin: 0 auto;
             padding: 10px 15px;
-            width: 100%;
+            width: 100% !important;
             background: rgba(255, 255, 255, 0.4); /* Base muy ligera */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -157,7 +157,7 @@
         .bookmark-link { font-size: 1.1rem; color: #0044aa; text-decoration: none; font-weight: bold; }
         @keyframes aparecer {
             0% {
-                scale: 0.8;
+                scale: 0.5;
             }
             100% {
                 scale: 1;
@@ -167,7 +167,31 @@
             animation: aparecer linear both;
             animation-timeline: view(); /* La animación dura lo que dura el scroll */
             animation-range: entry 10% cover 30%; /* Empieza al asomar un 10% */
-            justify-content: center
+            justify-self: center !important;
+        }
+        @keyframes f2 {
+            from {
+                background-image: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('fondo.jpg');
+            }
+            to {
+                background-image: linear-gradient(#f00, #f0f);
+            }
+        }
+        .descargas-cont {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+        }
+        fieldset {
+            border: 2px solid black;
+            border-radius: 20px;
+        }
+        @media (max-width: 768px) {
+            #refran {
+                transform: translateY(50px);
+            }
         }
     </style>
 </head>
@@ -211,18 +235,22 @@
 <input type="text" id="textoInput" placeholder="max. 738">
 <button id="generarBtn">Generar</button>
 <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
-
 <hr>
-<div style="display: flex; flex-direction: row;" class="descargas"><fieldset>
-<h1>Instala la App</h1>
-<a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a></fieldset>
-<fieldset><h1>Instala la app</h1>
-<a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
-<p>¡Programada con flutter!</p>
-</fieldset><fieldset>
-<h1>Descarga nuestro instalador de APK</h1>
-<a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/didtools.exe" download="instaldor de apk.exe">Descargar EXE</a>
-<p>¡descarga ADB automáticamente!</p></fieldset>
+<div class="descargas-cont">
+    <div style="display: flex; flex-direction: row;" class="descargas">
+        <fieldset>
+            <h1>Instala la App</h1>
+            <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
+        </fieldset><fieldset>
+            <h1>Instala la app</h1>
+            <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
+            <p>¡Programada con flutter!</p>
+        </fieldset><fieldset>
+            <h1>Descarga nuestro instalador de APK</h1>
+            <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/didtools.exe" download="instaldor de apk.exe">Descargar EXE</a>
+            <p>¡descarga ADB automáticamente!</p>
+        </fieldset>
+    </div>
 </div>
 <hr>
 <p>Creado por Daniel Tejedor</p>
