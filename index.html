@@ -217,11 +217,11 @@
 <h1>Instala la App</h1>
 <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a></fieldset>
 <fieldset><h1>Instala la app</h1>
-<a class="boton-ia" onclick="descargarApk()">Descargar apk</a>
+<a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
 <p>¡Programada con flutter!</p>
 </fieldset><fieldset>
 <h1>Descarga nuestro instalador de APK</h1>
-<a class="boton-ia" onclick="descargarEXE()">Descargar EXE</a>
+<a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/didtools.exe" download="instaldor de apk.exe">Descargar EXE</a>
 <p>¡descarga ADB automáticamente!</p></fieldset>
 </div>
 <hr>
@@ -238,24 +238,6 @@
             new QRCode(qrcodeDiv, { text: texto, width: 128, height: 128 });
         }
     });
-
-    function descargarApk() {
-        const des = document.createElement('a');
-        des.href = "https://did-y-sus-servicios-digitales.github.io/Search/app-arm64-v8a-release.apk";
-        des.download = "didapp.apk";
-        document.body.appendChild(des);
-        des.click();
-        document.body.removeChild(des);
-    }
-
-    function descargarEXE() {
-        const des = document.createElement('a');
-        des.href = "https://did-y-sus-servicios-digitales.github.io/Search/didtools.exe";
-        des.download = "herramientas de instalación apk.exe";
-        document.body.appendChild(des);
-        des.click();
-        document.body.removeChild(des);
-    }
 </script>
 </body>
 </html>
