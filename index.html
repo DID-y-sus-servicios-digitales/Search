@@ -45,7 +45,7 @@
             --efecto-fondo: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('fondo.jpg');
         }
 
-        body {
+        body, html {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 0;
@@ -86,7 +86,10 @@
             flex-grow: 1;
             max-width: 600px;
         }
-
+        .gsc-input-box {
+            border-radius: 20px !important;
+            opacity: 0.8 !important;
+        }
         .boton-ia-nav {
             padding: 8px 18px;
             border-radius: 20px;
@@ -143,9 +146,29 @@
             font-weight: bold;
             margin: 10px;
         }
-
+        button, input[type=text] {
+            padding: 5px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f;
+            color: white;
+        }
         hr { border: 0; height: 1px; background: rgba(0,0,0,0.1); margin: 40px 0; }
         .bookmark-link { font-size: 1.1rem; color: #0044aa; text-decoration: none; font-weight: bold; }
+        @keyframes aparecer {
+            0% {
+                scale: 0.8;
+            }
+            100% {
+                scale: 1;
+            }
+        }
+        .descargas {
+            animation: aparecer linear both;
+            animation-timeline: view(); /* La animación dura lo que dura el scroll */
+            animation-range: entry 10% cover 30%; /* Empieza al asomar un 10% */
+            justify-content: center
+        }
     </style>
 </head>
 
@@ -170,6 +193,7 @@
 
 <section class="daba">
     <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" alt="Logo DID" style="max-width: 250px; height: auto;">
+    <p style="font-weight: bold; padding-left: 140px;">Search</p>
     <details style="margin-top: 20px;">
         <summary style="cursor:pointer; font-size: 1.5rem; font-weight: bold;">🔖 Marcadores</summary>
         <div style="padding: 15px;">
@@ -189,31 +213,19 @@
 <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
 
 <hr>
-
-<h1>El Tiempo</h1>
-<div id="ww_c5ca9a8341340" v='1.3' loc='auto' a='{"t":"horizontal","lang":"es","sl_lpl":1,"ids":["wl6516"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#0097A7","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3}'>
-    <a href="https://oneweather.org/es/seville/" target="_blank">Previsión Sevilla</a>
-</div>
-<script async src="https://app3.weatherwidget.org/js/?id=ww_c5ca9a8341340"></script>
-
-<hr>
-
+<div style="display: flex; flex-direction: row;" class="descargas"><fieldset>
 <h1>Instala la App</h1>
-<a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
-
-<details>
-    <summary>Más descargas</summary>
-    <h1>Instala la app</h1>
-    <a class="boton-ia" onclick="descargarApk()">Descargar apk</a>
-    <p>¡Programada con flutter!</p>
-    <h1>Descarga nuestro instalador de APK</h1>
-    <a class="boton-ia" onclick="descargarEXE()">Descargar EXE</a>
-    <p>¡descarga ADB automáticamente!</p>
-</details>
-
+<a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a></fieldset>
+<fieldset><h1>Instala la app</h1>
+<a class="boton-ia" onclick="descargarApk()">Descargar apk</a>
+<p>¡Programada con flutter!</p>
+</fieldset><fieldset>
+<h1>Descarga nuestro instalador de APK</h1>
+<a class="boton-ia" onclick="descargarEXE()">Descargar EXE</a>
+<p>¡descarga ADB automáticamente!</p></fieldset>
+</div>
 <hr>
 <p>Creado por Daniel Tejedor</p>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
 <script>
@@ -247,9 +259,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
