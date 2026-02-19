@@ -50,10 +50,6 @@
             margin: 0;
             padding: 0;
             text-align: center;
-            background: var(--efecto-fondo);
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
         }
 
         /* --- BUSCADOR Y IA TRANSLÚCIDOS --- */
@@ -132,6 +128,7 @@
 
         .daba {
             padding: 60px 20px;
+            background: --efecto-fondo;
         }
 
         /* Botón de IA en el cuerpo */
@@ -169,14 +166,6 @@
             animation-range: entry 10% cover 30%; /* Empieza al asomar un 10% */
             justify-self: center !important;
         }
-        @keyframes f2 {
-            from {
-                background-image: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('fondo.jpg');
-            }
-            to {
-                background-image: linear-gradient(#f00, #f0f);
-            }
-        }
         .descargas-cont {
             display: flex;
             flex-direction: column;
@@ -187,6 +176,17 @@
         fieldset {
             border: 2px solid black;
             border-radius: 20px;
+        }
+        @keyframes titulo {
+            0%{scale: 0;}
+            50%{scale: 1;}
+            100%{scale: 0;}
+        }
+        .titulo-des {
+            font-size: 200px;
+            animation: titulo linear both;
+            animation-timeline: view(); /* La animación dura lo que dura el scroll */
+            animation-range: entry 10% cover 70%; /* Empieza al asomar un 10% */
         }
         @media (max-width: 768px) {
             #refran {
@@ -236,6 +236,7 @@
 <button id="generarBtn">Generar</button>
 <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
 <hr>
+<br><br><br><br><p>y ahora las nuevas</p><h1 class="titulo-des">Descargas</h1><br><br><br><br>
 <div class="descargas-cont">
     <div style="display: flex; flex-direction: row;" class="descargas">
         <fieldset>
