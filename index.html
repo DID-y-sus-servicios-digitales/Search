@@ -45,32 +45,37 @@
             --efecto-fondo: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://did-y-sus-servicios-digitales.github.io/Search/fondo.jpg');
         }
 
+        /* Corregido: Separamos html de body para que funcione el sticky */
         html {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
+
         body {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 0;
             text-align: center;
-            transition: background-color 2s ease;
+            width: 100%;
+            overflow-x: hidden;
+            transition: background-color 2s ease, color 0.5s ease;
             background: var(--efecto-fondo);
             background-size: cover !important;
-            background-repeat: no-repeat !important !important !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
         }
 
-        /* --- BUSCADOR Y IA TRANSLÚCIDOS --- */
+        /* --- NAVEGACIÓN (Sticky corregido) --- */
         .ventanas {
+            position: -webkit-sticky; /* Soporte para Safari */
             position: sticky;
             top: 0;
             z-index: 4000;
             margin: 0 auto;
             padding: 10px 15px;
             width: 100% !important;
-            background: rgba(255, 255, 255, 0.4); /* Base muy ligera */
+            background: rgba(255, 255, 255, 0.4); 
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -78,24 +83,18 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
+            box-sizing: border-box;
         }
 
-        /* Forzar transparencia en el buscador de Google */
-        .gsc-control-cse,
-        .gsc-input-box-focus {
+        .gsc-control-cse, .gsc-input-box-focus {
             background: transparent !important;
             border: none !important;
             border-radius: 20px;
         }
 
-        .search-wrapper {
-            flex-grow: 1;
-            max-width: 600px;
-        }
-        .gsc-input-box {
-            border-radius: 20px !important;
-            opacity: 0.8 !important;
-        }
+        .search-wrapper { flex-grow: 1; max-width: 600px; }
+        .gsc-input-box { border-radius: 20px !important; opacity: 0.8 !important; }
+        
         .boton-ia-nav {
             padding: 8px 18px;
             border-radius: 20px;
@@ -107,7 +106,6 @@
             white-space: nowrap;
         }
 
-        /* --- MENÚ DE SERVICIOS TRANSLÚCIDO --- */
         .max {
             position: fixed;
             top: 100px; 
@@ -117,11 +115,11 @@
             flex-wrap: wrap;
             gap: 10px;
             padding: 10px;
-            margin: 0 auto;
             width: 100%;
             background: transparent;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            box-sizing: border-box;
         }
 
         .menu {
@@ -136,13 +134,8 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .daba {
-            padding: 60px 20px;
-            z-index: 40;
-            border-radius: 20px;
-        }
+        .daba { padding: 60px 20px; z-index: 40; }
 
-        /* Botón de IA en el cuerpo */
         .boton-ia {
             display: inline-block;
             padding: 10px 25px;
@@ -154,6 +147,7 @@
             font-weight: bold;
             margin: 10px;
         }
+
         button, input[type=text] {
             padding: 5px;
             border: none;
@@ -161,51 +155,44 @@
             background-color: #f0f;
             color: white;
         }
+
         hr { border: 0; height: 1px; background: rgba(0,0,0,0.1); margin: 40px 0; }
         .bookmark-link { font-size: 1.1rem; color: #0044aa; text-decoration: none; font-weight: bold; }
-        @keyframes aparecer {
-            0% {
-                scale: 0.5;
-            }
-            100% {
-                scale: 1;
-            }
-        }
+        
+        @keyframes aparecer { 0% { scale: 0.5; } 100% { scale: 1; } }
         .descargas {
             animation: aparecer linear both;
-            animation-timeline: view(); /* La animación dura lo que dura el scroll */
-            animation-range: entry 10% cover 30%; /* Empieza al asomar un 10% */
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
             justify-self: center !important;
         }
+
         .descargas-cont {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
+            width: 100%;
         }
-        fieldset {
-            border: none;
-            border-radius: 20px;
-            color: black;
-            background-color: white;
+
+        fieldset { 
+            border: none; 
+            border-radius: 20px; 
+            color: black; 
+            background-color: white; 
+            margin: 10px;
+            padding: 20px;
         }
-        @keyframes titulo {
-            0%{scale: 0;}
-            50%{scale: 1;}
-            100%{scale: 0;}
-        }
+        
+        @keyframes titulo { 0%{scale: 0;} 50%{scale: 1;} 100%{scale: 0;} }
         .titulo-des {
             font-size: 200px;
             animation: titulo linear both;
-            animation-timeline: view(); /* La animación dura lo que dura el scroll */
-            animation-range: entry 10% cover 70%; /* Empieza al asomar un 10% */
+            animation-timeline: view();
+            animation-range: entry 10% cover 70%;
         }
-        @media (max-width: 768px) {
-            #refran {
-                transform: translateY(50px);
-            }
-        }
+
+        @media (max-width: 768px) { #refran { transform: translateY(50px); } }
     </style>
 </head>
 
@@ -218,15 +205,16 @@
         <div class="gcse-search"></div>
     </div>
 </div>
+
 <div class="max animate__animated animate__FadeInDown">
     <a href="Voice.html" class="menu">🎙️ Voice</a>
     <a href="calculadora.html" class="menu">➕ Calculadora</a>
     <a href="Quiz.html" class="menu">🧠 Cálculo mental</a>
     <a href="Hacer socio.html" class="menu">👤 Crear cuenta</a>
 </div>
-<section class="daba">
-<div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
 
+<section class="daba">
+    <div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
     <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" alt="Logo DID" style="max-width: 250px; height: auto;">
     <p style="font-weight: bold; padding-left: 140px;">Search</p>
     <details style="margin-top: 20px;">
@@ -246,48 +234,58 @@
 <input type="text" id="textoInput" placeholder="max. 738">
 <button id="generarBtn">Generar</button>
 <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
+
 <hr>
-<br><br><br><br><p>y ahora las nuevas</p><h1 class="titulo-des">Descargas</h1><br><br><br><br>
+
+<br><br><br><br><p>y ahora las nuevas</p>
+<h1 class="titulo-des">Descargas</h1>
+<br><br><br><br>
+
 <div class="descargas-cont" id="descargas-cont">
     <div style="display: flex; flex-direction: row;" class="descargas">
         <fieldset>
             <h1>Instala la App</h1>
             <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
-        </fieldset><fieldset>
+        </fieldset>
+        <fieldset>
             <h1>Instala la app</h1>
             <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
             <p>¡Programada con flutter!</p>
-        </fieldset><fieldset>
+        </fieldset>
+        <fieldset>
             <h1>Descarga nuestro instalador de APK</h1>
             <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/didtools.exe" download="instaldor de apk.exe">Descargar EXE</a>
             <p>¡descarga ADB automáticamente!</p>
         </fieldset>
     </div>
 </div>
-<br><br><br><br><br><br><br><br><br>
+
+<br><br><br><br><br>
+<p>Creado por Daniel Tejedor</p>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
 <script>
-    const descargas = document.getElementById('descargas-cont')
-    const obserConfig = {
-        threshold: 0.50,
-        rootMargin: "100px"
-    }
+    const descargasSection = document.getElementById('descargas-cont');
+    const obserConfig = { threshold: 0.50, rootMargin: "100px" };
+
     const callback = (entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                document.body.style.background = "none";
+                document.body.style.backgroundImage = "none";
                 document.body.style.backgroundColor = "#f00";
                 document.body.style.color = "white";
             } else {
-                document.body.style.backgroundColor= "white";
-                document.body.style.color = "black";
-                document.body.style.background = "linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://did-y-sus-servicios-digitales.github.io/Search/fondo.jpg')"
+                document.body.style.backgroundImage = "";
+                document.body.style.backgroundColor = "";
+                document.body.style.color = "";
             }
         });
     };
+
     const observer = new IntersectionObserver(callback, obserConfig);
-    observer.observe(descargas);
+    observer.observe(descargasSection);
+
     const generarBtn = document.getElementById('generarBtn');
     const qrcodeDiv = document.getElementById('qrcode');
     generarBtn.addEventListener('click', () => {
@@ -298,5 +296,6 @@
         }
     });
 </script>
+
 </body>
 </html>
