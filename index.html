@@ -42,14 +42,26 @@
     <style>
         :root {
             --primary-color: #ff0099;
-            --efecto-fondo: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('fondo.jpg');
+            --efecto-fondo: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://did-y-sus-servicios-digitales.github.io/Search/fondo.jpg');
         }
 
-        body, html {
+        html {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 0;
             text-align: center;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            transition: background-color 2s ease;
+            background: var(--efecto-fondo);
+            background-size: cover !important;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat !important !important !important;
         }
 
         /* --- BUSCADOR Y IA TRANSLÚCIDOS --- */
@@ -128,7 +140,8 @@
 
         .daba {
             padding: 60px 20px;
-            background: --efecto-fondo;
+            z-index: 40;
+            border-radius: 20px;
         }
 
         /* Botón de IA en el cuerpo */
@@ -174,8 +187,10 @@
             border-radius: 20px;
         }
         fieldset {
-            border: 2px solid black;
+            border: none;
             border-radius: 20px;
+            color: black;
+            background-color: white;
         }
         @keyframes titulo {
             0%{scale: 0;}
@@ -205,17 +220,15 @@
         <div class="gcse-search"></div>
     </div>
 </div>
-
 <div class="max animate__animated animate__FadeInDown">
     <a href="Voice.html" class="menu">🎙️ Voice</a>
     <a href="calculadora.html" class="menu">➕ Calculadora</a>
     <a href="Quiz.html" class="menu">🧠 Cálculo mental</a>
     <a href="Hacer socio.html" class="menu">👤 Crear cuenta</a>
 </div>
-
+<section class="daba">
 <div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
 
-<section class="daba">
     <img src="https://static.wixstatic.com/media/83bf24_90699f31f5d645fa99a6591481e6031a~mv2.png" alt="Logo DID" style="max-width: 250px; height: auto;">
     <p style="font-weight: bold; padding-left: 140px;">Search</p>
     <details style="margin-top: 20px;">
@@ -237,7 +250,7 @@
 <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
 <hr>
 <br><br><br><br><p>y ahora las nuevas</p><h1 class="titulo-des">Descargas</h1><br><br><br><br>
-<div class="descargas-cont">
+<div class="descargas-cont" id="descargas-cont">
     <div style="display: flex; flex-direction: row;" class="descargas">
         <fieldset>
             <h1>Instala la App</h1>
@@ -253,11 +266,30 @@
         </fieldset>
     </div>
 </div>
-<hr>
-<p>Creado por Daniel Tejedor</p>
+<br><br><br><br><br><br><br><br><br>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
 <script>
+    const descargas = document.getElementById('descargas-cont')
+    const obserConfig = {
+        threshold: 0.50,
+        rootMargin: "100px"
+    }
+    const callback = (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                document.body.style.background = "none";
+                document.body.style.backgroundColor = "#f00";
+                document.body.style.color = "white";
+            } else {
+                document.body.style.backgroundColor= "white";
+                document.body.style.color = "black";
+                document.body.style.background = "linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://did-y-sus-servicios-digitales.github.io/Search/fondo.jpg')"
+            }
+        });
+    };
+    const observer = new IntersectionObserver(callback, obserConfig);
+    observer.observe(descargas);
     const generarBtn = document.getElementById('generarBtn');
     const qrcodeDiv = document.getElementById('qrcode');
     generarBtn.addEventListener('click', () => {
