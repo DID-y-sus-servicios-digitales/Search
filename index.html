@@ -91,7 +91,15 @@
             border-radius: 20px;
         }
 
-        .search-wrapper { flex-grow: 1; max-width: 600px; }
+        .search-wrapper { flex-grow: 1; max-width: 600px; animation: inicioBuscador 1s ease;}
+        @keyframes inicioBuscador {
+            from {
+                transform: translateY(-400px);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
         .gsc-input-box { border-radius: 20px !important; opacity: 0.8 !important; }
         
         .boton-ia-nav {
