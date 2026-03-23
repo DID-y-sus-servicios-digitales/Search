@@ -1,0 +1,353 @@
+<html>
+<head>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FX0LELX31C');
+</script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>      <!-- El SDK principal de Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics-compat.js"></script> <!-- El SDK de Analytics -->
+    <!-- Script para inicializar Firebase y Analytics - ¡Añade este! -->
+<script>
+    const firebaseConfigSync = {
+    apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
+    authDomain: "didia5.firebaseapp.com",
+    databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "didia5",
+    storageBucket: "didia5.firebasestorage.app",
+    messagingSenderId: "652405109295",
+    appId: "1:652405109295:web:714467f3edb571c6a28cda",
+    measurementId: "G-1SB0J1PPK9"
+  };
+
+  // Initialize Firebase
+  const aplication = firebase.initializeApp(firebaseConfigSync);
+  const analytics = firebase.Analytics(aplication);
+  // Si necesitas enviar eventos personalizados, puedes usar la variable 'analytics', por ejemplo:
+  // analytics.logEvent('user_login');
+</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            font-family: "Open Sans";
+            margin: 5px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            background-color: #4040ff;
+        }
+        button, input, select{
+            border: 3px solid #f0f;
+            background-color: white;
+            padding: 10px;
+            margin: 1px;
+            border-radius: 20px;
+        }
+        button:hover, input:hover, select:hover{
+            background-color: #f0f;
+            color: white;
+        }
+        div{
+            border-radius: 20px;
+            background-color: white;
+            box-shadow: 7px 7px 15px #101010;
+        }
+        fieldset{
+            margin: 2px;
+            border-radius: 20px;
+            border: 1px solid #909090;
+            padding: 1px 1px;
+        }
+        @media (max-width: 600px) {
+        body {
+            font-size: 1.1em;
+            line-height: 1.6;
+            padding: 10px;
+        }
+        div {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        input,textarea{
+            width: 100%;
+            max-width: 100%;
+            font-size: 1em;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        #mensaje {
+            font-size: 0.9em;
+            padding: 10px;
+        }
+        button {
+            min-height: 48px;
+            margin-top: 15px;
+        }
+        textarea {
+            min-height: 150px;
+            resize: none;
+        }
+        .menu{
+            border: 2px solid #f0f;
+        }
+    }
+    </style>
+<title>DID quiz</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <div><h1>DID quiz</h1>
+        <fieldset><legend>Pregunta</legend>
+        <p><input type="text" id="pregunta" placeholder="Title"></p>
+        <ul id="lista-opciones">
+            <li><input type="text" class="opcion" placeholder="Opción 1"></li>
+            <li><input type="text" class="opcion" placeholder="Opción 2"></li>
+        </ul>
+        <p><input type="text" id="respuesta" placeholder="Respuesta correcta"></p>
+    </fieldset><fieldset><legend>Editar</legend>
+        <p><button onclick="agregarOpcion()">Añadir opción</button>
+        <button onclick="quitarOpcion()">Quitar última opción</button>
+        <button onclick="eliminarUltimo()">Eliminar última pregunta</button></p>
+        </fieldset><fieldset><legend>Crear</legend>
+        <button onclick="añadir()">Imprimir pregunta</button><button onclick="descargar()">Preparar y  descargar</button></fieldset>
+    </div>
+    <h2 style="color: white;">↓ Preguntas impresas ↓</h2>
+    <div id="contenedor"></div>
+    <script>
+        const contenedor = document.getElementById('contenedor');
+        const listaOpciones = document.getElementById('lista-opciones');
+
+        function agregarOpcion() {
+            const nuevoLi = document.createElement('li');
+            const numOpcion = listaOpciones.children.length + 1;
+            nuevoLi.innerHTML = `<input type="text" class="opcion" placeholder="Opción ${numOpcion}">`;
+            listaOpciones.appendChild(nuevoLi);
+        }
+
+        function quitarOpcion() {
+            if (listaOpciones.children.length > 1) {
+                listaOpciones.removeChild(listaOpciones.lastChild);
+            }
+        }
+
+        function añadir() {
+            const pregunta = document.getElementById('pregunta').value;
+            const respuesta = document.getElementById('respuesta').value;
+            const inputsOpciones = document.querySelectorAll('.opcion');
+            const opciones = Array.from(inputsOpciones).map(input => input.value).filter(val => val.trim() !== '');
+            opciones.push(respuesta);
+            for (let i = opciones.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [opciones[i], opciones[j]] = [opciones[j], opciones[i]];
+            }
+            const opcionesHTML = opciones.map(opcion => `<option value="${opcion}">${opcion}</option>`).join('');
+            const divPregunta = document.createElement('div');
+            divPregunta.innerHTML = `
+                <h3>${pregunta}</h3>
+                    <select>
+                        <option value="" selected disabled></option>
+                        ${opcionesHTML}
+                    </select>
+                    <button onclick="corregir(this, '${respuesta}')">Corregir</button>
+            `;
+            contenedor.appendChild(divPregunta);
+            document.getElementById('pregunta').value = '';
+            document.getElementById('respuesta').value = '';
+            inputsOpciones.forEach(input => {
+                input.value = '';
+            });
+        }
+
+        function corregir(boton, respuestaCorrecta) {
+            const selectElement = boton.previousElementSibling;
+            const respuestaSeleccionada = selectElement.value;
+            if (respuestaSeleccionada === respuestaCorrecta) {
+                alert("¡Respuesta correcta!");
+            } else {
+                alert(`Respuesta incorrecta. La respuesta correcta es: ${respuestaCorrecta}`);
+            }
+        }
+        function eliminarUltimo() {
+            if (contenedor.lastChild) {
+                contenedor.removeChild(contenedor.lastChild);
+            }
+        }
+        function descargar() {
+            const preguntas = contenedor.innerHTML;
+            const css = `<style>
+                body{
+                    font-family: "Open Sans";
+                    margin: 5px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                    flex-direction: column;
+                    background-color: #4040ff;
+                }
+                button, input, select{
+                    border: 3px solid #f0f;
+                    background-color: white;
+                    padding: 10px;
+                    margin: 1px;
+                    border-radius: 20px;
+                }
+                button:hover, input:hover, select:hover{
+                    background-color: #f0f;
+                    color: white;
+                }
+                div{
+                    border-radius: 20px;
+                    background-color: white;
+                    box-shadow: 7px 7px 15px #101010;
+                }
+                @media (max-width: 600px) {
+
+        body {
+
+            font-size: 1.1em;
+
+            line-height: 1.6;
+
+            padding: 10px;
+
+        }
+
+        div {
+
+            width: 100%;
+
+            margin: 10px 0;
+
+            padding: 10px;
+
+            box-sizing: border-box;
+
+        }
+
+        input,textarea{
+
+            width: 100%;
+
+            max-width: 100%;
+
+            font-size: 1em;
+
+            padding: 12px;
+
+            margin-top: 8px;
+
+            margin-bottom: 8px;
+
+            box-sizing: border-box;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+        }
+
+        #mensaje {
+
+            font-size: 0.9em;
+
+            padding: 10px;
+
+        }
+
+        button {
+
+            min-height: 48px;
+
+            margin-top: 15px;
+
+        }
+
+        textarea {
+
+            min-height: 150px;
+
+            resize: none;
+
+        }
+
+        .menu{
+
+            border: 2px solid #f0f;
+
+        }
+
+    }
+            </style>`
+            const script = `
+            <script>
+                var correctas = 0;
+                const contenedor = document.getElementById('contenedor');
+            function corregir(boton, respuestaCorrecta) {
+              const selectElement = boton.previousElementSibling;
+              const respuestaSeleccionada = selectElement.value;
+              if (respuestaSeleccionada === respuestaCorrecta) {
+                correctas++;
+              }
+            }
+            function finalizar() {
+                const alumno = prompt("Introduce tu nombre");
+                const profe = "El alumno " + alumno + " ha obtenido " + correctas + " respuestas correctas.";
+                const archivoProfe = new Blob([correctas], { type: 'text/plain' });
+                const url = URL.createObjectURL(archivoProfe);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "correctas.txt";
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                alert("envía el archivo 'correctas.txt' que acabamos de descargar a tu profesor para que pueda registrar tu puntuación.");
+                document.getElementById('mensaje').textContent = "has acertado " + correctas + " preguntas.";
+            }
+            </scr` + `ipt>`;
+            const estructuraHTML = `
+            <html>
+            <head>
+                ${css}
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Quiz</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body>
+            ${preguntas}
+            <button onclick="finalizar()">He terminado</button>
+            <h2 id="mensaje" style="font-size: 1em; display: none; position: fixed; z-index: 999;"></h2>
+            ${script}
+            </body>
+            </html>
+            `
+            const blob = new Blob([estructuraHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "Mi Quiz.html";
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
