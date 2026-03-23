@@ -158,7 +158,15 @@
         hr { border: 0; height: 1px; background: rgba(0,0,0,0.1); margin: 40px 0; }
         .bookmark-link { font-size: 1.1rem; color: #0044aa; text-decoration: none; font-weight: bold; }
         
-        @keyframes aparecer { 0% { scale: 0.5; } 100% { scale: 1; } }
+        @keyframes aparecer {
+            0% {
+                scale: 2;
+                gap: 15px;
+            }
+            100% {
+                scale: 1;
+            }
+        }
         .descargas {
             animation: aparecer linear both;
             animation-timeline: view();
@@ -183,7 +191,17 @@
             padding: 20px;
         }
         
-        @keyframes titulo { 0%{scale: 0;} 50%{scale: 1;} 100%{scale: 0;} }
+        @keyframes titulo {
+            0%{
+                scale: 0;
+            }
+            50%{
+                scale: 1;
+            }
+            100%{
+                scale: 0;
+            } 
+        }
         .titulo-des {
             font-size: 200px;
             animation: titulo linear both;
