@@ -305,7 +305,7 @@
             function finalizar() {
                 const alumno = prompt("Introduce tu nombre");
                 const profe = "El alumno " + alumno + " ha obtenido " + correctas + " respuestas correctas.";
-                const archivoProfe = new Blob([correctas], { type: 'text/plain' });
+                const archivoProfe = new Blob([profe], { type: 'text/plain' });
                 const url = URL.createObjectURL(archivoProfe);
                 const link = document.createElement("a");
                 link.href = url;
