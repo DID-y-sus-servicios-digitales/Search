@@ -9,6 +9,16 @@ const refranes = [
     "Ave que vuela, a la cazuela.",
     "El que a buen arbol se arrima, buena sombra le cobija.",
     "No por mucho madrugar, amanece más temprano.",
+    "Al mal tiempo, buena cara.",
+    "No hay mal que por bien no venga.",
+    "De tal palo, tal astilla.",
+    "Más vale prevenir que curar.",
+    "Al que madruga, Dios lo ayuda.",
+    "No todo lo que reluce es oro.",
+    "Más vale maña que fuerza.",
+    "Donde fueres, haz lo que vieres.",
+    "A palabras necias, oídos sordos.",
+    "Cría cuervos y te sacarán los ojos."
 ];
 
 // Función para obtener el refrán de la semana
