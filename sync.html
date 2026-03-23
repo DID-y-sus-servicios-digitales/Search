@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mi cuenta</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body{
+        font-family: 'Open Sans';
+        padding: 30px;
+        overflow: hidden;
+    }
+    div, form{
+        border-radius: 20px;
+        background-color: white;
+        margin: 10px;
+        box-shadow: 7px 7px 15px #101010;
+        padding: 20px;
+    }
+    input, button, textarea{
+        border: 2px solid #f0f;
+        border-radius: 20px;
+        background-color: white;
+    }
+    button:hover{
+        background-color: #f0f;
+        color: white;
+    }
+    input:hover{
+        background-color: #f0f;
+        color: white;
+    }
+    textarea:hover{
+        background-color: #f0f;
+        color: white;
+    }
+    @media (max-width: 600px) {
+    body {
+        font-size: 1.1em;
+        line-height: 1.6;
+        padding: 10px;
+    }
+    div {
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    input,textarea{
+        width: 100%;
+        max-width: 100%;
+        font-size: 1em;
+        padding: 12px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        box-sizing: border-box;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    #mensaje {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+    button {
+        min-height: 48px;
+        margin-top: 15px;
+    }
+    textarea {
+        min-height: 150px;
+        resize: none;
+        }
+    }
+</style>
+</head>
+<body id="body">
+    <div id="mensaje" style="font-size: 1em; display: none; position: fixed; z-index: 999;"></div>
+    <form id="registro"><h2>Crear cuenta</h2>
+        <input type="text" id="nombre" placeholder="tu nombre">
+        <input type="email" id="mail" placeholder="tu email">
+        <input type="password" id="contrasena" placeholder="tu contraseña">
+        <input type="submit">
+    </form>
+    <form id="iniciar"><h2>Iniciar sesión</h2>
+        <input type="email" placeholder="tu email" id="mailE">
+        <input type="password" placeholder="tu contraseña" id="contraE">
+        <input type="submit">
+    </form>
+    <div id="ventana" style="display: none;">
+    <textarea id="texto" size="80%" cols="50" rows="5"></textarea>
+    <button id="cerrar">Cerrar</button>
+    </div>
+    <script type="module">
+        var data;
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    
+    const registro = document.getElementById("registro")
+    const iniciars = document.getElementById("iniciar")
+    const nombreInput = document.getElementById("nombre");
+    const mailInput = document.getElementById("mail");
+    const contrasenaInput = document.getElementById("contrasena");
+    const mailEInput = document.getElementById("mailE");
+    const contraEInput = document.getElementById("contraE");
+    const texto = document.getElementById("texto");
+    const ventana = document.getElementById("ventana");
+    const cerrar = document.getElementById("cerrar");
+    const avisoElem = document.getElementById("mensaje");
+    const firebaseConfig = {
+        apiKey: "AIzaSyAiq27-ue3MeC2H4i1nNKyfJNvWCfmScaw",
+        authDomain: "didia5.firebaseapp.com",
+        databaseURL: "https://didia5-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "didia5",
+        storageBucket: "didia5.appspot.com",
+        messagingSenderId: "652405109295",
+        appId: "1:652405109295:web:ec25a722d7eb86cba28cda",
+        measurementId: "G-02DKN2R0BW"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function crearCuenta(e) {
+        e.preventDefault();
+        const nombre = nombreInput.value;
+        const mail = mailInput.value;
+        const contrasena = contrasenaInput.value;
+        try {
+        await setDoc(doc(db, "usuarios", mail), {
+            nombre: nombre,
+            contra: contrasena,
+            email: mail,
+            nota: ""
+        });
+        aviso(`Cuenta creada exitosamente para: ${nombre}, ahora inicia sesión abajo`);
+        } catch (e) {
+            aviso(`Error al crear la cuenta: ${e}`);
+            aviso("Hubo un error al crear la cuenta, espera un momento");
+        }
+    }
+
+    async function obtenerUsuario(a) {
+        a.preventDefault();
+        const mail = mailEInput.value;
+        const contra = contraEInput.value;
+        const docRef = doc(db, "usuarios", mail);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            data = docSnap.data();
+            if (data.contra === contra) {
+                aviso("Bienvenido " + data.nombre);
+                registro.classList.add("animate__animated", "animate__bounceOutUp");
+                iniciars.classList.add("animate__animated", "animate__bounceOutUp");
+                ventana.classList.add("animate__animated", "animate__bounceInUp");
+                setTimeout(() => {
+                    registro.style.display = "none";
+                    iniciars.style.display = "none";
+                    ventana.style.display = "flex";
+                }, 1000);
+                Ctexto();
+            } else {
+                aviso("Contraseña incorrecta");
+            }
+        } else {
+            aviso("Usuario no encontrado");
+        }
+    }
+    let unsubscribeFromNote;
+
+    function Ctexto() {
+        if (!data || !data.email) {
+            return;
+        }
+        const mail = data.email;
+        const docRef = doc(db, "usuarios", mail);
+        if (unsubscribeFromNote) {
+            unsubscribeFromNote();
+        }
+        unsubscribeFromNote = onSnapshot(docRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const userData = docSnapshot.data();
+                const nuevaNota = userData.nota || "";
+                if (texto.value !== nuevaNota) {
+                    texto.value = nuevaNota;
+                }
+            }
+        }, (error) => {
+            console.error("Error al escuchar la nota:", error);
+        });
+    }
+    async function Itexto() {
+        if (!data || !data.email) {
+            aviso("Inicia sesión para continuar");
+            return;
+        }
+        const mail = data.email;
+        const docRef = doc(db, "usuarios", mail)
+        const nota = texto.value;
+        await setDoc(docRef, {
+            nota: nota
+        }, 
+        { merge: true });
+    }
+    function aviso(texto) {
+        avisoElem.classList.add("animate__animated", "animate__flipInY");
+        avisoElem.style.display = "block";
+        avisoElem.innerText = texto;
+        setTimeout(() => {
+            avisoElem.classList.remove("animate__animated", "animate__flipInY");
+            avisoElem.style.display = "none";
+        }, 3000);
+    }
+    texto.addEventListener("input", Itexto)
+    registro.addEventListener("submit", crearCuenta);
+    iniciars.addEventListener("submit", obtenerUsuario);
+    cerrar.addEventListener("click", function() {
+        ventana.style.display = "none";
+        registro.style.display = "block";
+        iniciars.style.display = "block";
+        registro.classList.remove("animate__bounceOutUp");
+        iniciars.classList.remove("animate__bounceOutUp");
+    });
+    </script>
+</body>
+</html>
