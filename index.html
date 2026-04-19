@@ -117,7 +117,7 @@
             position: fixed;
             top: 100px; 
             z-index: 3000;
-            display: flex;
+            display: none;
             justify-content: center;
             flex-wrap: wrap;
             gap: 10px;
@@ -128,6 +128,8 @@
             -webkit-backdrop-filter: blur(8px);
             box-sizing: border-box;
         }
+        /* Añadimos una transición para el menú */
+        #servicios { user-select: none; }
 
         .menu {
             display: inline-block;
@@ -165,32 +167,18 @@
 
         hr { border: 0; height: 1px; background: rgba(0,0,0,0.1); margin: 40px 0; }
         .bookmark-link { font-size: 1.1rem; color: #0044aa; text-decoration: none; font-weight: bold; }
-        
-        @keyframes aparecer {
-            0% {
-                scale: 0.5;
-                opacity: 0;
-            }
-            100% {
-                scale: 1;
-                opacity: 1;
-            }
-        }
-        .descargas {
-            animation: aparecer linear both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 30%;
-            justify-self: center !important;
-        }
 
         .descargas-cont {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Cambiado para que el scroll inicie a la izquierda */
             width: 100%;
+            max-width: 100%;
+            overflow-x: scroll;
+            border-radius: 20px;
+            padding: 0px;
+            margin: 5px;
+            scroll-snap-type: x mandatory;
         }
-
         fieldset { 
             border: none; 
             border-radius: 20px; 
@@ -199,40 +187,36 @@
             margin: 10px;
             padding: 20px;
         }
-        
-        @keyframes titulo {
-            0%{
-                scale: 1;
-                opacity: 0;
-            }
-            100%{
-                scale: 0;
-                opacity: 1;
-            } 
-        }
-        .titulo-des {
-            font-size: 200px;
-            animation: titulo linear both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 70%;
-        }
         hr {
             background-color: #505050;
         }
+        .descarga {
+            min-width: 200px !important;
+            scroll-snap-align: center;
+            margin: 45px;
+            scroll-snap-stop: always
+        }
         @media (max-width: 768px) { #refran { transform: translateY(50px); } }
+        .descargas-cont::-webkit-scrollbar {
+            display: none;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
 
-<div class="ventanas animate__animated animate__ZoomIn">
+<div class="ventanas animate__animated animate__FadeInDown">
     <div class="search-wrapper">
         <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb"></script>
         <div class="gcse-search"></div>
     </div>
+    <span style="font-size: 30px; cursor: pointer; user-select: none;" onclick="menuContract()">≡</span>
 </div>
 
-<div class="max animate__animated animate__FadeInDown">
+<div id="servicios" class="max" style="display: none;">
     <a href="Voice.html" class="menu">Voice</a>
     <a href="quiz-creator.html" class="menu">DIDquiz</a>
     <a href="Quiz.html" class="menu">Cálculo mental</a>
@@ -242,6 +226,7 @@
 
 <section class="daba">
     <div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
+    <br>
     <img src="assets/did logo.png" alt="Logo DID" style="max-width: 250px; height: auto;">
     <p style="font-weight: bold; padding-left: 140px;">Search</p>
     <details style="margin-top: 20px;">
@@ -263,61 +248,40 @@
 <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
 
 <hr>
-
-<br><br><br><br><p>y ahora las nuevas</p>
-<h1 class="titulo-des">Descargas</h1>
+<h1>Descargas</h1>
 <br><br><br><br>
-
 <div class="descargas-cont" id="descargas-cont">
     <div style="display: flex; flex-direction: row;" class="descargas">
-        <fieldset>
+        <span style="opacity: 0;">·</span>
+        <fieldset class="descarga">
             <h1>Instala la App</h1>
             <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
         </fieldset>
-        <fieldset>
+        <fieldset class="descarga">
             <h1>Instala la app</h1>
             <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
             <p>¡Programada con flutter!</p>
         </fieldset>
-        <fieldset>
-            <h1>Descarga nuestro instalador de APK</h1>
-            <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/instalador de apks.zip" download="instaldor de apk.zip">Descargar ZIP</a>
-            <p>¡descarga ADB automáticamente!</p><p>viene comprimido en un archivo zip de 13,4mb</p>
-            <details>
-                <summary>¿como abrirlo?</summary>
-                <li>haz doble click sobre el archivo</li>
-                <li>descomprimelo si no tienes un programa para abrirlo sin descomprimir como winrar</li>
-                <li>abre el archivo terminado en .exe dentro de la carpeta comprimida .zip</li>
-            </details>
+        <fieldset class="descarga">
+            <h1>Descarga el instalador de APK</h1>
+            <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/instalador de APKs.exe" download="instaldor de apk.zip">Descargar para windows</a>
         </fieldset>
+        <span style="opacity: 0;">·</span>
     </div>
 </div>
-
-<br><br><br><br><br>
 <p>Creado por Daniel Tejedor</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
 <script>
-    const descargasSection = document.getElementById('descargas-cont');
-    const obserConfig = { threshold: 0.50, rootMargin: "100px" };
-
-    const callback = (entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                document.body.style.backgroundImage = "none";
-                document.body.style.backgroundColor = "#f00";
-                document.body.style.color = "white";
-            } else {
-                document.body.style.backgroundImage = "";
-                document.body.style.backgroundColor = "";
-                document.body.style.color = "";
-            }
-        });
-    };
-
-    const observer = new IntersectionObserver(callback, obserConfig);
-    observer.observe(descargasSection);
+    function menuContract() {
+        const serviciosSection = document.getElementById('servicios'); // Corregido: el ID es 'servicios'
+        if (serviciosSection.style.display === 'none') {
+            serviciosSection.style.display = 'flex';
+        } else {
+            serviciosSection.style.display = 'none';
+        }
+    }
 
     const generarBtn = document.getElementById('generarBtn');
     const qrcodeDiv = document.getElementById('qrcode');
@@ -332,7 +296,3 @@
 
 </body>
 </html>
-
-
-
-

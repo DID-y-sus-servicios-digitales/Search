@@ -31,18 +31,3 @@ function refranDeLaSemana() {
 
 // Mostrar el refrán en el elemento HTML
 document.getElementById("refran").innerText = refranDeLaSemana();
-const textoInput = document.getElementById('textoInput');
-        const generarBtn = document.getElementById('generarBtn');
-        const qrcodeDiv = document.getElementById('qrcode');
-        const descargaLink = document.getElementById('descargaLink');
-
-        generarBtn.addEventListener('click', () => {
-            const texto = textoInput.value;
-            if (texto) {
-                qrcodeDiv.innerHTML = ''; // Limpiar el QR anterior
-                new QRCode(qrcodeDiv, texto);
-                descargaLink.style.display = 'block'; // Mostrar el enlace de descarga
-                descargaLink.href = qrcodeDiv.querySelector('img').src; // Obtener la URL del QR
-                descargaLink.download = 'didsearch qrcode.png'; // Nombre del archivo de descarga
-            }
-        });
