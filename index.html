@@ -38,7 +38,7 @@
     const analytics = firebase.analytics();
     analytics.logEvent('user_name');
     </script>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle" />
     <style>
         :root {
             --primary-color: #ff0099;
@@ -213,8 +213,12 @@
         <div class="gcse-search"></div>
     </div>
     <span style="font-size: 30px; cursor: pointer; user-select: none;" onclick="menuContract()">≡</span>
+    <span class="material-symbols-outlined" style="font-size: 30px; cursor: pointer; user-select: none;">account_circle</span>
 </div>
 
+<div id="servicios" class="max" style="display: none;">
+    <a href="/cuenta/index.html?type=" class="menu">Voice</a>
+</div>
 <div id="servicios" class="max" style="display: none;">
     <a href="Voice.html" class="menu">Voice</a>
     <a href="quiz-creator.html" class="menu">DIDquiz</a>

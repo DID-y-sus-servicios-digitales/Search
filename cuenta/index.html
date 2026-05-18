@@ -119,7 +119,11 @@
             if (error) {
                 mostrarMensaje('Error al crear la cuenta: ' + error.message);
             } else {
-                mostrarMensaje('Cuenta creada exitosamente');
+                mostrarMensaje('Cuenta creada exitosamente, inicia sesión abajo');
+                document.getElementById('signIn').style.border = '2px solid #000';
+                setTimeout(() => {
+                    document.getElementById('signIn').style.border = 'none';
+                }, 3000)
             }
         }
         async function iniciarSesion() {
@@ -132,6 +136,24 @@
             if (error) {
                 mostrarMensaje('Error al iniciar sesión: ' + error.message);
             } else if (data.length > 0) {
+                localStorage.setItem('nombreDIDaccount', nombree.value);
+                localStorage.setItem('passDIDaccount', passworde.value);
+                window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
+            } else {
+                mostrarMensaje('Error: Nombre o contraseña incorrectos');
+            }
+        }
+        async function abrirCuenta() {
+            mostrarMensaje('Cargando...');
+            const { data, error } = await dbclient
+                .from('cuentas')
+                .select('contraseña')
+                .eq('nombre', localStorage.getItem('nombreDIDaccount'))
+                .eq('contraseña', localStorage.getItem('passDIDaccount'));
+            if (error) {
+                mostrarMensaje('Error al iniciar sesión: ' + error.message);
+            } else if (data.length > 0) {
+                localStorage.setItem('nombreDIDaccount', nombree.value);
                 localStorage.setItem('passDIDaccount', passworde.value);
                 window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
             } else {
