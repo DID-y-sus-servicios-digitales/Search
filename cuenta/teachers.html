@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="teachers.css">
+<link rel="icon" type="image/png" sizes="16x16"  href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+<title>DID for teachers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div class="div titulo">
+  <button onclick="editable()" id="editbtn">Cambiar a no editable</button>
+  <h3 id="nombre" style="cursor: pointer;" title="Volver a iniciar sesión" onclick="window.location.href = 'index.html'"></h3>
+</div>
+<br>
+  <div id="tablon" class="div"></div>
+<br>
+<div class="div opciones">
+  <div style="display: flex; justify-content: center; gap: 5px;">
+    <button onclick="anadirtexto()">Añadir texto</button>
+    <button onclick="anadirTitulo()">Añadir título</button>
+    <button onclick="anadirEnlace()">Añadir enlace</button>
+    <button onclick="mostrarHTML()">Añadir HTML</button>
+    <button id="guardar" class="guardar">Guardar tablón</button>
+     <div class="anuncio" onclick="window.open('/quiz-creator.html', '_self')"><p>Prueba DID quiz</p></div>
+  </div>
+  <p>Creado por Daniel Tejedor</p>
+</div>
+<br>
+<div class="div" id="htmlInputConitainer" style="display: none; position: fixed; z-index: 9999; top: 50%; left: 100px;">
+  <textarea id="htmlInput" style="height: 50px;"></textarea>
+  <p><button onclick="anadirHTML()">Añadir HTML</button></p>
+</div>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  var edit = true;
+  function mostrarHTML() {
+    document.getElementById("htmlInputConitainer").style.display = "block";
+  }
+  function editable() {
+    if (edit) {
+      document.getElementById("tablon").contentEditable = "false";
+      document.getElementById("editbtn").textContent = "Cambiar a editable";
+      document.querySelectorAll(".elementoDinamico").forEach(el => el.contentEditable = "false");
+      document.querySelectorAll(".elementoDinamico").forEach(el => el.style.border = "none");
+      edit = false;
+    } else {
+      document.getElementById("tablon").contentEditable = "true";
+      document.querySelectorAll(".elementoDinamico").forEach(el => el.contentEditable = "true");
+      document.querySelectorAll(".elementoDinamico").forEach(el => el.style.border = "2px solid #000");
+      edit = true;
+      document.getElementById("editbtn").textContent = "Cambiar a no editable";
+    }
+  }
+  function anadirtexto() {
+    const texto = prompt("Introduce el texto que quieres añadir al tablón:");
+    if (texto) {
+      const parrafo = document.createElement("p");
+      parrafo.innerHTML = texto;
+      parrafo.style.textAlign = "center";
+      parrafo.contentEditable = "true";
+      parrafo.className = "elementoDinamico";
+      document.getElementById("tablon").appendChild(parrafo);
+    }
+  }
+  function anadirTitulo() {
+    const titulo = prompt("Introduce el título que quieres añadir al tablón:");
+    if (titulo) {
+      const h2 = document.createElement("h2");
+      h2.innerHTML = titulo;
+      h2.style.textAlign = "center";
+      h2.contentEditable = "true";
+      h2.className = "elementoDinamico";
+      document.getElementById("tablon").appendChild(h2);
+    }
+  }
+  function anadirHTML() {
+    const div = document.createElement("div");
+    div.innerHTML = document.getElementById("htmlInput").value;
+    div.style.textAlign = "center";
+    div.contentEditable = "true";
+    div.className = "elementoDinamico";
+    document.getElementById("tablon").appendChild(div);
+    document.getElementById("htmlInput").value = "";
+    document.getElementById("htmlInputConitainer").style.display = "none";
+  }
+  function anadirEnlace() {
+    const url = prompt("Introduce la URL que quieres añadir al tablón:");
+    if (url) {
+      const enlace = document.createElement("a");
+      enlace.href = "enlace.html?enlace=" + url;
+      enlace.innerHTML = url;
+      enlace.target = "_blank";
+      enlace.style.textAlign = "center";
+      enlace.contentEditable = "true";
+      enlace.className = "elementoDinamico";
+      document.getElementById("tablon").appendChild(enlace);
+    }
+  }
+  const supabaseUrl = 'https://oilopwrytpltkoppibla.supabase.co';
+  const supabaseKey = 'sb_publishable_vhHLYgRqFghJMK5TBMEukg_KOK_3W9q';
+  const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
+  const urlParams = new URLSearchParams(window.location.search);
+  const usuario = urlParams.get('user');
+  document.getElementById("nombre").textContent = usuario;
+  if (!usuario) {
+    window.location.href = "index.html";
+  } else {
+    cargarTablon();
+  }
+  var esperaDeSeguridad;
+  document.getElementById("guardar").addEventListener("click", guardarTablon); // Guardar al hacer click en el botón
+  document.getElementById("tablon").addEventListener("input", () => {
+    document.getElementById("guardar").textContent = "Guardando...";
+    clearTimeout(esperaDeSeguridad);
+    esperaDeSeguridad = setTimeout(guardarTablon, 5000)
+    document.getElementById("guardar").textContent = "Guardar tablón";
+  });
+  async function cargarTablon() {
+    const { data, error } = await dbclient
+      .from('cuentas')
+      .select('tablaTeachers')
+      .eq('nombre', usuario)
+    if (error) {
+      mostrarMensaje('Error al iniciar sesión: ' + error.message);
+    } else if (data.length > 0) {
+      document.getElementById("tablon").innerHTML = data[0].tablaTeachers;
+      document.getElementById("tablon").contentEditable = "true";
+      document.querySelectorAll("#tablon > *").forEach(el => el.contentEditable = "true");
+    } else {
+      mostrarMensaje('Error: Nombre o contraseña incorrectos');
+    }
+  }
+  async function guardarTablon() {
+    document.getElementById("guardar").textContent = "Guardando...";
+    const { data, error } = await dbclient
+      .from('cuentas') // Debe llamarse igual que tu tabla en Supabase
+      .update([
+        { tablaTeachers: document.getElementById("tablon").innerHTML} // El nombre de la columna y el valor a guardar
+      ])
+      .eq("nombre", usuario)
+      .select(); // El .select() sirve para que Supabase te devuelva el registro creado
+    document.getElementById("guardar").textContent = "Guardar tablón";
+    if (error) {
+      mostrarMensaje('Error al crear la cuenta: ' + error.message);
+    } else {
+      mostrarMensaje('Cuenta creada exitosamente');
+    }
+  }
+  function mostrarMensaje(msg) {
+    const mensajeDiv = document.getElementById('mensaje');
+    mensajeDiv.innerText = msg;
+    mensajeDiv.className = 'animacion';
+    mensajeDiv.style.borderLeft = '5px solid ' + (msg.includes('Error') ? '#f00' : '#0f0');
+    mensajeDiv.style.display = 'block';
+    setTimeout(() => {
+        mensajeDiv.className = '';
+        mensajeDiv.style.display = 'none';
+    }, 3000);
+  }
+</script>
+</body>
+</html>

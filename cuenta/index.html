@@ -1,0 +1,154 @@
+<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-family: 'Open Sans';
+        background-image: url('../fondo.jpg');
+    }
+    #logIn{
+        border-radius: 20px;
+        border-left: 5px solid #f00;
+        padding: 5px;
+        box-shadow: 3px 3px 10px #404040;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 5px;
+        background-color: white;
+    }
+    #signIn{
+        background-color: white;
+        border-radius: 20px;
+        border-left: 5px solid #f0f;
+        padding: 5px;
+        box-shadow: 3px 3px 10px #404040;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 5px;
+    }
+    input{
+        border: none;
+        border-radius: 20px;
+        background-image: linear-gradient(90deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 155, 0.2));
+        transition: all 0.2s ease;
+    }
+    input:hover{
+        scale: 1.05;
+    }
+    #mensaje{
+        border-radius: 20px;
+        border-left: 5px solid #f0f;
+        box-shadow: 3px 3px 10px #404040;
+        padding: 5px;
+        font-size: 20px;
+        margin: 20px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: white;
+    }
+    .animacion{
+        animation: animacion 0.5s ease;
+    }
+    @keyframes animacion {
+        0%{
+            transform: translateX(600px);
+        }
+        100%{
+            transform: translateY(0);
+        }
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="mensaje" style="display: none;"></div>
+    <a href="/index.html" style="text-decoration: none; border-radius: 20px; border: 2px solid #f0f; background-color: white; color: black;">Volver a DID search</a>
+    <br>
+    <form id="logIn" onsubmit="registrar()">
+        <h1>Crear cuenta</h1>
+        <input type="text" id="nombre" placeholder="Nombre">
+        <input type="text" id="contraseña" placeholder="Contraseña">
+        <input type="email" id="mail" placeholder="Correo electrónico">
+        <input type="submit">
+    </form>
+    <form id="signIn" onsubmit="iniciarSesion()">
+        <h1>Iniciar sesión</h1>
+        <input type="text" id="nombree" placeholder="Nombre">
+        <input type="text" id="contraseñae" placeholder="Contraseña">
+        <input type="submit">
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        document.getElementById('logIn').addEventListener('submit', function(event) {
+            event.preventDefault();
+            registrar();
+        });
+        document.getElementById('signIn').addEventListener('submit', function(event) {
+            event.preventDefault();
+            iniciarSesion();
+        });
+        const supabaseUrl = 'https://oilopwrytpltkoppibla.supabase.co';
+        const supabaseKey = 'sb_publishable_vhHLYgRqFghJMK5TBMEukg_KOK_3W9q';
+        const password = document.getElementById('contraseña');
+        const nombre = document.getElementById('nombre');
+        const passworde = document.getElementById('contraseñae');
+        const nombree = document.getElementById('nombree');
+        const mail = document.getElementById('mail');
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+        const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
+        async function registrar() {
+            mostrarMensaje('Cargando...');
+            const { data, error } = await dbclient
+                .from('cuentas') // Debe llamarse igual que tu tabla en Supabase
+                .insert([
+                    { nombre: nombre.value, contraseña: password.value, email: mail.value} // El nombre de la columna y el valor a guardar
+                ])
+                .select(); // El .select() sirve para que Supabase te devuelva el registro creado
+            if (error) {
+                mostrarMensaje('Error al crear la cuenta: ' + error.message);
+            } else {
+                mostrarMensaje('Cuenta creada exitosamente');
+            }
+        }
+        async function iniciarSesion() {
+            mostrarMensaje('Cargando...');
+            const { data, error } = await dbclient
+                .from('cuentas')
+                .select('contraseña')
+                .eq('nombre', nombree.value)
+                .eq('contraseña', passworde.value);
+            if (error) {
+                mostrarMensaje('Error al iniciar sesión: ' + error.message);
+            } else if (data.length > 0) {
+                localStorage.setItem('passDIDaccount', passworde.value);
+                window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
+            } else {
+                mostrarMensaje('Error: Nombre o contraseña incorrectos');
+            }
+        }
+        function mostrarMensaje(msg) {
+            const mensajeDiv = document.getElementById('mensaje');
+            mensajeDiv.textContent = msg;
+            mensajeDiv.className = 'animacion';
+            mensajeDiv.style.borderLeft = '5px solid ' + (msg.includes('Error') ? '#f00' : '#0f0');
+            mensajeDiv.style.display = 'block';
+            setTimeout(() => {
+                mensajeDiv.className = '';
+                mensajeDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

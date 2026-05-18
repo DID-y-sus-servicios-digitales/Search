@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>DIDsync</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-family: 'Open Sans';
+    }
+    input, textarea{
+        border: none;
+        border-radius: 20px;
+        background-image: linear-gradient(90deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 155, 0.2));
+        transition: all 0.2s ease;
+    }
+    input:hover{
+        scale: 1.05;
+    }
+    textarea::-webkit-resizer {
+        background-color: #333;
+        border: 1px solid #555;
+        border-radius: 4px;
+    }
+    #mensaje{
+        border-radius: 20px;
+        border-left: 5px solid #f0f;
+        box-shadow: 3px 3px 10px #404040;
+        padding: 5px;
+        font-size: 20px;
+        margin: 20px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: white;
+    }
+    .animacion{
+        animation: animacion 0.5s ease;
+    }
+    @keyframes animacion {
+        0%{
+            transform: translateX(600px);
+        }
+        100%{
+            transform: translateY(0);
+        }
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="mensaje" style="display: none;"></div>
+    <a href="/index.html" style="text-decoration: none; border-radius: 20px; border: 2px solid #f0f; background-color: white; color: black;">Volver a DID search</a>
+    <div><textarea id="nota" style="height: 70%; width: 90%; padding: 10px;"></textarea></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://oilopwrytpltkoppibla.supabase.co';
+        const supabaseKey = 'sb_publishable_vhHLYgRqFghJMK5TBMEukg_KOK_3W9q';
+        const mensaje = document.getElementById('nota');
+        const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
+        const textarea = document.getElementById('nota')
+        const urlParams = new URLSearchParams(window.location.search);
+        const usuario = urlParams.get('user');
+
+        async function cargarTextoInicial() {
+            const { data, error } = await dbclient
+                .from('cuentas')
+                .select('notaSync')
+                .eq('nombre', usuario)
+                .single()
+
+            if (data) {
+                textarea.value = data.notaSync || '';
+                mostrarMensaje('Sesión iniciada correctamente')
+            }
+            else if (error) {
+                mostrarMensaje('Error al iniciar sesión: ' + error.message);
+            }
+        }
+
+        cargarTextoInicial();
+
+        const channel = dbclient.channel(`nota-sync-${usuario}`)
+            .on('postgres_changes', {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'cuentas',
+                filter: `nombre=eq.${usuario}`
+            }, (payload) => {
+                textarea.value = payload.new.notaSync;
+            })
+            .subscribe();
+
+        textarea.addEventListener('input', async (e) => {
+            await dbclient.from('cuentas')
+                .update({ notaSync: e.target.value })
+                .eq('nombre', usuario);
+        })
+        function mostrarMensaje(msg) {
+            const mensajeDiv = document.getElementById('mensaje');
+            mensajeDiv.textContent = msg;
+            mensajeDiv.className = 'animacion';
+            mensajeDiv.style.borderLeft = '5px solid ' + (msg.includes('Error') ? '#f00' : '#0f0');
+            mensajeDiv.style.display = 'block';
+            setTimeout(() => {
+                mensajeDiv.className = '';
+                mensajeDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
