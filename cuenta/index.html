@@ -107,6 +107,11 @@
         const mail = document.getElementById('mail');
         const urlParams = new URLSearchParams(window.location.search);
         const type = urlParams.get('type');
+        const lsname = localStorage.getItem('nombreDIDaccount');
+        const lspass = localStorage.getItem('passDIDaccount');
+        if (lsname && lspass) {
+            abrirCuenta();
+        }
         const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
         async function registrar() {
             mostrarMensaje('Cargando...');
@@ -153,9 +158,7 @@
             if (error) {
                 mostrarMensaje('Error al iniciar sesión: ' + error.message);
             } else if (data.length > 0) {
-                localStorage.setItem('nombreDIDaccount', nombree.value);
-                localStorage.setItem('passDIDaccount', passworde.value);
-                window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
+                window.location.href = type + '.html?nombre=' + encodeURIComponent(lsname);
             } else {
                 mostrarMensaje('Error: Nombre o contraseña incorrectos');
             }

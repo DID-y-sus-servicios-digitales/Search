@@ -206,18 +206,18 @@
 </head>
 
 <body>
-
 <div class="ventanas animate__animated animate__FadeInDown">
     <div class="search-wrapper">
         <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb"></script>
         <div class="gcse-search"></div>
     </div>
-    <span style="font-size: 30px; cursor: pointer; user-select: none;" onclick="menuContract()">≡</span>
-    <span class="material-symbols-outlined" style="font-size: 30px; cursor: pointer; user-select: none;">account_circle</span>
+    <span id="serviciosToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;" onclick="menuContract()">≡</span>
+    <span id="cuentaToogleBTN" class="material-symbols-outlined" onclick="cuentaContract()" style="font-size: 30px; cursor: pointer; user-select: none;">account_circle</span>
 </div>
 
-<div id="servicios" class="max" style="display: none;">
-    <a href="/cuenta/index.html?type=" class="menu">Voice</a>
+<div id="cuenta" class="max" style="display: none;">
+    <a href="/cuenta/index.html?type=sync" class="menu">sync</a>
+    <a href="/cuenta/index.html?type=teachers" class="menu">para profes</a>
 </div>
 <div id="servicios" class="max" style="display: none;">
     <a href="Voice.html" class="menu">Voice</a>
@@ -280,11 +280,20 @@
         const serviciosSection = document.getElementById('servicios');
         if (serviciosSection.style.display === 'none') {
             serviciosSection.style.display = 'flex';
+            document.getElementById('cuenta').style.display = 'none';
         } else {
             serviciosSection.style.display = 'none';
         }
     }
-
+    function cuentaContract() {
+        const serviciosSection = document.getElementById('cuenta');
+        if (serviciosSection.style.display === 'none') {
+            serviciosSection.style.display = 'flex';
+            document.getElementById('servicios').style.display = 'none';
+        } else {
+            serviciosSection.style.display = 'none';
+        }
+    }
     const generarBtn = document.getElementById('generarBtn');
     const qrcodeDiv = document.getElementById('qrcode');
     generarBtn.addEventListener('click', () => {
