@@ -107,11 +107,7 @@
   const urlParams = new URLSearchParams(window.location.search);
   const usuario = urlParams.get('user');
   document.getElementById("nombre").textContent = usuario;
-  if (!usuario) {
-    window.location.href = "index.html";
-  } else {
-    cargarTablon();
-  }
+  cargarTablon();
   var esperaDeSeguridad;
   document.getElementById("guardar").addEventListener("click", guardarTablon); // Guardar al hacer click en el botón
   document.getElementById("tablon").addEventListener("input", () => {
