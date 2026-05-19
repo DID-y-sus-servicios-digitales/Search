@@ -105,7 +105,7 @@
   const supabaseKey = 'sb_publishable_vhHLYgRqFghJMK5TBMEukg_KOK_3W9q';
   const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
   const urlParams = new URLSearchParams(window.location.search);
-  const usuario = urlParams.get('user');
+  const usuario = urlParams.get('nombre');
   document.getElementById("nombre").textContent = usuario;
   cargarTablon();
   var esperaDeSeguridad;

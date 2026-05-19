@@ -63,7 +63,7 @@
         const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
         const textarea = document.getElementById('nota')
         const urlParams = new URLSearchParams(window.location.search);
-        const usuario = urlParams.get('user');
+        const usuario = urlParams.get('nombre');
 
         async function cargarTextoInicial() {
             const { data, error } = await dbclient
