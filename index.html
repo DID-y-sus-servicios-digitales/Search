@@ -214,11 +214,12 @@
     <div id="avatar" onclick="cuentaContract()" id="cuentaToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;"></div>
 </div>
 
-<div id="cuenta" class="max" style="display: none;">
+<div id="cuenta" class="max" title="cuenta" style="display: none;">
     <a href="cuenta/index.html?type=sync" class="menu">sync</a>
-    <a href="cuenta/index.html?type=teachers" class="menu">para profes</a>
+    <a href="cuenta/index.html?type=teachers" class="menu">Tablón para profes</a>
+    <a href="#" onclick="logOff()" class="menu">Cerrar sesión</a>
 </div>
-<div id="servicios" class="max" style="display: none;">
+<div id="servicios" class="max" title="servicios" style="display: none;">
     <a href="Voice.html" class="menu">Voice</a>
     <a href="quiz-creator.html" class="menu">DIDquiz</a>
     <a href="Quiz.html" class="menu">Cálculo mental</a>
@@ -272,17 +273,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/letterimages@2.0.3/dist/letterimages.min.js"></script>
 <script>
     const avatar = document.getElementById('avatar');
     const usuario = localStorage.getItem('nombreDIDaccount');
     if (usuario) {
-        avatar.innerHTML = '<i data-name="' + usuario + '" class="letterimages"></i>'
-        setTimeout(() => {
-            new LetterImages().transform();
-        }, 0);
+        avatar.innerHTML = '<div id="perfil">' + usuario.charAt(0).toUpperCase() + '</div>';
+        document.write('<script src="cuentaIcon.js"><\/script>');
     } else {
         avatar.innerHTML = '<span class="material-symbols-outlined">account_circle</span>'
+    }
+    function logOff() {
+        localStorage.removeItem('nombreDIDaccount');
+        localStorage.removeItem('passDIDaccount');
+        window.location.href = 'index.html';
     }
     function menuContract() {
         const serviciosSection = document.getElementById('servicios');
