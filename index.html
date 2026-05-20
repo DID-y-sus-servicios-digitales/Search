@@ -204,7 +204,6 @@
         }
     </style>
 </head>
-
 <body>
 <div class="ventanas animate__animated animate__FadeInDown">
     <div class="search-wrapper">
@@ -212,7 +211,7 @@
         <div class="gcse-search"></div>
     </div>
     <span id="serviciosToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;" onclick="menuContract()">≡</span>
-    <span id="cuentaToogleBTN" class="material-symbols-outlined" onclick="cuentaContract()" style="font-size: 30px; cursor: pointer; user-select: none;">account_circle</span>
+    <div id="avatar" onclick="cuentaContract()" id="cuentaToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;"></div>
 </div>
 
 <div id="cuenta" class="max" style="display: none;">
@@ -223,8 +222,6 @@
     <a href="Voice.html" class="menu">Voice</a>
     <a href="quiz-creator.html" class="menu">DIDquiz</a>
     <a href="Quiz.html" class="menu">Cálculo mental</a>
-    <a href="sync.html" class="menu">Sync</a>
-    <a href="https://did-y-sus-servicios-digitales.github.io/DID-for-teachers/index.html" target="_blank" class="menu">Para profes</a>
 </div>
 <section class="daba">
     <div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
@@ -275,7 +272,18 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="refrán.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/letterimages@2.0.3/dist/letterimages.min.js"></script>
 <script>
+    const avatar = document.getElementById('avatar');
+    const usuario = localStorage.getItem('nombreDIDaccount');
+    if (usuario) {
+        avatar.innerHTML = '<i data-name="' + usuario + '" class="letterimages"></i>'
+        setTimeout(() => {
+            new LetterImages().transform();
+        }, 0);
+    } else {
+        avatar.innerHTML = '<span class="material-symbols-outlined">account_circle</span>'
+    }
     function menuContract() {
         const serviciosSection = document.getElementById('servicios');
         if (serviciosSection.style.display === 'none') {
