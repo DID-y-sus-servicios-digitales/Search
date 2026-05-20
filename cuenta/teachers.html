@@ -11,7 +11,22 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-  <a style="position: fixed; border-radius: 20px; top: 88vh; background-color: white; right: 3vh; padding: 10px; box-shadow: 3px 3px 10px #404040; text-decoration: none; color: black; z-index: 9999;" href="../index.html">Volver a INICIO</a>
+<div style="margin: 10px; padding: 5px; border-radius: 20px; background-color: white; box-shadow: 3px 3px 10px #404040;">
+        <a id="menuCuenta" href="../index.html">Volver a INICIO</a>
+        <a id="menuCuenta" href="#" onclick="cerrarSesion(event)">Cerrar sesión</a>
+        <script>
+            function cerrarSesion(e) {
+                e.preventDefault();
+                localStorage.removeItem('nombreDIDaccount');
+                localStorage.removeItem('passDIDaccount');
+                window.location.href = '../index.html';
+            }
+        </script>
+        <style>
+            #menuCuenta{ border-radius: 20px; background-color: white; padding: 2px; text-decoration: none; color: black; border-right: 5px solid #f0f; border-left: 5px solid #f0f; transition: all 0.2s ease; }
+            #menuCuenta:hover{ border-left: 30px solid #f0f; border-right: 30px solid #f0f; border-top: 5px solid #f0f; border-bottom: 5px solid #f0f; border-radius: 20px; }
+        </style>
+    </div>
 <div class="div titulo">
   <button onclick="editable()" id="editbtn">Cambiar a no editable</button>
   <h3 id="nombre" style="cursor: pointer;" title="Volver a iniciar sesión" onclick="window.location.href = 'index.html'"></h3>

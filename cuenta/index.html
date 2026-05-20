@@ -1,6 +1,6 @@
 <html>
 <head>
-<title></title>
+<title>Iniciar Sesión</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
@@ -10,7 +10,8 @@
         align-items: center;
         flex-direction: column;
         font-family: 'Open Sans';
-        background-image: url('../fondo.jpg');
+        background-image: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://did-y-sus-servicios-digitales.github.io/Search/fondo.jpg');
+        background-size: cover;
     }
     #logIn{
         border-radius: 20px;
@@ -73,7 +74,13 @@
 </head>
 <body>
     <div id="mensaje" style="display: none;"></div>
-    <a href="../index.html" style="text-decoration: none; border-radius: 20px; border: 2px solid #f0f; background-color: white; color: black;">Volver a DID search</a>
+    <div style="margin: 10px; padding: 5px; border-radius: 20px; background-color: white; box-shadow: 3px 3px 10px #404040;">
+        <a id="menuCuenta" href="../index.html">Volver a INICIO</a>
+        <style>
+            #menuCuenta{ border-radius: 20px; background-color: white; padding: 2px; text-decoration: none; color: black; border-right: 5px solid #f0f; border-left: 5px solid #f0f; transition: all 0.2s ease; }
+            #menuCuenta:hover{ border-left: 30px solid #f0f; border-right: 30px solid #f0f; border-top: 5px solid #f0f; border-bottom: 5px solid #f0f; border-radius: 20px; }
+        </style>
+    </div>
     <br>
     <form id="logIn" onsubmit="registrar()">
         <h1>Crear cuenta</h1>
@@ -107,11 +114,6 @@
         const mail = document.getElementById('mail');
         const urlParams = new URLSearchParams(window.location.search);
         const type = urlParams.get('type');
-        const lsname = localStorage.getItem('nombreDIDaccount');
-        const lspass = localStorage.getItem('passDIDaccount');
-        if (lsname && lspass) {
-            abrirCuenta();
-        }
         const dbclient = supabase.createClient(supabaseUrl, supabaseKey);
         async function registrar() {
             mostrarMensaje('Cargando...');
@@ -148,19 +150,28 @@
                 mostrarMensaje('Error: Nombre o contraseña incorrectos');
             }
         }
+
+        window.onload = function() {
+            const lsname = localStorage.getItem('nombreDIDaccount');
+            const lspass = localStorage.getItem('passDIDaccount');
+            if (lsname && lspass && type) {
+                abrirCuenta(lsname, lspass);
+            }
+        };
+
         async function abrirCuenta() {
             mostrarMensaje('Cargando...');
+            const lsname = localStorage.getItem('nombreDIDaccount');
+            const lspass = localStorage.getItem('passDIDaccount');
             const { data, error } = await dbclient
                 .from('cuentas')
                 .select('contraseña')
-                .eq('nombre', localStorage.getItem('nombreDIDaccount'))
-                .eq('contraseña', localStorage.getItem('passDIDaccount'));
+                .eq('nombre', lsname)
+                .eq('contraseña', lspass);
             if (error) {
                 mostrarMensaje('Error al iniciar sesión: ' + error.message);
             } else if (data.length > 0) {
                 window.location.href = type + '.html?nombre=' + encodeURIComponent(lsname);
-            } else {
-                mostrarMensaje('Error: Nombre o contraseña incorrectos');
             }
         }
         function mostrarMensaje(msg) {

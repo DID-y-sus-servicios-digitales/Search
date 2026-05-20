@@ -52,9 +52,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <a style="position: fixed; border-radius: 20px; top: 88vh; background-color: white; right: 3vh; padding: 10px; box-shadow: 3px 3px 10px #404040; text-decoration: none; color: black;" href="../index.html">Volver a INICIO</a>
+    <div style="margin: 10px; padding: 5px; border-radius: 20px; background-color: white; box-shadow: 3px 3px 10px #404040;">
+        <a id="menuCuenta" href="../index.html">Volver a INICIO</a>
+        <a id="menuCuenta" href="#" onclick="cerrarSesion(event)">Cerrar sesión</a>
+        <script>
+            function cerrarSesion(e) {
+                e.preventDefault();
+                localStorage.removeItem('nombreDIDaccount');
+                localStorage.removeItem('passDIDaccount');
+                window.location.href = '../index.html';
+            }
+        </script>
+        <style>
+            #menuCuenta{ border-radius: 20px; background-color: white; padding: 2px; text-decoration: none; color: black; border-right: 5px solid #f0f; border-left: 5px solid #f0f; transition: all 0.2s ease; }
+            #menuCuenta:hover{ border-left: 30px solid #f0f; border-right: 30px solid #f0f; border-top: 5px solid #f0f; border-bottom: 5px solid #f0f; border-radius: 20px; }
+        </style>
+    </div>
     <div id="mensaje" style="display: none;"></div>
-    <div><textarea id="nota" style="height: 70%; width: 90%; padding: 10px;"></textarea></div>
+    <div><textarea id="nota" placeholder="Escribe aquí, se sincronizará automáicamente con tus otros dispositivos" style="height: 70vh; width: 80vh; padding: 10px;"></textarea></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://oilopwrytpltkoppibla.supabase.co';
