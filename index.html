@@ -301,6 +301,8 @@
         if (serviciosSection.style.display === 'none') {
             serviciosSection.style.display = 'flex';
             document.getElementById('servicios').style.display = 'none';
+        } else if (!localStorage.getItem("nombreDIDaccount")) {
+            window.location.href = "cuenta/index.html?type=index"
         } else {
             serviciosSection.style.display = 'none';
         }

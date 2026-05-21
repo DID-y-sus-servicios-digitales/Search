@@ -146,17 +146,20 @@
             } else if (data.length > 0) {
                 localStorage.setItem('nombreDIDaccount', nombree.value);
                 localStorage.setItem('passDIDaccount', passworde.value);
-                window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
+                if (type.includes("index")) {
+                    window.location.href = '../index.html';
+                } else {
+                    window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
+                }
             } else {
                 mostrarMensaje('Error: Nombre o contraseña incorrectos');
             }
         }
-
         window.onload = function() {
             const lsname = localStorage.getItem('nombreDIDaccount');
             const lspass = localStorage.getItem('passDIDaccount');
             if (lsname && lspass && type) {
-                abrirCuenta(lsname, lspass);
+                abrirCuenta();
             }
         };
 
@@ -172,7 +175,11 @@
             if (error) {
                 mostrarMensaje('Error al iniciar sesión: ' + error.message);
             } else if (data.length > 0) {
-                window.location.href = type + '.html?nombre=' + encodeURIComponent(lsname);
+                if (type.includes("index")) {
+                    window.location.href = '../index.html';
+                } else {
+                    window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
+                }
             }
         }
         function mostrarMensaje(msg) {
