@@ -298,13 +298,15 @@
     }
     function cuentaContract() {
         const serviciosSection = document.getElementById('cuenta');
-        if (serviciosSection.style.display === 'none') {
-            serviciosSection.style.display = 'flex';
-            document.getElementById('servicios').style.display = 'none';
-        } else if (!localStorage.getItem("nombreDIDaccount")) {
+        if (!localStorage.getItem("nombreDIDaccount")) {
             window.location.href = "cuenta/index.html?type=index"
         } else {
-            serviciosSection.style.display = 'none';
+            if (serviciosSection.style.display === 'none') {
+                serviciosSection.style.display = 'flex';
+                document.getElementById('servicios').style.display = 'none';
+            } else {
+                serviciosSection.style.display = 'none';
+            }
         }
     }
     const generarBtn = document.getElementById('generarBtn');
