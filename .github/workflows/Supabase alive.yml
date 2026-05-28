@@ -1,0 +1,12 @@
+name: Keep Supabase Alive 1 cuentas
+on:
+  schedule:
+    - cron: '0 0 * * *' # Se ejecuta cada día a medianoche
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: curl -X GET "${{ secrets.https://oilopwrytpltkoppibla.supabase.co }}/rest/v1/cuenta?limit=1" \
+             -H "apikey: ${{ secrets.sb_publishable_vhHLYgRqFghJMK5TBMEukg_KOK_3W9q }}" \
+             -H "Authorization: Bearer ${{ secrets.sb_publishable_vhHLYgRqFghJMK5TBMEukg_KOK_3W9q }}"
