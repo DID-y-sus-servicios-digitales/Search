@@ -159,25 +159,24 @@
             const lsname = localStorage.getItem('nombreDIDaccount');
             const lspass = localStorage.getItem('passDIDaccount');
             if (lsname && lspass && type) {
-                abrirCuenta();
+                abrirCuenta(lsname, lspass, type);
             }
         };
 
-        async function abrirCuenta() {
+        async function abrirCuenta(name, pass, type) {
             mostrarMensaje('Cargando...');
-            const lsname = localStorage.getItem('nombreDIDaccount');
-            const lspass = localStorage.getItem('passDIDaccount');
             const { data, error } = await dbclient
                 .from('cuentas')
                 .select('contraseña')
-                .eq('nombre', lsname)
-                .eq('contraseña', lspass);
+                .eq('nombre', name)
+                .eq('contraseña', pass);
             if (error) {
                 mostrarMensaje('Error al iniciar sesión: ' + error.message);
             } else if (data.length > 0) {
                 if (type.includes("index")) {
                     window.location.href = '../index.html';
-                } else {
+                }
+                else {
                     window.location.href = type + '.html?nombre=' + encodeURIComponent(nombree.value);
                 }
             }
