@@ -38,7 +38,6 @@
     const analytics = firebase.analytics();
     analytics.logEvent('user_name');
     </script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle" />
     <style>
         :root {
             --primary-color: #ff0099;
@@ -58,11 +57,6 @@
             text-align: center;
             width: 100%;
             overflow-x: hidden;
-            transition: background-color 2s ease, color 0.5s ease;
-            background: var(--efecto-fondo);
-            background-size: cover !important;
-            background-repeat: no-repeat !important;
-            background-attachment: fixed !important;
         }
 
         /* --- NAVEGACIÓN (Sticky corregido) --- */
@@ -130,7 +124,10 @@
         }
         /* Añadimos una transición para el menú */
         #servicios { user-select: none; }
-
+        section {
+            margin: 0;
+            padding: 0;
+        }
         .menu {
             display: inline-block;
             padding: 8px 15px;
@@ -143,7 +140,13 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .daba { padding: 60px 20px; z-index: 40; }
+        .daba {
+            z-index: 40;
+            background: var(--efecto-fondo);
+            background-size: cover !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+        }
 
         .boton-ia {
             display: inline-block;
@@ -164,72 +167,52 @@
             background-color: #f0f;
             color: white;
         }
-
+        .qrsection{
+            padding-top: 40px; /* Añadimos espacio superior interno */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-image: url("https://cdn.mos.cms.futurecdn.net/v2/t:0,l:265,cw:1590,ch:1193,q:80,w:1590/57jQMDN5MZLYfV8ps8HuZQ.jpg");
+        }
+        /* Quitamos el margen superior del H1 dentro de la sección QR */
+        .qrsection h1 { margin-top: 0; }
         hr { border: 0; height: 1px; background: rgba(0,0,0,0.1); margin: 40px 0; }
         .bookmark-link { font-size: 1.1rem; color: #0044aa; text-decoration: none; font-weight: bold; }
-
-        .descargas-cont {
-            display: flex;
-            justify-content: flex-start; /* Cambiado para que el scroll inicie a la izquierda */
-            width: 100%;
-            max-width: 100%;
-            overflow-x: scroll;
-            border-radius: 20px;
-            padding: 0px;
-            margin: 5px;
-            scroll-snap-type: x mandatory;
-        }
-        fieldset { 
-            border: none; 
-            border-radius: 20px; 
-            color: black; 
-            background-color: white; 
-            margin: 10px;
-            padding: 20px;
-        }
         hr {
             background-color: #505050;
-        }
-        .descarga {
-            min-width: 200px !important;
-            scroll-snap-align: center;
-            margin: 30px;
-            scroll-snap-stop: always
-        }
-        .descargas-cont::-webkit-scrollbar {
-            display: none;
         }
         body::-webkit-scrollbar {
             display: none;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+<section class="daba">
 <div class="ventanas animate__animated animate__FadeInDown">
     <div class="search-wrapper">
         <script async src="https://cse.google.com/cse.js?cx=f4927d40d84e949bb"></script>
         <div class="gcse-search"></div>
     </div>
     <span title="servicios" id="serviciosToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;" onclick="menuContract()">≡</span>
-    <div id="avatar" title="cuenta" onclick="cuentaContract()" id="cuentaToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;"></div>
+    <div id="avatar" title="cuenta" onclick="cuentaContract()" id="cuentaToogleBTN" style="font-size: 30px; cursor: pointer; user-select: none;" class="material-icons"></div>
 </div>
-
 <div id="cuenta" class="max" title="cuenta" style="display: none;">
     <a href="cuenta/index.html?type=sync" class="menu">sync</a>
     <a href="cuenta/index.html?type=teachers" class="menu">Tablón para profes</a>
     <a href="#" onclick="logOff()" class="menu">Cerrar sesión</a>
 </div>
 <div id="servicios" class="max" title="servicios" style="display: none;">
+    <a href="descargas.html" class="menu">Descargas</a>
     <a href="Voice.html" class="menu">Voice</a>
     <a href="quiz-creator.html" class="menu">DIDquiz</a>
     <a href="Quiz.html" class="menu">Cálculo mental</a>
 </div>
-<section class="daba">
-    <div id="refran" style="font-style: italic; margin: 50px 0; font-size: 0.9rem;">Cargando refrán...</div>
-    <br>
-    <img src="assets/did logo.png" alt="Logo DID" style="max-width: 250px; height: auto;">
+    <div id="refran" style="font-style: italic; margin: 20px 0; font-size: 0.9rem;">Cargando refrán...</div>
+    <img src="assets/did logo.png" alt="Logo DID" style="max-width: 250px; height: auto; margin-bottom: 20px;">
     <p style="font-weight: bold; padding-left: 140px;">Search</p>
-    <details style="margin-top: 20px;">
+    <details style="margin-top: 20px; margin-bottom: 20px;">
         <summary style="cursor:pointer; font-size: 1.5rem; font-weight: bold;">🔖 Marcadores</summary>
         <div style="padding: 15px;">
             <p><a href="https://sites.google.com/view/muniz-pelculas/inicio" target="_blank" class="bookmark-link">Muniz Películas</a></p>
@@ -238,37 +221,20 @@
             <p><a href="https://m365.cloud.microsoft/" target="_blank" class="bookmark-link">Copilot M365</a></p>
         </div>
     </details>
+    <br>
 </section>
-
-<hr>
-
-<h1>Generador de QR</h1>
-<input type="text" id="textoInput" placeholder="max. 738">
-<button id="generarBtn">Generar</button>
-<div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
-
-<hr>
+<section class="qrsection">
+    <h1 style="text-shadow: 0 0 15px #0ff; color: white;">Generador de QR</h1>
+    <input type="text" id="textoInput" placeholder="max. 738">
+    <button id="generarBtn">Generar</button>
+    <div id="qrcode" style="display: flex; justify-content: center; margin-top: 20px;"></div>
+</section>
 <h1>Descargas</h1>
 <br><br><br><br>
-<div class="descargas-cont" id="descargas-cont">
+<section class="descargas-cont" id="descargas-cont">
     <div style="display: flex; flex-direction: row;" class="descargas">
-        <span style="opacity: 0;">·</span>
-        <fieldset class="descarga">
-            <h1>Instala la App</h1>
-            <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
-        </fieldset>
-        <fieldset class="descarga">
-            <h1>Instala la app</h1>
-            <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
-            <p>¡Programada con flutter!</p>
-        </fieldset>
-        <fieldset class="descarga">
-            <h1>Descarga el instalador de APK</h1>
-            <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/instalador de APKs.exe" download="instaldor de apk.exe">Descargar para windows</a>
-        </fieldset>
-        <span style="opacity: 0;">·</span>
     </div>
-</div>
+</section>
 <p>Creado por Daniel Tejedor</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

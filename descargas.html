@@ -1,0 +1,106 @@
+<html>
+<head>
+<title></title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+    :root {
+        --primary-color: #ff0099;
+        --efecto-fondo: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://did-y-sus-servicios-digitales.github.io/Search/fondo.jpg');
+    }
+    html {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        width: 100%;
+        overflow-x: hidden;
+        background: var(--efecto-fondo);
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }
+    .descarga {
+        min-width: 200px !important;
+        margin: 30px;
+    }
+    fieldset { 
+        border: none; 
+        border-radius: 20px; 
+        color: black; 
+        background-color: white; 
+        margin: 10px;
+        padding: 20px;
+    }
+    button, a{
+        display: inline-block;
+        padding: 10px 25px;
+        border-radius: 25px;
+        border: 2px solid var(--primary-color);
+        background-color: white;
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        margin: 10px;
+    }
+    .descargas-cont {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px;
+        padding: 0px;
+        margin: 5px;
+    }
+    .descargas {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <span style="display: flex; justify-content: center; align-items: center;">
+        <span class="material-icons" onclick="window.location.href = 'index.html';" title="volver a DID search" style="font-size: 50px;">arrow_back</span>
+        <h1>Descargas creadas por Daniel Tejedor</h1>
+    </span>
+    <section class="descargas-cont" id="descargas-cont">
+        <div class="descargas">
+            <fieldset class="descarga">
+                <h1>Instala la App</h1>
+                <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
+                <p>No pesa casi-nada</p>
+            </fieldset>
+            <fieldset class="descarga">
+                <h1>Instala la app</h1>
+                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
+                <p>¡Programada con flutter!</p>
+            </fieldset>
+            <fieldset class="descarga">
+                <h1>Descarga el instalador de APK</h1>
+                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/instalador de APKs.exe" download="instaldor de apk.exe">Descargar para windows</a>
+            </fieldset>
+            <fieldset class="descarga">
+                <h1>Calculadora de tiempo para llegar</h1>
+                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/calculador-de-tiempo.apk" download="calculador de timpo para llegar.apk">Descargar apk</a>
+                <p>Para impacientes</p>
+            </fieldset>
+            <fieldset class="descarga">
+                <h1>DID hospot</h1>
+                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/hospot.apk" download="DID hospot.apk">Descargar apk</a>
+                <p>¡Podrás jugar a Minecraft con amigos sin wifi!</p>
+            </fieldset>
+            <fieldset class="descarga">
+                <h1>BedrockSync</h1>
+                <a class="boton-ia" href="https://github.com/yutencurso/bedrocksync" target="_blank">Abrir Github<span class="material-icons">open_in_new</span></a>
+                <p>Para desarrolladores de mods de Minecraft Bedrock</p>
+            </fieldset>
+        </div>
+    </section>
+</body>
+</html>
