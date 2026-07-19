@@ -26,9 +26,25 @@
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
     }
+    @keyframes entrada {
+        0% {
+            scale: 0;
+            transform: translateY(500px) skewX(70deg);
+        }
+        80% {
+            scale: 1.2;
+        }
+        100% {
+            scale: 1;
+        }
+    }
+    .animacion {
+        animation: entrada 1s ease;
+    }
     .descarga {
         min-width: 200px !important;
         margin: 30px;
+        opacity: 0;
     }
     fieldset { 
         border: none; 
@@ -56,7 +72,7 @@
         padding: 0px;
         margin: 5px;
     }
-    .descargas {
+    #descargas {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -67,10 +83,10 @@
 <body>
     <span style="display: flex; justify-content: center; align-items: center;">
         <span class="material-icons" onclick="window.location.href = 'index.html';" title="volver a DID search" style="font-size: 50px;">arrow_back</span>
-        <h1>Descargas creadas por Daniel Tejedor</h1>
+        <h1>Descargas de Daniel Tejedor</h1>
     </span>
     <section class="descargas-cont" id="descargas-cont">
-        <div class="descargas">
+        <div id="descargas">
             <fieldset class="descarga">
                 <h1>Instala la App</h1>
                 <a href="https://yutencurso.github.io/DIDapp/" class="boton-ia" target="_blank">Instalar WebApp</a>
@@ -78,29 +94,45 @@
             </fieldset>
             <fieldset class="descarga">
                 <h1>Instala la app</h1>
-                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
+                <a href="https://did-y-sus-servicios-digitales.github.io/Search/assets/app-arm64-v8a-release.apk" download="didapp.apk">Descargar apk</a>
                 <p>¡Programada con flutter!</p>
             </fieldset>
             <fieldset class="descarga">
                 <h1>Descarga el instalador de APK</h1>
-                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/instalador de APKs.exe" download="instaldor de apk.exe">Descargar para windows</a>
+                <a href="https://did-y-sus-servicios-digitales.github.io/Search/assets/instalador de APKs.exe" download="instaldor de apk.exe">Descargar para windows</a>
             </fieldset>
             <fieldset class="descarga">
                 <h1>Calculadora de tiempo para llegar</h1>
-                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/calculador-de-tiempo.apk" download="calculador de timpo para llegar.apk">Descargar apk</a>
+                <a href="https://did-y-sus-servicios-digitales.github.io/Search/assets/calculador-de-tiempo.apk" download="calculador de timpo para llegar.apk">Descargar apk</a>
                 <p>Para impacientes</p>
             </fieldset>
             <fieldset class="descarga">
                 <h1>DID hospot</h1>
-                <a class="boton-ia" href="https://did-y-sus-servicios-digitales.github.io/Search/assets/hospot.apk" download="DID hospot.apk">Descargar apk</a>
+                <a href="https://did-y-sus-servicios-digitales.github.io/Search/assets/hospot.apk" download="DID hospot.apk">Descargar apk</a>
                 <p>¡Podrás jugar a Minecraft con amigos sin wifi!</p>
             </fieldset>
             <fieldset class="descarga">
                 <h1>BedrockSync</h1>
-                <a class="boton-ia" href="https://github.com/yutencurso/bedrocksync" target="_blank">Abrir Github<span class="material-icons">open_in_new</span></a>
+                <a href="https://github.com/yutencurso/bedrocksync" target="_blank">Abrir Github<span class="material-icons">open_in_new</span></a>
                 <p>Para desarrolladores de mods de Minecraft Bedrock</p>
             </fieldset>
         </div>
     </section>
+    <script>
+        const contenedor = document.getElementById('descargas');
+        const elementos = contenedor.children;
+        const retrasoBase = 0.3; // Segundos de diferencia entre cada elemento
+        Array.from(elementos).forEach((el, index) => {
+            // 1. Calcular el retraso sucesivo
+            el.style.animationDelay = `${index * retrasoBase}s`;
+            // 2. Añadir la clase para que comience la animación
+            el.classList.add('animacion');
+            // 3. Ejecutar código exactamente cuando este elemento termine de animarse
+            el.addEventListener('animationstart', (evento) => {
+                el.classList.remove('animar');
+                el.style.opacity = '1';
+            }, { once: true });
+        });
+    </script>
 </body>
 </html>
